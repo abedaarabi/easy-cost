@@ -22,7 +22,7 @@ model Company {
   name        String
   country     String
   logo        String
-  userName    User[]
+  User        User[]
   InvitedUser InvitedUser[]
 }
 
@@ -41,12 +41,13 @@ model User {
 }
 
 model InvitedUser {
-  id        String  @id @default(uuid())
-  Company   Company @relation(fields: [companyId], references: [id])
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  Company   Company  @relation(fields: [companyId], references: [id])
   companyId String
-  User      User?   @relation(fields: [userId], references: [id])
+  User      User?    @relation(fields: [userId], references: [id])
   userId    String?
-  Project   Project @relation(fields: [projectId], references: [id])
+  Project   Project  @relation(fields: [projectId], references: [id])
   projectId String
   token     String
 }
@@ -58,9 +59,12 @@ model Material {
   supplier       String
   createdAt      DateTime         @default(now())
   price          Int
+  priceUnit      String
+  image          String
   User           User?            @relation(fields: [userId], references: [id])
   userId         String?
   ProjecMaterial ProjecMaterial[]
+  workByhour     Int 
 
   @@unique([materialName, userId])
 }
@@ -82,5 +86,5 @@ model ProjecMaterial {
   materialId String
   projectId  String
   createdAt  DateTime @default(now())
-  profit     Int      @default(0) // percentage added 
+  profit     Int      @default(0) // percentage added %
 }
