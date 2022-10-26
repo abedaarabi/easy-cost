@@ -10,6 +10,7 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   create(createUserDto: CreateUserDto) {
+    const user = { ...createUserDto, userType: 'companyUser' };
     return this.prisma.user.create({ data: createUserDto });
   }
 

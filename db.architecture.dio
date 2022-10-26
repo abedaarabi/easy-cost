@@ -1,0 +1,31 @@
+<mxfile host="65bd71144e">
+    <diagram id="EkmhJNftspw9LD2Qc4nb" name="Page-1">
+        <mxGraphModel dx="1541" dy="512" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="invited user:&lt;br&gt;userId&lt;br&gt;company-id&lt;br&gt;project-id&lt;br&gt;tokekn" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="40" width="120" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="user&lt;br&gt;id&lt;br&gt;type:[client, company-user, company-admin]&lt;br&gt;company-id" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="40" width="110" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="materilaid-id&lt;br&gt;m-name&lt;br&gt;user-id&lt;br&gt;unit" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="150" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="project-id&lt;br&gt;p-name&lt;br&gt;uers-id" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="41" y="230" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="project-material&lt;br&gt;materila-id&lt;br&gt;%- null&lt;br&gt;project-id&lt;br&gt;quantity" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="41" y="310" width="129" height="129" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="it sould be something else (account)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="-25" y="10" width="210" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="company&lt;br&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="170" y="20" width="90" height="90" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

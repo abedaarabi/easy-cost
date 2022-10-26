@@ -1,5 +1,27 @@
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
+import { AnySrvRecord } from 'dns';
+
+async function materials() {
+  const materialList = [];
+  for (let i = 0; i < 60; i++) {
+    materialList.push({
+      materialName: faker.animal.fish(),
+      price: Number(faker.finance.amount(5, 10, 0)),
+      supplier: faker.address.cityName(),
+    });
+  }
+  return materialList;
+}
+async function project() {
+  const projectList = [];
+  for (let i = 0; i < 30; i++) {
+    projectList.push({
+      projectName: faker.name.jobArea(),
+    });
+  }
+  return projectList;
+}
 
 const prisma = new PrismaClient();
 async function main() {
@@ -12,16 +34,10 @@ async function main() {
       data: {
         name: faker.company.name(),
         materialName: {
-          create: {
-            materialName: faker.animal.fish(),
-            price: Number(faker.finance.amount(5, 10, 0)),
-            supplier: faker.address.cityName(),
-          },
+          create: await materials(),
         },
         projectName: {
-          create: {
-            projectName: faker.name.jobArea(),
-          },
+          create: await project(),
         },
       },
     });

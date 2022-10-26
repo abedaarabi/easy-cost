@@ -6,27 +6,63 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = "mysql://root:Likeme-likeme654@127.0.0.1:3306/prisma"
+}
+
+enum UserType {
+  CompanyUser
+  Client
+  comapanyAdmin
+}
+
+model Company {
+  id          String        @id @default(uuid())
+  createdAt   DateTime      @default(now())
+  name        String
+  country     String
+  logo        String
+  userName    User[]
+  InvitedUser InvitedUser[]
 }
 
 model User {
-  id           String     @id @default(uuid())
-  name         String     @unique
-  createdAt    DateTime   @default(now())
+  id           String        @id @default(uuid())
+  name         String        @unique
+  email        String
+  avatar       String
+  createdAt    DateTime      @default(now())
   materialName Material[]
   projectName  Project[]
+  userType     UserType
+  companyId    String
+  Company      Company       @relation(fields: [companyId], references: [id])
+  InvitedUser  InvitedUser[]
+}
+
+model InvitedUser {
+  id        String  @id @default(uuid())
+  Company   Company @relation(fields: [companyId], references: [id])
+  companyId String
+  User      User?   @relation(fields: [userId], references: [id])
+  userId    String?
+  Project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+  token     String
 }
 
 model Material {
   id             String           @id @default(uuid())
   materialName   String
+  unit           String
   supplier       String
   createdAt      DateTime         @default(now())
   price          Int
   User           User?            @relation(fields: [userId], references: [id])
   userId         String?
   ProjecMaterial ProjecMaterial[]
+
+  @@unique([materialName, userId])
 }
 
 model Project {
@@ -36,6 +72,7 @@ model Project {
   User           User?            @relation(fields: [userId], references: [id])
   userId         String?
   ProjecMaterial ProjecMaterial[]
+  InvitedUser    InvitedUser[]
 }
 
 model ProjecMaterial {
@@ -45,4 +82,5 @@ model ProjecMaterial {
   materialId String
   projectId  String
   createdAt  DateTime @default(now())
+  profit     Int      @default(0) // percentage added 
 }
