@@ -1,6 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString, MinLength } from 'class-validator';
 export class CreateMaterialDto {
+  @ApiProperty()
+  companyId: string;
+  @ApiProperty()
+  unit: string;
+  @ApiProperty()
+  priceUnit: string;
+  @ApiProperty()
+  image: string;
+  @ApiProperty()
+  workByhour: number;
   id: string;
   @IsString()
   @MinLength(2)

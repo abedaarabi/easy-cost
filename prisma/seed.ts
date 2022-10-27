@@ -26,22 +26,23 @@ async function project() {
 const prisma = new PrismaClient();
 async function main() {
   await prisma.user.deleteMany();
+  await prisma.company.deleteMany();
   await prisma.material.deleteMany();
   await prisma.project.deleteMany();
-
-  for (let i = 0; i < 100; i++) {
-    await prisma.user.create({
-      data: {
-        name: faker.company.name(),
-        materialName: {
-          create: await materials(),
-        },
-        projectName: {
-          create: await project(),
-        },
-      },
-    });
-  }
+  return;
+  // for (let i = 0; i < 100; i++) {
+  //   await prisma.user.create({
+  //     data: {
+  //       name: faker.company.name(),
+  //       materialName: {
+  //         create: await materials(),
+  //       },
+  //       projectName: {
+  //         create: await project(),
+  //       },
+  //     },
+  //   });
+  // }
 }
 
 main()

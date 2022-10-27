@@ -3,6 +3,16 @@ import { Material } from '@prisma/client';
 // Prisma defined the type when we create the db User table
 export class MaterialEntity implements Material {
   @ApiProperty()
+  companyId: string;
+  @ApiProperty()
+  unit: string;
+  @ApiProperty()
+  priceUnit: string;
+  @ApiProperty()
+  image: string;
+  @ApiProperty()
+  workByhour: number;
+  @ApiProperty()
   id: string;
   @ApiProperty()
   materialName: string;
