@@ -2,13 +2,15 @@
 
 ```bash
 $ npm install
-# seed data into db
-$ npx prisma db seed
+
 ```
 
 ## Running the app
 
 ```bash
+# seed data into db
+$ npx prisma db seed
+
 # development
 $ npm run start
 
