@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Material } from '@prisma/client';
+import { Material } from 'node_modules/@prisma/client';
 // Prisma defined the type when we create the db User table
 export class MaterialEntity implements Material {
   @ApiProperty()

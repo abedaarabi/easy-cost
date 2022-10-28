@@ -18,8 +18,8 @@ const user_service_1 = require("./user.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const swagger_1 = require("@nestjs/swagger");
-const user_entity_1 = require("./entities/user.entity");
 const prisma_client_exception_filter_1 = require("../prisma-client-exception.filter");
+const user_entity_1 = require("./entities/user.entity");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;

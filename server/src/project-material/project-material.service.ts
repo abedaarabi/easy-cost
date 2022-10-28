@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'server/src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProjectMaterialDto } from './dto/create-project-material.dto';
 import { UpdateProjectMaterialDto } from './dto/update-project-material.dto';
 

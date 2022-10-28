@@ -13,8 +13,9 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+
+import { PrismaClientExceptionFilter } from 'src/prisma-client-exception.filter';
 import { UserEntity } from './entities/user.entity';
-import { PrismaClientExceptionFilter } from 'server/src/prisma-client-exception.filter';
 
 @Controller('user')
 @ApiTags('User')

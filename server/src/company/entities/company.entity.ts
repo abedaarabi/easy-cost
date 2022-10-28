@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Company } from '@prisma/client';
+import { Company } from 'node_modules/@prisma/client';
 export class CompanyEntity implements Company {
   id: string;
   createdAt: Date;

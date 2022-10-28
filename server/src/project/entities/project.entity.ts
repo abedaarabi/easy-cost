@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Project } from '@prisma/client';
+import { Project } from 'node_modules/@prisma/client';
 
 export class ProjectEntity implements Project {
   id: string;

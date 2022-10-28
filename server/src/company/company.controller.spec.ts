@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from 'server/node_modules/@nestjs/testing';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
 

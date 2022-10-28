@@ -1,17 +1,17 @@
 import { faker } from '@faker-js/faker';
 import { NestFactory } from '@nestjs/core';
 import { PrismaClient } from '@prisma/client';
-import { AppModule } from 'server/src/app.module';
-import { CompanyService } from 'server/src/company/company.service';
-import { CreateCompanyDto } from 'server/src/company/dto/create-company.dto';
-import { InvitedUserService } from 'server/src/invited-user/invited-user.service';
-import { CreateMaterialDto } from 'server/src/material/dto/create-material.dto';
-import { MaterialService } from 'server/src/material/material.service';
-import { ProjectMaterialService } from 'server/src/project-material/project-material.service';
-import { CreateProjectDto } from 'server/src/project/dto/create-project.dto';
-import { ProjectService } from 'server/src/project/project.service';
-import { CreateUserDto } from 'server/src/user/dto/create-user.dto';
-import { UserService } from 'server/src/user/user.service';
+// import { AppModule } from 'server/src/app.module';
+// import { CompanyService } from 'server/src/company/company.service';
+// import { CreateCompanyDto } from 'server/src/company/dto/create-company.dto';
+// import { InvitedUserService } from 'server/src/invited-user/invited-user.service';
+// import { CreateMaterialDto } from 'server/src/material/dto/create-material.dto';
+// import { MaterialService } from 'server/src/material/material.service';
+// import { ProjectMaterialService } from 'server/src/project-material/project-material.service';
+// import { CreateProjectDto } from 'server/src/project/dto/create-project.dto';
+// import { ProjectService } from 'server/src/project/project.service';
+// import { CreateUserDto } from 'server/src/user/dto/create-user.dto';
+// import { UserService } from 'server/src/user/user.service';
 const prisma = new PrismaClient();
 
 async function project() {

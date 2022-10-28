@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { InvitedUserService } from './invited-user.service';
 import { InvitedUserController } from './invited-user.controller';
-import { PrismaModule } from 'server/src/prisma/prisma.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
   controllers: [InvitedUserController],

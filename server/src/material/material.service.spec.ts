@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from 'server/node_modules/@nestjs/testing';
 import { MaterialService } from './material.service';
 
 describe('MaterialService', () => {
