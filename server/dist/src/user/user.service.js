@@ -22,6 +22,13 @@ let UserService = class UserService {
     findAll() {
         return this.prisma.user.findMany();
     }
+    async findUnique(name) {
+        return await this.prisma.user.findUnique({
+            where: {
+                name,
+            },
+        });
+    }
     async findOne(id) {
         return this.prisma.user.findUnique({ where: { id } });
     }

@@ -34,6 +34,17 @@ export class UserController {
   findAll() {
     return this.userService.findAll();
   }
+  @Get('userByName')
+  @ApiCreatedResponse({ type: UserEntity })
+  @Get(':name')
+  @ApiCreatedResponse({ type: UserEntity })
+  async findUnique(@Param('name') name: string) {
+    const user = await this.userService.findUnique(name);
+    if (!user) {
+      throw new NotFoundException(`user with name: ${name} is not found`);
+    }
+    return user;
+  }
 
   @Get(':id')
   @ApiCreatedResponse({ type: UserEntity })

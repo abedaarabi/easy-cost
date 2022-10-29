@@ -30,6 +30,13 @@ let UserController = class UserController {
     findAll() {
         return this.userService.findAll();
     }
+    async findUnique(name) {
+        const user = await this.userService.findUnique(name);
+        if (!user) {
+            throw new common_1.NotFoundException(`user with name: ${name} is not found`);
+        }
+        return user;
+    }
     async findOne(id) {
         const user = await this.userService.findOne(id);
         if (!user) {
@@ -59,6 +66,16 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('userByName'),
+    (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),
+    (0, common_1.Get)(':name'),
+    (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),
+    __param(0, (0, common_1.Param)('name')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findUnique", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),

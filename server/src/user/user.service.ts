@@ -19,6 +19,14 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
+  async findUnique(name: string) {
+    return await this.prisma.user.findUnique({
+      where: {
+        name,
+      },
+    });
+  }
+
   async findOne(id: string) {
     return this.prisma.user.findUnique({ where: { id } });
   }
