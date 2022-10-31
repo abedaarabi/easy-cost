@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
 import { AuthContextProvider } from "./authContext/components/AuthContext";
 import { ProtectedRoutes } from "./authContext/components/ProtectedRoutes";
-import Dashboard from "./dashboard/page/Dashboard";
+// import Dashboard from "./dashboard/page/Dashboard";
 import SignInSide from "./login/components/SignInSide";
 import ErrorPage from "./routerComponents/ErrorPage";
 import {
@@ -14,6 +19,9 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Tune } from "@mui/icons-material";
+import MiniDrawer from "./dashboard/page/Db";
+import MaterialTable from "./dashboard/components/MaterialTable";
+import Main from "./dashboard/page/Main";
 
 const router = createBrowserRouter([
   {
@@ -25,20 +33,41 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: (
       <ProtectedRoutes>
-        <Dashboard />
+        <MiniDrawer />
       </ProtectedRoutes>
     ),
-    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Main />,
+      },
+      {
+        path: "/dashboard/main",
+        element: <Main />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/dashboard/material",
+        element: <MaterialTable />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/dashboard/test",
+        element: <p>Hello Test</p>,
+        errorElement: <ErrorPage />,
+      },
+    ],
   },
 ]);
 
 function App() {
   const queryClient = new QueryClient();
+
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <AuthContextProvider>
-        <RouterProvider router={router} />
+        <RouterProvider router={router} fallbackElement={<MiniDrawer />} />
       </AuthContextProvider>
     </QueryClientProvider>
   );

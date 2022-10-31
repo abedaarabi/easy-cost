@@ -43,12 +43,14 @@ export default function SignInSide() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
-    const userResponse = await getUserByEmail(email);
-    console.log(userResponse);
+    // const userResponse = await getUserByEmail(email);
+    // console.log(userResponse);
 
-    if (userResponse?.length > 0) {
-      setUser(userResponse);
-    }
+    setUser("abed@moe.dk");
+
+    // if (userResponse?.length > 0) {
+    //   setUser(userResponse);
+    // }
   };
 
   React.useEffect(() => {

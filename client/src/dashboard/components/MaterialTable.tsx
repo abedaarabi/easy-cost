@@ -5,15 +5,14 @@ import { getMaterialByCompany } from "../helper/db.fetchMaterial";
 import ReusableTable, {
   ColumnFromData,
 } from "../../reusableTable/ReusableTable";
-import Box from "@mui/material/Box"; // import ReusableTable from "../../reusableTable/ReusableTable";
-import { Material } from "../../reusableTable/interfaces/interface";
+import Box from "@mui/material/Box";
+
 import {
   MRT_ColumnDef,
   MRT_Row,
   MaterialReactTableProps,
 } from "material-react-table";
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,6 +23,8 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import Button from "@mui/material/Button";
+
 import { ContentCopy, Delete, Edit } from "@mui/icons-material";
 const MaterialTable = () => {
   const { user } = useAuth();
@@ -60,18 +61,21 @@ const MaterialTable = () => {
       enableColumnOrdering: false,
       enableEditing: false, //disable editing on this column
       enableSorting: false,
+      enableHiding: true,
       size: 80,
     },
     {
       accessorKey: "image",
       header: "Image",
       size: 140,
+      muiTableBodyCellEditTextFieldProps: ({ cell }) => ({}),
     },
 
     {
       accessorKey: "materialName",
       header: "Material Name",
       size: 180,
+
       muiTableBodyCellEditTextFieldProps: {
         select: true, //change to select for a dropdown
         children: testData.map((state) => (
@@ -106,7 +110,7 @@ const MaterialTable = () => {
       header: "Work Hour",
       size: 140,
     },
-  ] as unknown as MRT_ColumnDef<typeof dataTable[0]>[];
+  ] as MRT_ColumnDef<typeof dataTable[0]>[];
 
   //delete
   const handleDeleteRow = React.useCallback(
@@ -130,6 +134,16 @@ const MaterialTable = () => {
     tableData.push(values);
     setTableData([...tableData]);
   };
+
+  const handleSaveRowEdits: MaterialReactTableProps<
+    typeof dataTable[0]
+  >["onEditingRowSave"] = async ({ exitEditingMode, row, values }) => {
+    tableData[row.id] = values;
+    //send/receive api updates here, then refetch or update local table data for re-render
+    setTableData([...tableData]);
+    exitEditingMode(); //required to exit editing mode and close modal
+  };
+
   return (
     <Box sx={{ width: "70rem" }}>
       {
@@ -138,7 +152,7 @@ const MaterialTable = () => {
           columns={colTest}
           data={dataTable}
           // onEditingRowSave={handleSaveRowEdits}
-
+          onEditingRowSave={handleSaveRowEdits}
           enableEditing
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", gap: "1rem" }}>
