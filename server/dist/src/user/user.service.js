@@ -22,14 +22,14 @@ let UserService = class UserService {
     findAll() {
         return this.prisma.user.findMany();
     }
-    async findUnique(name) {
-        return await this.prisma.user.findUnique({
+    findUniqueByEmail(email) {
+        return this.prisma.user.findMany({
             where: {
-                name,
+                email,
             },
         });
     }
-    async findOne(id) {
+    findOne(id) {
         return this.prisma.user.findUnique({ where: { id } });
     }
     update(id, updateUserDto) {

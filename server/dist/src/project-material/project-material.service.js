@@ -24,6 +24,23 @@ let ProjectMaterialService = class ProjectMaterialService {
     findAll() {
         return this.prisma.projecMaterial.findMany();
     }
+    findByProjectId(id) {
+        return this.prisma.projecMaterial.findMany({
+            where: {
+                projectId: id,
+            },
+            include: {
+                material: {
+                    select: {
+                        materialName: true,
+                        price: true,
+                        workByhour: true,
+                        unit: true,
+                    },
+                },
+            },
+        });
+    }
     async findOne(id) {
         return this.prisma.projecMaterial.findUnique({ where: { id } });
     }

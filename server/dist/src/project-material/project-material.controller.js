@@ -31,6 +31,9 @@ let ProjectMaterialController = class ProjectMaterialController {
     findOne(id) {
         return this.projectMaterialService.findOne(id);
     }
+    findByProjectId(id) {
+        return this.projectMaterialService.findByProjectId(id);
+    }
     update(id, updateProjectMaterialDto) {
         return this.projectMaterialService.update(id, updateProjectMaterialDto);
     }
@@ -58,6 +61,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ProjectMaterialController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('projectMaterial/:projectId'),
+    __param(0, (0, common_1.Param)('projectId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProjectMaterialController.prototype, "findByProjectId", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),

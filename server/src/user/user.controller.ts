@@ -34,14 +34,12 @@ export class UserController {
   findAll() {
     return this.userService.findAll();
   }
-  @Get('userByName')
+  @Get('email/:email')
   @ApiCreatedResponse({ type: UserEntity })
-  @Get(':name')
-  @ApiCreatedResponse({ type: UserEntity })
-  async findUnique(@Param('name') name: string) {
-    const user = await this.userService.findUnique(name);
+  async findUnique(@Param('email') email: string) {
+    const user = await this.userService.findUniqueByEmail(email);
     if (!user) {
-      throw new NotFoundException(`user with name: ${name} is not found`);
+      throw new NotFoundException(`user with name: ${email} is not found`);
     }
     return user;
   }

@@ -32,6 +32,11 @@ export class MaterialController {
     return this.materialService.findOne(id);
   }
 
+  @Get('materialByCompany/:companyId')
+  findMaterialByCompanyId(@Param('companyId') companyId: string) {
+    return this.materialService.findMaterialByCompanyId(companyId);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

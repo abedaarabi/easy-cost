@@ -20,7 +20,9 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from "react-router-dom";
 import { SettingsSuggestRounded } from "@mui/icons-material";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../../authContext/components/AuthContext";
+import MaterialTable from "../components/MaterialTable";
 function Copyright(props: any) {
   return (
     <Typography
@@ -135,6 +137,15 @@ function DashboardContent() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                setUser(null);
+                navigate("/");
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -146,9 +157,7 @@ function DashboardContent() {
               px: [1],
             }}
           >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
+            <IconButton></IconButton>
           </Toolbar>
           <Divider />
         </Drawer>
@@ -168,6 +177,7 @@ function DashboardContent() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
+              <MaterialTable />
               <Grid item xs={12} md={8} lg={9}>
                 <Paper
                   sx={{
@@ -189,13 +199,7 @@ function DashboardContent() {
                   }}
                 ></Paper>
               </Grid>
-              <Button
-                onClick={() => {
-                  setUser(null);
-                }}
-              >
-                Log Out
-              </Button>
+
               {/* Recent Orders */}
               <Grid item xs={12}>
                 <Paper

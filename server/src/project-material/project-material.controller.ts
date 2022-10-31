@@ -33,6 +33,10 @@ export class ProjectMaterialController {
   findOne(@Param('id') id: string) {
     return this.projectMaterialService.findOne(id);
   }
+  @Get('projectMaterial/:projectId')
+  findByProjectId(@Param('projectId') id: string) {
+    return this.projectMaterialService.findByProjectId(id);
+  }
 
   @Patch(':id')
   update(

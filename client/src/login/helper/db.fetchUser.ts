@@ -15,10 +15,10 @@ interface GetUsersResponse {
   data: User[];
 }
 
-export async function getUserByEmail(email?: string) {
+export async function getUserByEmail(email?: string | null) {
   try {
-    const { data, status } = await axios.get<GetUsersResponse>(
-      "http://localhost:3000/user/f7e3c247-2627-4dd6-82c5-72d40c7fec1f",
+    const { data, status } = await axios.get(
+      "http://localhost:3000/user/email/" + email,
       {
         headers: {
           Accept: "application/json",
@@ -26,19 +26,10 @@ export async function getUserByEmail(email?: string) {
       }
     );
 
-    console.log(JSON.stringify(data, null, 4));
-
-    console.log("response status is: ", status);
-
     return data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log("error message: ", error.message);
-
-      return error.message;
-    } else {
-      console.log("unexpected error: ", error);
-      return "An unexpected error occurred";
     }
   }
 }

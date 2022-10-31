@@ -14,6 +14,19 @@ export class MaterialService {
     return this.prisma.material.findMany();
   }
 
+  findMaterialByCompanyId(companyId: string) {
+    try {
+      const list = this.prisma.material.findMany({
+        where: {
+          companyId,
+        },
+      });
+      return list;
+    } catch (error) {
+      throw new Error('not found');
+    }
+  }
+
   findOne(id: string) {
     return this.prisma.material.findUnique({ where: { id } });
   }

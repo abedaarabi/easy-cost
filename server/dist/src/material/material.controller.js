@@ -31,6 +31,9 @@ let MaterialController = class MaterialController {
     findOne(id) {
         return this.materialService.findOne(id);
     }
+    findMaterialByCompanyId(companyId) {
+        return this.materialService.findMaterialByCompanyId(companyId);
+    }
     update(id, updateMaterialDto) {
         return this.materialService.update(id, updateMaterialDto);
     }
@@ -58,6 +61,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], MaterialController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('materialByCompany/:companyId'),
+    __param(0, (0, common_1.Param)('companyId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], MaterialController.prototype, "findMaterialByCompanyId", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),

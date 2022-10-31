@@ -7,6 +7,14 @@ export declare class ProjectMaterialController {
     create(createProjectMaterialDto: CreateProjectMaterialDto): import(".prisma/client").Prisma.Prisma__ProjecMaterialClient<import(".prisma/client").ProjecMaterial, never>;
     findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").ProjecMaterial[]>;
     findOne(id: string): Promise<import(".prisma/client").ProjecMaterial>;
+    findByProjectId(id: string): import(".prisma/client").PrismaPromise<(import(".prisma/client").ProjecMaterial & {
+        material: {
+            materialName: string;
+            price: number;
+            workByhour: number;
+            unit: string;
+        };
+    })[]>;
     update(id: string, updateProjectMaterialDto: UpdateProjectMaterialDto): import(".prisma/client").Prisma.Prisma__ProjecMaterialClient<import(".prisma/client").ProjecMaterial, never>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__ProjecMaterialClient<import(".prisma/client").ProjecMaterial, never>;
 }

@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { NestFactory } from '@nestjs/core';
 import { PrismaClient } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
 // import { AppModule } from 'server/src/app.module';
 // import { CompanyService } from 'server/src/company/company.service';
 // import { CreateCompanyDto } from 'server/src/company/dto/create-company.dto';
@@ -16,17 +17,19 @@ const prisma = new PrismaClient();
 
 async function project() {
   const companyList = [];
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 5; i++) {
     companyList.push({
+      id: uuidv4(),
       projectName: faker.company.name(),
       workByhour: Number(faker.finance.amount(5, 10, 0)),
     });
   }
   return companyList;
 }
-async function user() {
+async function users() {
+  // change this later
   const userList = [];
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 4; i++) {
     userList.push({
       email: faker.internet.email(),
       userType: 'CompanyAdmin',
@@ -39,8 +42,9 @@ async function user() {
 
 async function materials() {
   const materialList = [];
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 5; i++) {
     materialList.push({
+      id: uuidv4(),
       priceUnit: 'dkk',
       unit: 'area',
       workByhour: Number(faker.finance.amount(5, 10, 0)),
@@ -80,22 +84,37 @@ async function main() {
   await prisma.company.deleteMany();
 
   for (let i = 0; i < 10; i++) {
+    const userList = await users();
+    const materialList = await materials();
+    const materialId = materialList[0].id;
+
+    const projectList = await project();
+    const projectId = projectList[0].id;
     await prisma.company.create({
       data: {
         country: faker.address.country(),
         logo: faker.name.jobTitle(),
         name: faker.company.name(),
         User: {
-          create: await user(),
+          create: userList,
         },
         Material: {
-          create: await materials(),
+          create: materialList,
         },
         Project: {
-          create: await project(),
+          create: projectList,
         },
       },
     });
+    for (let i = 0; i < 10; i++) {
+      await prisma.projecMaterial.create({
+        data: {
+          materialId: materialId,
+          projectId: projectId,
+          profit: Number(faker.finance.amount(5, 10, 0)),
+        },
+      });
+    }
   }
 }
 

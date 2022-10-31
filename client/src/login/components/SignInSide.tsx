@@ -42,16 +42,23 @@ export default function SignInSide() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const email = data.get("email");
+    const userResponse = await getUserByEmail(email);
+    console.log(userResponse);
 
-    const user = await getUserByEmail();
-    if (user) {
-      setUser(user?.email);
-      console.log(user);
+    if (userResponse?.length > 0) {
+      setUser(userResponse);
     }
   };
+
   React.useEffect(() => {
-    user && navigate("/dashboard");
+    if (user) {
+      console.log(user);
+
+      navigate("/dashboard");
+    }
   }, [navigate, user]);
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>

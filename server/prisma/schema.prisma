@@ -93,5 +93,5 @@ model ProjecMaterial {
   materialId String
   projectId  String
   createdAt  DateTime @default(now())
-  profit     Int      @default(0) // percentage added %
+  profit     Float    @default(3.9) // percentage added %
 }
