@@ -14,7 +14,7 @@ export interface Material {
   workByhour: number;
 }
 
-export type ColumnType = {
+export type ColumnTypeMaterial = {
   createdAt: string;
   id: string;
   image: string;
@@ -24,4 +24,21 @@ export type ColumnType = {
   supplier: string;
   unit: string;
   workByhour: number;
+};
+
+export type ColumnTypeUser = {
+  id: string;
+  email: string;
+  avatar: string;
+  userType: string;
+  //   userType: "CompanyUser" | "Client" | "CompanyAdmin";
+  companyId: string;
+  name: string;
+};
+export type ColumnTypeProject = {
+  id?: string;
+  projectName: string;
+  userId: string;
+  workByhour: number;
+  companyId?: string;
 };

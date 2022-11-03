@@ -18,11 +18,19 @@ const material_service_1 = require("./material.service");
 const create_material_dto_1 = require("./dto/create-material.dto");
 const update_material_dto_1 = require("./dto/update-material.dto");
 const swagger_1 = require("@nestjs/swagger");
+function delay(ms) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, ms);
+    });
+}
 let MaterialController = class MaterialController {
     constructor(materialService) {
         this.materialService = materialService;
     }
     create(createMaterialDto) {
+        console.log(createMaterialDto);
         return this.materialService.create(createMaterialDto);
     }
     findAll() {
@@ -31,10 +39,12 @@ let MaterialController = class MaterialController {
     findOne(id) {
         return this.materialService.findOne(id);
     }
-    findMaterialByCompanyId(companyId) {
+    async findMaterialByCompanyId(companyId) {
+        await delay(2000);
         return this.materialService.findMaterialByCompanyId(companyId);
     }
     update(id, updateMaterialDto) {
+        console.log(updateMaterialDto);
         return this.materialService.update(id, updateMaterialDto);
     }
     remove(id) {
@@ -66,7 +76,7 @@ __decorate([
     __param(0, (0, common_1.Param)('companyId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], MaterialController.prototype, "findMaterialByCompanyId", null);
 __decorate([
     (0, common_1.Patch)(':id'),

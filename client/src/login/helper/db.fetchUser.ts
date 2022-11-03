@@ -15,7 +15,7 @@ interface GetUsersResponse {
   data: User[];
 }
 
-export async function getUserByEmail(email?: string | null) {
+export async function getUserByEmail(email: string) {
   try {
     const { data, status } = await axios.get(
       "http://localhost:3000/user/email/" + email,

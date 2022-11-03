@@ -28,6 +28,9 @@ let ProjectController = class ProjectController {
     findAll() {
         return this.projectService.findAll();
     }
+    projectsByCompanyId(companyId) {
+        return this.projectService.projectsByCompanyId(companyId);
+    }
     findOne(id) {
         return this.projectService.findOne(id);
     }
@@ -51,6 +54,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProjectController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('projectByCompany/:companyId'),
+    __param(0, (0, common_1.Param)('companyId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProjectController.prototype, "projectsByCompanyId", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

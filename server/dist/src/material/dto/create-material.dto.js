@@ -53,7 +53,6 @@ __decorate([
 ], CreateMaterialDto.prototype, "price", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(5),
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateMaterialDto.prototype, "userId", void 0);

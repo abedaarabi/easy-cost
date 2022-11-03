@@ -3,24 +3,43 @@ import MaterialReactTable, {
   MRT_ColumnDef,
   MaterialReactTableProps,
 } from "material-react-table";
+import { Box, Paper } from "@mui/material";
 
 type RecordType = Record<string, any>;
 
 export type ColumnFromData<TData extends RecordType> = MRT_ColumnDef<TData>;
 
+type Props<TData extends RecordType> = MaterialReactTableProps<TData> & {
+  isLoading?: boolean;
+};
+
 function ReusableTable<TData extends RecordType>({
+  isLoading,
   data,
   columns,
   ...props
-}: MaterialReactTableProps<TData>) {
+}: Props<TData>) {
   //should be memoized or stable
   const memoColumns = useMemo(() => columns, []);
-  return <MaterialReactTable columns={memoColumns} data={data} {...props} />;
+  return (
+    <MaterialReactTable
+      columns={memoColumns}
+      state={{ isLoading }}
+      data={data}
+      {...props}
+      muiTableContainerProps={{
+        sx: { maxHeight: "600px" },
+      }}
+      enableStickyHeader
+      enableStickyFooter
+      pageCount={10}
+    />
+  );
 }
 
 export default ReusableTable;
 
-type Obj<T> = { item: T[] };
+// type Obj<T> = { item: T[] };
 
 // function returnFirst<T>(obj: Obj<T>) {
 //   return obj.item[0];

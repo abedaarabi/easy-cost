@@ -16,24 +16,6 @@ import { useAuth } from "../../authContext/components/AuthContext";
 import { getUserByEmail } from "../helper/db.fetchUser";
 import { useNavigate } from "react-router-dom";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 const theme = createTheme();
 
 export default function SignInSide() {
@@ -43,14 +25,15 @@ export default function SignInSide() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
-    // const userResponse = await getUserByEmail(email);
-    // console.log(userResponse);
 
-    setUser("abed@moe.dk");
+    const userResponse = await getUserByEmail(email);
+    console.log(userResponse);
 
-    // if (userResponse?.length > 0) {
-    //   setUser(userResponse);
-    // }
+    // setUser("abed@moe.dk");
+
+    if (userResponse?.length > 0) {
+      setUser(userResponse);
+    }
   };
 
   React.useEffect(() => {
@@ -111,9 +94,11 @@ export default function SignInSide() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                variant="standard"
                 autoFocus
               />
               <TextField
+                variant="standard"
                 margin="normal"
                 required
                 fullWidth

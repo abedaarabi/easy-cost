@@ -19,6 +19,19 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
+  findUserByCompanyId(companyId: string) {
+    try {
+      const list = this.prisma.user.findMany({
+        where: {
+          companyId,
+        },
+      });
+      return list;
+    } catch (error) {
+      throw new Error('not found');
+    }
+  }
+
   findUniqueByEmail(email: string) {
     return this.prisma.user.findMany({
       where: {

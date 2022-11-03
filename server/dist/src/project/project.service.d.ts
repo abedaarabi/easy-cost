@@ -6,6 +6,7 @@ export declare class ProjectService {
     constructor(prisma: PrismaService);
     create(createCompanyDto: CreateProjectDto): import(".prisma/client").Prisma.Prisma__ProjectClient<import(".prisma/client").Project, never>;
     findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").Project[]>;
+    projectsByCompanyId(companyId: string): import(".prisma/client").PrismaPromise<import(".prisma/client").Project[]>;
     findOne(id: string): Promise<import(".prisma/client").Project>;
     update(id: string, updateProjectDto: UpdateProjectDto): import(".prisma/client").Prisma.Prisma__ProjectClient<import(".prisma/client").Project, never>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__CompanyClient<import(".prisma/client").Company, never>;

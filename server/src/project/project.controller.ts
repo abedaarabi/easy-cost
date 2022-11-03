@@ -27,6 +27,11 @@ export class ProjectController {
     return this.projectService.findAll();
   }
 
+  @Get('projectByCompany/:companyId')
+  projectsByCompanyId(@Param('companyId') companyId: string) {
+    return this.projectService.projectsByCompanyId(companyId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.projectService.findOne(id);

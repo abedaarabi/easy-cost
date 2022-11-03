@@ -29,7 +29,7 @@ async function users() {
 }
 async function materials() {
     const materialList = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 50; i++) {
         materialList.push({
             id: (0, uuid_1.v4)(),
             priceUnit: 'dkk',

@@ -24,7 +24,7 @@ export class CreateMaterialDto {
   @ApiProperty()
   price: number;
   @IsString()
-  @MinLength(5)
+  // @MinLength(5)
   @ApiProperty()
-  userId: string;
+  userId?: string;
 }

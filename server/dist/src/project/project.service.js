@@ -22,6 +22,19 @@ let ProjectService = class ProjectService {
     findAll() {
         return this.prisma.project.findMany();
     }
+    projectsByCompanyId(companyId) {
+        try {
+            const list = this.prisma.project.findMany({
+                where: {
+                    companyId,
+                },
+            });
+            return list;
+        }
+        catch (error) {
+            throw new Error('not found');
+        }
+    }
     async findOne(id) {
         return this.prisma.project.findUnique({ where: { id } });
     }

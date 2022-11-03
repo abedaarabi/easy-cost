@@ -22,6 +22,19 @@ let UserService = class UserService {
     findAll() {
         return this.prisma.user.findMany();
     }
+    findUserByCompanyId(companyId) {
+        try {
+            const list = this.prisma.user.findMany({
+                where: {
+                    companyId,
+                },
+            });
+            return list;
+        }
+        catch (error) {
+            throw new Error('not found');
+        }
+    }
     findUniqueByEmail(email) {
         return this.prisma.user.findMany({
             where: {

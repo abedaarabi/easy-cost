@@ -1,0 +1,7 @@
+.Mui-selected -root {
+  color: #20b2aa;
+}
+
+.Mui-selected -root:hover {
+  color: #8b4f2e;
+}

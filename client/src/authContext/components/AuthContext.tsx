@@ -27,11 +27,13 @@ export const AuthContextProvider = ({
     <AuthContext.Provider
       value={{
         user,
-
+        loading,
+        setLoading,
         setUser,
       }}
     >
-      {loading ? <CircularProgress /> : children}
+      {children}
+      {/* {loading ? <CircularProgress /> : children} */}
     </AuthContext.Provider>
   );
 };

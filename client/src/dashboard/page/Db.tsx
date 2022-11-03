@@ -16,16 +16,17 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import MaterialTable from "../components/MaterialTable";
 import { ThemeProvider } from "@mui/material/styles";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useAuth } from "../../authContext/components/AuthContext";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import DnsIcon from "@mui/icons-material/Dns";
+import { Avatar, Badge } from "@mui/material";
+
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -96,54 +97,68 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
+  const location = useLocation();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
+  const { user, setUser, setLoading } = useAuth();
+  const { companyId, id: userId, name } = user[0];
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+  const toggleDrawer = () => {
+    setOpen(!open);
   };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="absolute" open={open}>
+      <AppBar open={open}>
         <Toolbar
           sx={{
             pr: "24px", // keep right padding when drawer closed
           }}
         >
           <IconButton
+            edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
+            onClick={toggleDrawer}
             sx={{
-              marginRight: 5,
+              marginRight: "36px",
               ...(open && { display: "none" }),
             }}
           >
             <MenuIcon />
           </IconButton>
-          <Box
-          // sx={{
-          //   position: "flex",
-          //   flexDirection: "row",
-          //   justifyContent: "space-evenly",
-          // }}
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            sx={{ flexGrow: 1 }}
           >
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              color={"ButtonShadow"}
-            >
-              Easy Cost
-            </Typography>
+            Easy Cost
+          </Typography>
+
+          <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mr: 2 }}>
+              <Typography
+                component="p"
+                variant="p"
+                color="inherit"
+                noWrap
+                sx={{ flexGrow: 1 }}
+              >
+                {name}
+              </Typography>
+              <Avatar></Avatar>
+            </Box>
+            <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
             <IconButton
               color="inherit"
               onClick={() => {
@@ -168,12 +183,16 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {drawerLinks.map(({ text, link, icon }) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <Link
-                to={link}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
+          {drawerLinks.map(({ text, link, icon, id }) => (
+            <ListItem
+              key={id}
+              disablePadding
+              sx={{
+                display: "block",
+              }}
+              selected={location.pathname === link && true}
+            >
+              <Link to={link} style={{ textDecoration: "none", color: "gray" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
@@ -190,15 +209,22 @@ export default function MiniDrawer() {
                   >
                     {icon}
                   </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText
+                    primary={text}
+                    sx={{
+                      opacity: open ? 1 : 0,
+                      color: location.pathname === link ? "#003844" : "",
+                    }}
+                  />
                 </ListItemButton>
               </Link>
             </ListItem>
           ))}
         </List>
+
         <Divider />
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 10 }}>
+      <Box sx={{ m: "auto", mt: 12, width: "80%" }}>
         <Outlet />
       </Box>
     </Box>
@@ -207,18 +233,27 @@ export default function MiniDrawer() {
 
 const drawerLinks = [
   {
+    id: 1,
+    text: "Dashboard",
+    icon: <DnsIcon color="info" />,
+    link: "/dashboard",
+  },
+  {
+    id: 2,
     text: "Material",
     icon: <DashboardOutlinedIcon color="info" />,
     link: "/dashboard/material",
   },
   {
-    text: "Test",
+    id: 3,
+    text: "User",
     icon: <PermIdentityIcon color="info" />,
-    link: "/dashboard/test",
+    link: "/dashboard/user",
   },
   {
-    text: "Test",
+    id: 4,
+    text: "Project",
     icon: <WorkOutlineIcon color="info" />,
-    link: "/dashboard/main",
+    link: "/dashboard/project",
   },
 ];

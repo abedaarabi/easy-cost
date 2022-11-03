@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
+import Avatar from "@mui/material/Avatar";
 
 import {
   createMaterial,
@@ -20,8 +21,6 @@ import MaterialReactTable, {
   MaterialReactTableProps,
 } from "material-react-table";
 import {
-  Autocomplete,
-  Avatar,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,49 +29,49 @@ import {
   IconButton,
   MenuItem,
   Paper,
+  Select,
   Stack,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
+import { ColumnTypeUser } from "../types";
+import { getUserByCompany, updateUser } from "../helper/db.fetchUser";
 
-import { ColumnTypeMaterial, Material } from "../types";
-
-const MaterialTable = () => {
+const UserTable = () => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { user, setLoading, loading } = useAuth();
+  if (user.length < 1) return null;
   const { companyId, id: userId } = user[0];
 
   const { isLoading, error, data, isFetching } = useQuery(
-    ["materialByCompanyId"],
-    () => getMaterialByCompany(companyId)
+    ["userByCompanyId"],
+    () => getUserByCompany(companyId)
   );
-
   const deleteMutation = useMutation(deleteMaterialById, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["materialByCompanyId"]);
+      queryClient.invalidateQueries(["userByCompanyId"]);
     },
   });
-
-  const updateMutation = useMutation(updateMaterial, {
+  const updateMutation = useMutation(updateUser, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["materialByCompanyId"]);
+      queryClient.invalidateQueries(["userByCompanyId"]);
     },
   });
   const createMutation = useMutation(createMaterial, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["materialByCompanyId"]);
+      queryClient.invalidateQueries(["userByCompanyId"]);
     },
   });
 
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
-  console.log({ isLoading, error, data, isFetching });
 
   if (!data) return null;
 
-  const colTest = [
+  const userColumn = [
     {
       accessorKey: "id",
       header: "ID",
@@ -82,12 +81,10 @@ const MaterialTable = () => {
       enableHiding: true,
       size: 80,
     },
-
     {
-      accessorKey: "image",
-      header: "Image",
+      accessorKey: "avatar",
+      header: "Avatar",
       size: 80,
-      muiTableBodyCellEditTextFieldProps: ({ cell }) => ({}),
       Cell: ({ cell, row }) => (
         <Box>
           <Avatar alt="Remy Sharp" src="" />
@@ -95,101 +92,56 @@ const MaterialTable = () => {
         </Box>
       ),
     },
+    {
+      accessorKey: "name",
+      header: "Name",
+      size: 180,
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      size: 140,
+    },
 
     {
-      accessorKey: "materialName",
-      header: "Material Name",
-      size: 180,
-
+      accessorKey: "userType",
+      header: "User Type",
+      size: 80,
       muiTableBodyCellEditTextFieldProps: {
         select: true, //change to select for a dropdown
-        children: data
-          ? data
-              .sort((a, b) => (a.materialName > b.materialName ? 1 : -1))
-              .map((state) => (
-                <MenuItem key={state.id} value={state.materialName}>
-                  {state.materialName}
-                </MenuItem>
-              ))
-          : [],
+        children: ["CompanyUser", "Client", "CompanyAdmin"].map((state) => (
+          <MenuItem key={state} value={state}>
+            {state}
+          </MenuItem>
+        )),
       },
-      muiTableBodyCellCopyButtonProps: {
-        fullWidth: true,
-        startIcon: <ContentCopy />,
-        sx: { justifyContent: "flex-start" },
-      },
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-      size: 140,
       Cell: ({ cell }) => (
         <Box
           sx={({}) => ({
-            // bgcolor: cell.getValue<number>() ? "tomato" : "lightblue",
-
-            color: "#0F5257",
-            borderRadius: 5,
-          })}
-        >
-          {cell.getValue<number>().toLocaleString()}
-        </Box>
-      ),
-    },
-    {
-      accessorKey: "unit",
-      header: "Unit",
-      size: 100,
-    },
-    {
-      accessorKey: "priceUnit",
-      header: "Price Unit",
-      size: 140,
-    },
-    {
-      accessorKey: "supplier",
-      header: "Supplier",
-      size: 140,
-      Cell: ({ cell }) => (
-        <Box
-          sx={({}) => ({
-            bgcolor: "#5C95FF",
+            bgcolor:
+              cell.getValue<string>() === "CompanyAdmin"
+                ? "#F52F57"
+                : cell.getValue<string>() === "CompanyUser"
+                ? "#0F5257"
+                : "#5C95FF",
             p: "6px",
-            color: "white",
-            borderRadius: 5,
             display: "flex",
             justifyContent: "center",
+            color: "white",
+            borderRadius: 5,
           })}
         >
-          <Box>{cell.getValue<string>().toLocaleString()}</Box>
+          <Box>{cell.getValue<string>()}</Box>
         </Box>
       ),
     },
-    {
-      accessorKey: "workByhour",
-      header: "Work Hour",
-      size: 140,
-    },
-  ] as MRT_ColumnDef<ColumnTypeMaterial>[];
+  ] as MRT_ColumnDef<ColumnTypeUser>[];
 
-  const dataTable = data
-    ? data.map((column) => {
-        return {
-          createdAt: column.createdAt,
-          id: column.id,
-          image: column.image,
-          materialName: column.materialName,
-          price: column.price,
-          priceUnit: column.priceUnit,
-          supplier: column.supplier,
-          unit: column.unit,
-          workByhour: column.workByhour,
-        };
-      })
-    : [];
+  const dataTable = data.map((column) => {
+    return ({ ...column } = column);
+  });
 
-  //delete
-  const handleDeleteRow = (row: MRT_Row<typeof dataTable[0]>) => {
+  const handleDeleteRow = (row: MRT_Row<ColumnTypeUser>) => {
     console.log(row.original.id);
 
     if (
@@ -199,12 +151,14 @@ const MaterialTable = () => {
     ) {
       return;
     }
-    deleteMutation.mutate(row.original.id);
+    // deleteMutation.mutate(row.original.id);
     //send api delete request here, then refetch or update local table data for re-render Delete
   };
 
-  const handleCreateNewRow = (values: Material) => {
-    createMutation.mutate({ ...values, companyId, userId });
+  const handleCreateNewRow = (values: ColumnTypeUser) => {
+    console.log({ values });
+
+    // createMutation.mutate({ ...values, companyId, userId });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
@@ -219,12 +173,42 @@ const MaterialTable = () => {
   };
 
   return (
-    <Paper>
+    <>
       <ReusableTable
-        isLoading={isLoading}
+        // isLoading={{ isLoading: false }}
         enableStickyFooter
         initialState={{ columnVisibility: { id: false } }}
-        columns={colTest}
+        enableColumnFilterModes
+        enableColumnOrdering
+        enableGrouping
+        enablePinning
+        renderDetailPanel={({ row }) => (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <p>Comments:</p>
+            {["apple", "banana", "tomato"].map((items) => (
+              <Box
+                sx={{
+                  mt: 1,
+                  p: 1,
+                  width: "100%",
+                  bgcolor: "yellowgreen",
+                  color: "white",
+                }}
+              >
+                {items}
+              </Box>
+            ))}
+          </Box>
+        )}
+        // enableClickToCopy
+        columns={userColumn}
         data={dataTable}
         onEditingRowSave={handleSaveRowEdits}
         enableEditing
@@ -255,21 +239,21 @@ const MaterialTable = () => {
       />
 
       <CreateNewAccountModal
-        columns={colTest}
+        columns={userColumn}
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onSubmit={handleCreateNewRow}
       />
-    </Paper>
+    </>
   );
 };
 
-export default MaterialTable;
+export default UserTable;
 
 export const CreateNewAccountModal: FC<{
-  columns: MRT_ColumnDef<Omit<Material, "companyId" | "userId" | "Id">>[];
+  columns: MRT_ColumnDef<ColumnTypeUser>[];
   onClose: () => void;
-  onSubmit: (values: Material) => void;
+  onSubmit: (values: ColumnTypeUser) => void;
   open: boolean;
 }> = ({ open, columns, onClose, onSubmit }) => {
   const [values, setValues] = React.useState<any>(() =>
@@ -287,7 +271,7 @@ export const CreateNewAccountModal: FC<{
 
   return (
     <Dialog open={open}>
-      <DialogTitle textAlign="center">Create New Material</DialogTitle>
+      <DialogTitle textAlign="center">Create New Account</DialogTitle>
       <DialogContent>
         <form onSubmit={(e) => e.preventDefault()}>
           <Stack
@@ -300,6 +284,29 @@ export const CreateNewAccountModal: FC<{
             {columns
               .filter((i) => i.accessorKey !== "id")
               .map((column) => {
+                if (column.accessorKey == "userType") {
+                  return (
+                    <Select
+                      key={column.accessorKey}
+                      label="userType"
+                      value={values["userType"]}
+                      onChange={(e) =>
+                        setValues({
+                          ...values,
+                          userType: e.target.value,
+                        })
+                      }
+                    >
+                      {["CompanyUser", "Client", "CompanyAdmin"].map(
+                        (state) => (
+                          <MenuItem key={state} value={state}>
+                            {state}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  );
+                }
                 return (
                   <TextField
                     key={column.accessorKey}
@@ -317,9 +324,40 @@ export const CreateNewAccountModal: FC<{
       <DialogActions sx={{ p: "1.25rem" }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button color="secondary" onClick={handleSubmit} variant="contained">
-          Create New Material
+          Create New User
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
+
+const userData = [
+  {
+    id: "01e93273-bd90-4349-9cb0-5f3c8b97e729",
+    name: "Jaskolski and Sons",
+
+    email: "abma@moe.dk",
+    avatar: "Direct Assurance Manager",
+
+    userType: "CompanyAdmin",
+    companyId: "4afd4f4e-7371-454a-99ce-657fa5bdc904",
+  },
+  {
+    id: "02b96f16-8960-4059-953f-f353f66618f0",
+    name: "Barrows LLC",
+    email: "Serena72@hotmail.com",
+    avatar: "Human Division Representative",
+
+    userType: "CompanyAdmin",
+    companyId: "70fab6fa-0a9a-4ec4-a637-73e923df7293",
+  },
+  {
+    id: "046fe40b-4422-47c5-8218-036610222f4f",
+    name: "Medhurst LLC",
+    email: "Kathleen30@hotmail.com",
+    avatar: "Chief Creative Supervisor",
+
+    userType: "Client",
+    companyId: "fbe63868-181d-4225-a273-cbd58cc973b9",
+  },
+];

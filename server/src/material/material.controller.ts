@@ -11,7 +11,13 @@ import { MaterialService } from './material.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
 import { ApiTags } from '@nestjs/swagger';
-
+function delay(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+}
 @Controller('material')
 @ApiTags('Material')
 export class MaterialController {
@@ -19,6 +25,8 @@ export class MaterialController {
 
   @Post()
   create(@Body() createMaterialDto: CreateMaterialDto) {
+    console.log(createMaterialDto);
+
     return this.materialService.create(createMaterialDto);
   }
 
@@ -33,7 +41,8 @@ export class MaterialController {
   }
 
   @Get('materialByCompany/:companyId')
-  findMaterialByCompanyId(@Param('companyId') companyId: string) {
+  async findMaterialByCompanyId(@Param('companyId') companyId: string) {
+    await delay(2000);
     return this.materialService.findMaterialByCompanyId(companyId);
   }
 
@@ -42,6 +51,8 @@ export class MaterialController {
     @Param('id') id: string,
     @Body() updateMaterialDto: UpdateMaterialDto,
   ) {
+    console.log(updateMaterialDto);
+
     return this.materialService.update(id, updateMaterialDto);
   }
 

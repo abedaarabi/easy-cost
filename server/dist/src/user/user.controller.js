@@ -30,6 +30,9 @@ let UserController = class UserController {
     findAll() {
         return this.userService.findAll();
     }
+    async findMaterialByCompanyId(companyId) {
+        return this.userService.findUserByCompanyId(companyId);
+    }
     async findUnique(email) {
         const user = await this.userService.findUniqueByEmail(email);
         if (!user) {
@@ -66,6 +69,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('userByCompany/:companyId'),
+    __param(0, (0, common_1.Param)('companyId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findMaterialByCompanyId", null);
 __decorate([
     (0, common_1.Get)('email/:email'),
     (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),

@@ -34,6 +34,12 @@ export class UserController {
   findAll() {
     return this.userService.findAll();
   }
+
+  @Get('userByCompany/:companyId')
+  async findMaterialByCompanyId(@Param('companyId') companyId: string) {
+    return this.userService.findUserByCompanyId(companyId);
+  }
+
   @Get('email/:email')
   @ApiCreatedResponse({ type: UserEntity })
   async findUnique(@Param('email') email: string) {

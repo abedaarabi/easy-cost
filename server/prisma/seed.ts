@@ -42,7 +42,7 @@ async function users() {
 
 async function materials() {
   const materialList = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 50; i++) {
     materialList.push({
       id: uuidv4(),
       priceUnit: 'dkk',

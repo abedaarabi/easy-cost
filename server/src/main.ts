@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -15,6 +16,9 @@ async function bootstrap() {
     .addTag('Easy Cost')
     .build();
   const document = SwaggerModule.createDocument(app, config);
+
+  fs.writeFileSync('../swagger-spec.json', JSON.stringify(document));
+
   SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }

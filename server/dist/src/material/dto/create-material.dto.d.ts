@@ -8,5 +8,5 @@ export declare class CreateMaterialDto {
     materialName: string;
     supplier: string;
     price: number;
-    userId: string;
+    userId?: string;
 }
