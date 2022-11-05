@@ -38,7 +38,8 @@ import Button from "@mui/material/Button";
 
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 
-import { ColumnTypeMaterial, Material } from "../types";
+import { operationsByTag } from "../../api/easyCostComponents";
+import { MaterialEntity } from "../../api/easyCostSchemas";
 
 const MaterialTable = () => {
   const queryClient = useQueryClient();
@@ -47,14 +48,23 @@ const MaterialTable = () => {
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["materialByCompanyId"],
-    () => getMaterialByCompany(companyId)
+    () =>
+      operationsByTag.material.materialControllerFindMaterialByCompanyId({
+        pathParams: { companyId },
+      }) as unknown as Promise<MaterialEntity[]>
   );
 
-  const deleteMutation = useMutation(deleteMaterialById, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["materialByCompanyId"]);
-    },
-  });
+  const deleteMutation = useMutation(
+    (id: string) =>
+      operationsByTag.material.materialControllerRemove({
+        pathParams: { id },
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["materialByCompanyId"]);
+      },
+    }
+  );
 
   const updateMutation = useMutation(updateMaterial, {
     onSuccess: () => {
@@ -170,7 +180,7 @@ const MaterialTable = () => {
       header: "Work Hour",
       size: 140,
     },
-  ] as MRT_ColumnDef<ColumnTypeMaterial>[];
+  ] as MRT_ColumnDef<Omit<MaterialEntity, "companyId" | "userId" | "Id">>[];
 
   const dataTable = data
     ? data.map((column) => {
@@ -189,7 +199,9 @@ const MaterialTable = () => {
     : [];
 
   //delete
-  const handleDeleteRow = (row: MRT_Row<typeof dataTable[0]>) => {
+  const handleDeleteRow = (
+    row: MRT_Row<Omit<MaterialEntity, "companyId" | "userId" | "Id">>
+  ) => {
     console.log(row.original.id);
 
     if (
@@ -199,11 +211,12 @@ const MaterialTable = () => {
     ) {
       return;
     }
+
     deleteMutation.mutate(row.original.id);
     //send api delete request here, then refetch or update local table data for re-render Delete
   };
 
-  const handleCreateNewRow = (values: Material) => {
+  const handleCreateNewRow = (values: MaterialEntity) => {
     createMutation.mutate({ ...values, companyId, userId });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
@@ -267,9 +280,9 @@ const MaterialTable = () => {
 export default MaterialTable;
 
 export const CreateNewAccountModal: FC<{
-  columns: MRT_ColumnDef<Omit<Material, "companyId" | "userId" | "Id">>[];
+  columns: MRT_ColumnDef<Omit<MaterialEntity, "companyId" | "userId" | "Id">>[];
   onClose: () => void;
-  onSubmit: (values: Material) => void;
+  onSubmit: (values: MaterialEntity) => void;
   open: boolean;
 }> = ({ open, columns, onClose, onSubmit }) => {
   const [values, setValues] = React.useState<any>(() =>

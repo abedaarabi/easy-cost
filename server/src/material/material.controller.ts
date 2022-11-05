@@ -10,7 +10,10 @@ import {
 import { MaterialService } from './material.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Material } from '@prisma/client';
+import { MaterialEntity } from './entities/material.entity';
+
 function delay(ms: number) {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
@@ -31,31 +34,53 @@ export class MaterialController {
   }
 
   @Get()
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: MaterialEntity,
+    isArray: true,
+  })
   findAll() {
     return this.materialService.findAll();
   }
 
   @Get(':id')
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: MaterialEntity,
+  })
   findOne(@Param('id') id: string) {
     return this.materialService.findOne(id);
   }
 
   @Get('materialByCompany/:companyId')
-  async findMaterialByCompanyId(@Param('companyId') companyId: string) {
-    await delay(2000);
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: MaterialEntity,
+    isArray: true,
+  })
+  async findMaterialByCompanyId(
+    @Param('companyId') companyId: string,
+  ): Promise<Material[]> {
+    // await delay(2000);
     return this.materialService.findMaterialByCompanyId(companyId);
   }
 
   @Patch(':id')
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: MaterialEntity,
+  })
   update(
     @Param('id') id: string,
     @Body() updateMaterialDto: UpdateMaterialDto,
   ) {
-    console.log(updateMaterialDto);
-
     return this.materialService.update(id, updateMaterialDto);
   }
 
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: MaterialEntity,
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.materialService.remove(id);

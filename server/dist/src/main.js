@@ -8,16 +8,17 @@ const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useGlobalPipes(new common_1.ValidationPipe());
-    app.enableCors();
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Easy Cost')
         .setDescription('Easy Cost API description')
         .setVersion('1.0')
+        .addServer('http://localhost', 'sfdada', { port: { default: 3000 } })
         .addTag('Easy Cost')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     fs.writeFileSync('../swagger-spec.json', JSON.stringify(document));
     swagger_1.SwaggerModule.setup('api', app, document);
+    app.enableCors();
     await app.listen(3000);
 }
 bootstrap();

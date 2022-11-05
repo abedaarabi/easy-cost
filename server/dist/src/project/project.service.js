@@ -47,7 +47,8 @@ let ProjectService = class ProjectService {
         });
     }
     remove(id) {
-        return this.prisma.company.delete({ where: { id } });
+        console.log(id);
+        return this.prisma.project.delete({ where: { id } });
     }
 };
 ProjectService = __decorate([

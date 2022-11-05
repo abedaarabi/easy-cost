@@ -24,25 +24,11 @@ import { Line } from "react-chartjs-2";
 
 import faker from "faker";
 import { Box } from "@mui/system";
+import { Paper } from "@mui/material";
 
 export const options = {
   maintainAspectRatio: false,
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: "rgba(0, 0, 0, 0)",
-        },
-      },
-    ],
-    yAxes: [
-      {
-        gridLines: {
-          color: "rgba(0, 0, 0, 0)",
-        },
-      },
-    ],
-  },
+
   responsive: true,
   plugins: {
     legend: {
@@ -72,9 +58,9 @@ export const data = {
 
 const Chart = () => {
   return (
-    <Box sx={{ height: 320, aspectRatio: "2/1" }}>
+    <Paper sx={{ height: 320, aspectRatio: "2/1" }}>
       <Line options={options} data={data} />
-    </Box>
+    </Paper>
   );
 };
 

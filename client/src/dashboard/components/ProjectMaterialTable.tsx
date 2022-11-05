@@ -3,13 +3,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 import Avatar from "@mui/material/Avatar";
-import TimelineIcon from "@mui/icons-material/Timeline";
+
 import { createMaterial, deleteMaterialById } from "../helper/db.fetchMaterial";
 import ReusableTable, {
   ColumnFromData,
 } from "../../reusableTable/ReusableTable";
 import Box from "@mui/material/Box";
-import { Navigate } from "react-router-dom";
+
 import MaterialReactTable, {
   MRT_ColumnDef,
   MRT_Row,
@@ -23,6 +23,7 @@ import {
   Fab,
   IconButton,
   MenuItem,
+  Paper,
   Select,
   Stack,
   TextField,
@@ -30,70 +31,40 @@ import {
   Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 
 import { getUserByCompany, updateUser } from "../helper/db.fetchUser";
 import { projectsByCompany } from "../helper/db.fetchProject";
 import { operationsByTag } from "../../api/easyCostComponents";
-import { CreateProjectDto, UpdateProjectDto } from "../../api/easyCostSchemas";
+import {
+  CreateProjectDto,
+  CreateProjectMaterialDto,
+  MaterialEntity,
+  ProjectEntity,
+  UpdateProjectDto,
+} from "../../api/easyCostSchemas";
 
-const ProjectTable = () => {
-  const navigate = useNavigate();
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+
+const ProjectMaterialTable = () => {
+  const [createModalOpen, setCreateModalOpen] = React.useState(false);
+
+  const { projectId }: { projectId: string } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   if (user.length < 1) return null;
   const { companyId, id: userId } = user[0];
 
   const { isLoading, error, data, isFetching } = useQuery(
-    ["userByCompanyId"],
+    ["materialByProjectId"],
     () =>
-      operationsByTag.project.projectControllerProjectsByCompanyId({
-        pathParams: { companyId },
-      }) as unknown as Promise<CreateProjectDto[]>
-  );
-  console.log({ data });
-
-  const deleteMutation = useMutation(
-    (id: string) =>
-      operationsByTag.project.projectControllerRemove({ pathParams: { id } }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["userByCompanyId"]);
-      },
-    }
+      operationsByTag.projectMaterial.projectMaterialControllerFindByProjectId({
+        pathParams: { projectId },
+      }) as unknown as Promise<CreateProjectMaterialDto[]>
   );
 
-  const updateMutation = useMutation(
-    (value: UpdateProjectDto) =>
-      operationsByTag.project.projectControllerUpdate({
-        pathParams: { id: value.id },
-        body: {
-          companyId: value.companyId,
-          id: value.id,
-          projectName: value.projectName,
-          userId: value.userId,
-          workByhour: Number(value.workByhour),
-        },
-      }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["userByCompanyId"]);
-      },
-    }
-  );
-  const createMutation = useMutation(projectsByCompany, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userByCompanyId"]);
-    },
-  });
-
-  const [createModalOpen, setCreateModalOpen] = React.useState(false);
-
-  if (!data) return null;
-
-  const projectColumn = [
+  const colTest = [
     {
       accessorKey: "id",
       header: "ID",
@@ -103,60 +74,68 @@ const ProjectTable = () => {
       enableHiding: true,
       size: 80,
     },
+
     {
-      accessorKey: "projectName",
-      header: "Project Name",
-      size: 80,
-    },
-    {
-      accessorKey: "workByhour",
-      header: "work By Hour",
+      accessorKey: "materialName",
+      header: "Material Name",
       size: 180,
+
+      // muiTableBodyCellEditTextFieldProps: {
+      //   select: true, //change to select for a dropdown
+      //   children: materials
+      //     ? materials
+      //         .sort((a, b) => (a.materialName > b.materialName ? 1 : -1))
+      //         .map((state) => (
+      //           <MenuItem key={state.id} value={state.materialName}>
+      //             {state.materialName}
+      //           </MenuItem>
+      //         ))
+      //     : [],
+      // },
+      muiTableBodyCellCopyButtonProps: {
+        fullWidth: true,
+        startIcon: <ContentCopy />,
+        sx: { justifyContent: "flex-start" },
+      },
     },
-  ] as MRT_ColumnDef<CreateProjectDto>[];
+  ] as MRT_ColumnDef<MaterialEntity>[];
 
-  const dataTable = data.map((column) => {
-    return ({ ...column } = column);
-  });
+  const dataTable = data
+    ? data.map((column) => {
+        return {
+          ...column,
+        };
+      })
+    : [];
 
-  const handleDeleteRow = (row: MRT_Row<CreateProjectDto>) => {
+  //Actions
+  //delete
+  const handleDeleteRow = (row: MRT_Row<CreateProjectMaterialDto>) => {
     console.log(row.original.id);
 
-    if (
-      !confirm(`Are you sure you want to delete ${row.getValue("projectName")}`)
-    ) {
+    if (!confirm(`Are you sure you want to delete ${row.getValue("id")}`)) {
       return;
     }
-    deleteMutation.mutate(row.original.id);
+
+    // deleteMutation.mutate(row.original.id);
     //send api delete request here, then refetch or update local table data for re-render Delete
   };
+  //Create
 
-  const handleCreateNewRow = (values: CreateProjectDto) => {
-    console.log({ ...values, companyId, userId });
-
-    createMutation.mutate({ ...values, companyId, userId });
+  const handleCreateNewRow = (values: MaterialEntity) => {
+    // createMutation.mutate({ ...values, companyId, userId });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
-  const handleSaveRowEdits: MaterialReactTableProps<UpdateProjectDto>["onEditingRowSave"] =
-    async ({ exitEditingMode, row, values }) => {
-      //send/receive api updates here, then refetch or update local table data for re-render Update
-
-      console.log(values);
-      updateMutation.mutate({ ...values, companyId });
-      exitEditingMode();
-    };
-
   return (
-    <>
+    <Paper>
       <ReusableTable
-        // isLoading={{ isLoading: false }}
+        isLoading={isLoading}
         enableStickyFooter
         initialState={{ columnVisibility: { id: false } }}
-        // enableClickToCopy
-        columns={projectColumn}
-        data={dataTable}
-        onEditingRowSave={handleSaveRowEdits}
+        columns={colTest}
+        data={[]}
+        // onEditingRowSave={handleSaveRowEdits}
         enableEditing
         renderRowActions={({ row, table }) => (
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
@@ -170,27 +149,8 @@ const ProjectTable = () => {
                 <Delete />
               </IconButton>
             </Tooltip>
-            <Tooltip arrow placement="right" title="Visit Project">
-              <Link to={`${row.getValue("id")}`}>
-                <IconButton
-                  color="error"
-                  onClick={() => {
-                    console.log(row.getValue("id"));
-                    // navigate();
-                  }}
-                >
-                  <TimelineIcon color="success" />
-                </IconButton>
-              </Link>
-            </Tooltip>
           </Box>
         )}
-        displayColumnDefOptions={{
-          "mrt-row-actions": {
-            header: "Change Account Settings", //change header text
-            size: 300, //make actions column wider
-          },
-        }}
         renderTopToolbarCustomActions={() => (
           <Fab
             color="info"
@@ -204,21 +164,20 @@ const ProjectTable = () => {
       />
 
       <CreateNewAccountModal
-        columns={projectColumn}
+        columns={colTest}
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onSubmit={handleCreateNewRow}
       />
-    </>
+    </Paper>
   );
 };
 
-export default ProjectTable;
-
+export default ProjectMaterialTable;
 export const CreateNewAccountModal: FC<{
-  columns: MRT_ColumnDef<CreateProjectDto>[];
+  columns: MRT_ColumnDef<CreateProjectMaterialDto>[];
   onClose: () => void;
-  onSubmit: (values: CreateProjectDto) => void;
+  onSubmit: (values: CreateProjectMaterialDto) => void;
   open: boolean;
 }> = ({ open, columns, onClose, onSubmit }) => {
   const [values, setValues] = React.useState<any>(() =>
@@ -233,10 +192,29 @@ export const CreateNewAccountModal: FC<{
     onSubmit(values);
     onClose();
   };
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  if (user.length < 1) return null;
+  const { companyId, id: userId } = user[0];
+  //   //Fetch Materials
+  const { projectId }: { projectId: string } = useParams();
+  const {
+    isLoading: materialIsLoading,
+    error: materialError,
+    data: materials,
+    isFetching: materialIsFetching,
+  } = useQuery(
+    ["materialByCompanyId"],
+    () =>
+      operationsByTag.material.materialControllerFindMaterialByCompanyId({
+        pathParams: { companyId },
+      }) as unknown as Promise<MaterialEntity[]>
+  );
+  if (!materials) return null;
 
   return (
     <Dialog open={open}>
-      <DialogTitle textAlign="center">Create New Account</DialogTitle>
+      <DialogTitle textAlign="center">Create New Material</DialogTitle>
       <DialogContent>
         <form onSubmit={(e) => e.preventDefault()}>
           <Stack
@@ -249,6 +227,27 @@ export const CreateNewAccountModal: FC<{
             {columns
               .filter((i) => i.accessorKey !== "id")
               .map((column) => {
+                if (column.accessorKey === "materialName") {
+                  return (
+                    <Select
+                      key={column.accessorKey}
+                      label="userType"
+                      value={values["userType"]}
+                      onChange={(e) =>
+                        setValues({
+                          ...values,
+                          userType: e.target.value,
+                        })
+                      }
+                    >
+                      {materials.map((state) => (
+                        <MenuItem key={state.id} value={state.materialName}>
+                          {state.materialName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  );
+                }
                 return (
                   <TextField
                     key={column.accessorKey}
@@ -266,7 +265,7 @@ export const CreateNewAccountModal: FC<{
       <DialogActions sx={{ p: "1.25rem" }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button color="secondary" onClick={handleSubmit} variant="contained">
-          Create New User
+          Create New Material
         </Button>
       </DialogActions>
     </Dialog>

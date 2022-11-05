@@ -11,8 +11,14 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   create(createUserDto: CreateUserDto) {
-    // const user = { ...createUserDto, userType: 'company' };
-    return this.prisma.user.create({ data: createUserDto });
+    try {
+      console.log(createUserDto);
+
+      // const user = { ...createUserDto, userType: 'company' };
+      return this.prisma.user.create({ data: createUserDto });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   findAll() {
@@ -44,10 +50,10 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
+  update(userId: string, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({
       where: {
-        id,
+        id: userId,
       },
       data: updateUserDto,
     });

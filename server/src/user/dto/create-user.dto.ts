@@ -16,4 +16,8 @@ export class CreateUserDto {
   userType: UserType;
   @ApiProperty()
   companyId: string;
+  @ApiProperty()
+  userId?: string;
+  @ApiProperty()
+  id: string;
 }

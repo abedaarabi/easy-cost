@@ -33,6 +33,14 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
+], UserEntity.prototype, "id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
 ], UserEntity.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UserEntity.prototype, "userId", void 0);
 exports.UserEntity = UserEntity;
 //# sourceMappingURL=user.entity.js.map

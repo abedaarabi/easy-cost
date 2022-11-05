@@ -10,10 +10,12 @@ export class UserEntity implements User {
   userType: UserType;
   @ApiProperty()
   companyId: string;
-  //   @ApiProperty()
+  @ApiProperty()
   id: string;
   @ApiProperty()
   name: string;
+  @ApiProperty()
+  userId: string;
   //   @ApiProperty()
   createdAt: Date;
 }

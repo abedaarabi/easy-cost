@@ -8,18 +8,23 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('Easy Cost')
     .setDescription('Easy Cost API description')
     .setVersion('1.0')
+    .addServer('http://localhost', 'sfdada', { port: { default: 3000 } })
     .addTag('Easy Cost')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
 
   fs.writeFileSync('../swagger-spec.json', JSON.stringify(document));
 
   SwaggerModule.setup('api', app, document);
+
+  app.enableCors();
+
   await app.listen(3000);
 }
 bootstrap();

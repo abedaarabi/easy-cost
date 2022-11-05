@@ -17,7 +17,13 @@ let UserService = class UserService {
         this.prisma = prisma;
     }
     create(createUserDto) {
-        return this.prisma.user.create({ data: createUserDto });
+        try {
+            console.log(createUserDto);
+            return this.prisma.user.create({ data: createUserDto });
+        }
+        catch (error) {
+            throw new Error(error);
+        }
     }
     findAll() {
         return this.prisma.user.findMany();
@@ -45,10 +51,10 @@ let UserService = class UserService {
     findOne(id) {
         return this.prisma.user.findUnique({ where: { id } });
     }
-    update(id, updateUserDto) {
+    update(userId, updateUserDto) {
         return this.prisma.user.update({
             where: {
-                id,
+                id: userId,
             },
             data: updateUserDto,
         });

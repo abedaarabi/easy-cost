@@ -41,6 +41,8 @@ export class ProjectService {
   }
 
   remove(id: string) {
-    return this.prisma.company.delete({ where: { id } });
+    console.log(id);
+
+    return this.prisma.project.delete({ where: { id } });
   }
 }

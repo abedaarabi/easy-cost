@@ -11,7 +11,7 @@ export class CreateMaterialDto {
   image: string;
   @ApiProperty()
   workByhour: number;
-  id: string;
+  // id: string;
   @IsString()
   @MinLength(2)
   @ApiProperty()

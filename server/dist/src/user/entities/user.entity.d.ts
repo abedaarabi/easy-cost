@@ -6,5 +6,6 @@ export declare class UserEntity implements User {
     companyId: string;
     id: string;
     name: string;
+    userId: string;
     createdAt: Date;
 }

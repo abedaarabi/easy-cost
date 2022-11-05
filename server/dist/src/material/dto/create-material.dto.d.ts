@@ -4,7 +4,6 @@ export declare class CreateMaterialDto {
     priceUnit: string;
     image: string;
     workByhour: number;
-    id: string;
     materialName: string;
     supplier: string;
     price: number;

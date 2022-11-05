@@ -6,6 +6,7 @@ import { UpdateMaterialDto } from './dto/update-material.dto';
 @Injectable()
 export class MaterialService {
   constructor(private prisma: PrismaService) {}
+
   create(createMaterialDto: CreateMaterialDto) {
     return this.prisma.material.create({ data: createMaterialDto });
   }
@@ -41,6 +42,8 @@ export class MaterialService {
   }
 
   remove(id: string) {
+    console.log(id);
+
     return this.prisma.material.delete({ where: { id } });
   }
 }

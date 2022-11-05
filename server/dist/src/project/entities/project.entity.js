@@ -16,6 +16,10 @@ class ProjectEntity {
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
+], ProjectEntity.prototype, "id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
 ], ProjectEntity.prototype, "projectName", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),

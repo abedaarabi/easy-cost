@@ -5,4 +5,6 @@ export declare class CreateUserDto {
     avatar: string;
     userType: UserType;
     companyId: string;
+    userId?: string;
+    id: string;
 }

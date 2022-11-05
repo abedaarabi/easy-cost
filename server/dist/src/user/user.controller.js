@@ -30,7 +30,7 @@ let UserController = class UserController {
     findAll() {
         return this.userService.findAll();
     }
-    async findMaterialByCompanyId(companyId) {
+    findUserByCompanyId(companyId) {
         return this.userService.findUserByCompanyId(companyId);
     }
     async findUnique(email) {
@@ -56,11 +56,15 @@ let UserController = class UserController {
 };
 __decorate([
     (0, common_1.Post)(),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: user_entity_1.UserEntity,
+    }),
     (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
@@ -71,11 +75,16 @@ __decorate([
 ], UserController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('userByCompany/:companyId'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: user_entity_1.UserEntity,
+        isArray: true,
+    }),
     __param(0, (0, common_1.Param)('companyId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "findMaterialByCompanyId", null);
+], UserController.prototype, "findUserByCompanyId", null);
 __decorate([
     (0, common_1.Get)('email/:email'),
     (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),
@@ -94,6 +103,10 @@ __decorate([
 ], UserController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: user_entity_1.UserEntity,
+    }),
     (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -104,6 +117,10 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, swagger_1.ApiCreatedResponse)({ type: user_entity_1.UserEntity }),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: user_entity_1.UserEntity,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

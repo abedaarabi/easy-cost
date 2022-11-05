@@ -1,12 +1,19 @@
 import axios from "axios";
+import { CreateProjectDto } from "../../api/easyCostSchemas";
 import { ColumnTypeProject } from "../types";
 
 export async function projectsByCompany(
-  companyId?: string
-): Promise<ColumnTypeProject[]> {
+  value: CreateProjectDto
+): Promise<CreateProjectDto[]> {
   try {
-    const { data, status } = await axios.get(
-      "http://localhost:3000/project/projectByCompany/" + companyId,
+    const { data, status } = await axios.post(
+      "http://localhost:3000/project",
+      {
+        companyId: value.companyId,
+        projectName: value.projectName,
+        userId: value.userId,
+        workByhour: Number(value.workByhour),
+      },
       {
         headers: {
           Accept: "application/json",

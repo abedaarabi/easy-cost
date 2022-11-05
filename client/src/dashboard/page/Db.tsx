@@ -26,7 +26,7 @@ import { useAuth } from "../../authContext/components/AuthContext";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import DnsIcon from "@mui/icons-material/Dns";
 import { Avatar, Badge } from "@mui/material";
-
+import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -256,4 +256,10 @@ const drawerLinks = [
     icon: <WorkOutlineIcon color="info" />,
     link: "/dashboard/project",
   },
+  // {
+  //   id: 5,
+  //   text: "Customer",
+  //   icon: <ModelTrainingIcon color="info" />,
+  //   link: "/dashboard/customer",
+  // },
 ];

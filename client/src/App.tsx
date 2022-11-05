@@ -29,8 +29,10 @@ import UserTable from "./dashboard/components/UserTable";
 
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import ProjectTable from "./dashboard/components/Projecttable";
+
 import { Alert, Snackbar } from "@mui/material";
+import ProjectTable from "./dashboard/components/ProjectTable";
+import ProjectMaterialTable from "./dashboard/components/ProjectMaterialTable";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +71,18 @@ const router = createBrowserRouter([
         path: "/dashboard/project",
         element: <ProjectTable />,
         errorElement: <ErrorPage />,
+        // children: [
+        //   {
+        //     path: "/dashboard/project/:projectId",
+        //     element: <ProjectMaterialTable />,
+        //     errorElement: <ErrorPage />,
+        //   },
+        // ],
+      },
+      {
+        path: "/dashboard/project/:projectId",
+        element: <ProjectMaterialTable />,
+        errorElement: <ErrorPage />,
       },
     ],
   },
@@ -81,17 +95,16 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <AuthContextProvider>
-        <Box sx={{ width: "100%", zIndex: 999999, position: "absolute" }}>
-          {true && <LinearProgress color="info" />}
-        </Box>
-        <Snackbar open={true} autoHideDuration={6000} onClose={() => {}}>
-          <Alert onClose={() => {}} severity="error" sx={{ width: "100%" }}>
-            This is a success message!
-          </Alert>
-        </Snackbar>
-        <RouterProvider router={router} fallbackElement={<MiniDrawer />} />
-      </AuthContextProvider>
+
+      <Box sx={{ width: "100%", zIndex: 999999, position: "absolute" }}>
+        {loading && <LinearProgress color="info" />}
+      </Box>
+      <Snackbar open={true} autoHideDuration={6000} onClose={() => {}}>
+        <Alert onClose={() => {}} severity="error" sx={{ width: "100%" }}>
+          This is a success message!
+        </Alert>
+      </Snackbar>
+      <RouterProvider router={router} fallbackElement={<MiniDrawer />} />
     </QueryClientProvider>
   );
 }

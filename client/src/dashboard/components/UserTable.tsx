@@ -1,5 +1,10 @@
 import React, { FC } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useQueries,
+} from "@tanstack/react-query";
 import { useAuth } from "../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 import Avatar from "@mui/material/Avatar";
@@ -38,8 +43,17 @@ import {
 import Button from "@mui/material/Button";
 
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
-import { ColumnTypeUser } from "../types";
-import { getUserByCompany, updateUser } from "../helper/db.fetchUser";
+import {
+  createUser,
+  getUserByCompany,
+  updateUser,
+} from "../helper/db.fetchUser";
+import { operationsByTag } from "../../api/easyCostComponents";
+import {
+  UpdateUserDto,
+  UserEntity,
+  CreateUserDto,
+} from "../../api/easyCostSchemas";
 
 const UserTable = () => {
   const { user } = useAuth();
@@ -49,23 +63,50 @@ const UserTable = () => {
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["userByCompanyId"],
-    () => getUserByCompany(companyId)
+    () =>
+      operationsByTag.user.userControllerFindUserByCompanyId({
+        pathParams: { companyId },
+      }) as unknown as Promise<UserEntity[]>
   );
-  const deleteMutation = useMutation(deleteMaterialById, {
+
+  const deleteMutation = useMutation(
+    (id: string) =>
+      operationsByTag.user.userControllerRemove({ pathParams: { id } }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["userByCompanyId"]);
+      },
+    }
+  );
+
+  const updateMutation = useMutation(
+    (value: UpdateUserDto) =>
+      operationsByTag.user.userControllerUpdate({
+        pathParams: { id: value.id },
+        body: { ...value },
+      }),
+
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["userByCompanyId"]);
+      },
+    }
+  );
+
+  const createMutation = useMutation(createUser, {
     onSuccess: () => {
       queryClient.invalidateQueries(["userByCompanyId"]);
     },
   });
-  const updateMutation = useMutation(updateUser, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userByCompanyId"]);
-    },
-  });
-  const createMutation = useMutation(createMaterial, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userByCompanyId"]);
-    },
-  });
+
+  // const createMutation = useMutation(
+  //   operationsByTag.user.userControllerCreate,
+  //   {
+  //     onSuccess: () => {
+  //       queryClient.invalidateQueries(["userByCompanyId"]);
+  //     },
+  //   }
+  // );
 
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
@@ -135,42 +176,37 @@ const UserTable = () => {
         </Box>
       ),
     },
-  ] as MRT_ColumnDef<ColumnTypeUser>[];
+  ] as MRT_ColumnDef<UpdateUserDto>[];
 
   const dataTable = data.map((column) => {
     return ({ ...column } = column);
   });
 
-  const handleDeleteRow = (row: MRT_Row<ColumnTypeUser>) => {
+  const handleDeleteRow = (row: MRT_Row<UpdateUserDto>) => {
+    if (!row.original.id) return;
     console.log(row.original.id);
-
-    if (
-      !confirm(
-        `Are you sure you want to delete ${row.getValue("materialName")}`
-      )
-    ) {
+    if (!confirm(`Are you sure you want to delete ${row.getValue("name")}`)) {
       return;
     }
-    // deleteMutation.mutate(row.original.id);
+    deleteMutation.mutate(row.original.id);
     //send api delete request here, then refetch or update local table data for re-render Delete
   };
 
-  const handleCreateNewRow = (values: ColumnTypeUser) => {
+  const handleCreateNewRow = (values: Omit<CreateUserDto, "id">) => {
     console.log({ values });
 
-    // createMutation.mutate({ ...values, companyId, userId });
+    createMutation.mutate({ ...values, companyId });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
-  const handleSaveRowEdits: MaterialReactTableProps<
-    typeof dataTable[0]
-  >["onEditingRowSave"] = async ({ exitEditingMode, row, values }) => {
-    //send/receive api updates here, then refetch or update local table data for re-render Update
+  const handleSaveRowEdits: MaterialReactTableProps<UpdateUserDto>["onEditingRowSave"] =
+    async ({ exitEditingMode, row, values }) => {
+      //send/receive api updates here, then refetch or update local table data for re-render Update
+      console.log({ values });
 
-    console.log(values);
-    updateMutation.mutate(values);
-    exitEditingMode();
-  };
+      updateMutation.mutate({ ...values, companyId });
+      exitEditingMode();
+    };
 
   return (
     <>
@@ -194,6 +230,7 @@ const UserTable = () => {
             <p>Comments:</p>
             {["apple", "banana", "tomato"].map((items) => (
               <Box
+                key={items}
                 sx={{
                   mt: 1,
                   p: 1,
@@ -251,9 +288,9 @@ const UserTable = () => {
 export default UserTable;
 
 export const CreateNewAccountModal: FC<{
-  columns: MRT_ColumnDef<ColumnTypeUser>[];
+  columns: MRT_ColumnDef<UpdateUserDto>[];
   onClose: () => void;
-  onSubmit: (values: ColumnTypeUser) => void;
+  onSubmit: (values: Omit<CreateUserDto, "id">) => void;
   open: boolean;
 }> = ({ open, columns, onClose, onSubmit }) => {
   const [values, setValues] = React.useState<any>(() =>
@@ -271,7 +308,7 @@ export const CreateNewAccountModal: FC<{
 
   return (
     <Dialog open={open}>
-      <DialogTitle textAlign="center">Create New Account</DialogTitle>
+      <DialogTitle textAlign="center">Create New User</DialogTitle>
       <DialogContent>
         <form onSubmit={(e) => e.preventDefault()}>
           <Stack
@@ -330,34 +367,3 @@ export const CreateNewAccountModal: FC<{
     </Dialog>
   );
 };
-
-const userData = [
-  {
-    id: "01e93273-bd90-4349-9cb0-5f3c8b97e729",
-    name: "Jaskolski and Sons",
-
-    email: "abma@moe.dk",
-    avatar: "Direct Assurance Manager",
-
-    userType: "CompanyAdmin",
-    companyId: "4afd4f4e-7371-454a-99ce-657fa5bdc904",
-  },
-  {
-    id: "02b96f16-8960-4059-953f-f353f66618f0",
-    name: "Barrows LLC",
-    email: "Serena72@hotmail.com",
-    avatar: "Human Division Representative",
-
-    userType: "CompanyAdmin",
-    companyId: "70fab6fa-0a9a-4ec4-a637-73e923df7293",
-  },
-  {
-    id: "046fe40b-4422-47c5-8218-036610222f4f",
-    name: "Medhurst LLC",
-    email: "Kathleen30@hotmail.com",
-    avatar: "Chief Creative Supervisor",
-
-    userType: "Client",
-    companyId: "fbe63868-181d-4225-a273-cbd58cc973b9",
-  },
-];

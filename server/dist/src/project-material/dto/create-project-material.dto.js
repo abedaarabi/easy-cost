@@ -16,6 +16,10 @@ class CreateProjectMaterialDto {
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
+], CreateProjectMaterialDto.prototype, "id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
 ], CreateProjectMaterialDto.prototype, "materialId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),

@@ -47,6 +47,7 @@ let MaterialService = class MaterialService {
         });
     }
     remove(id) {
+        console.log(id);
         return this.prisma.material.delete({ where: { id } });
     }
 };

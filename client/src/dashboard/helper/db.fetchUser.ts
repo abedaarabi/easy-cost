@@ -1,4 +1,5 @@
 import axios from "axios";
+import { CreateUserDto } from "../../api/easyCostSchemas";
 import { ColumnTypeUser } from "../types";
 
 export async function getUserByCompany(
@@ -37,6 +38,40 @@ export async function updateUser(
 
         name: user.name,
       },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log("error message: ", error.message);
+    }
+    throw error;
+  }
+}
+
+export async function createUser(
+  material: Omit<CreateUserDto, "id">
+): Promise<CreateUserDto> {
+  try {
+    console.log(material, "post");
+
+    const { data, status } = await axios.post(
+      "http://localhost:3000/user",
+
+      {
+        name: material.name,
+        email: material.email,
+        avatar: material.avatar,
+        userType: material.userType,
+        companyId: material.companyId,
+      },
+
       {
         headers: {
           "Content-Type": "application/json",

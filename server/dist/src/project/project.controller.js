@@ -18,6 +18,7 @@ const project_service_1 = require("./project.service");
 const create_project_dto_1 = require("./dto/create-project.dto");
 const update_project_dto_1 = require("./dto/update-project.dto");
 const swagger_1 = require("@nestjs/swagger");
+const project_entity_1 = require("./entities/project.entity");
 let ProjectController = class ProjectController {
     constructor(projectService) {
         this.projectService = projectService;
@@ -50,19 +51,33 @@ __decorate([
 ], ProjectController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_entity_1.ProjectEntity,
+        isArray: true,
+    }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProjectController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('projectByCompany/:companyId'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_entity_1.ProjectEntity,
+        isArray: true,
+    }),
     __param(0, (0, common_1.Param)('companyId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ProjectController.prototype, "projectsByCompanyId", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_entity_1.ProjectEntity,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -70,6 +85,10 @@ __decorate([
 ], ProjectController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_entity_1.ProjectEntity,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -78,6 +97,10 @@ __decorate([
 ], ProjectController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_entity_1.ProjectEntity,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
