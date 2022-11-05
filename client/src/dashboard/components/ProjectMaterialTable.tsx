@@ -43,9 +43,12 @@ import {
   MaterialEntity,
   ProjectEntity,
   UpdateProjectDto,
+  UpdateProjectMaterialDto,
 } from "../../api/easyCostSchemas";
 
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { projectMaterial } from "../helper/db.fetchProjectmaterial";
+import { ProjecTMaterialTest } from "../types";
 
 const ProjectMaterialTable = () => {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
@@ -61,8 +64,58 @@ const ProjectMaterialTable = () => {
     () =>
       operationsByTag.projectMaterial.projectMaterialControllerFindByProjectId({
         pathParams: { projectId },
-      }) as unknown as Promise<CreateProjectMaterialDto[]>
+      }) as unknown as Promise<ProjecTMaterialTest[]>
   );
+
+  const updateMutation = useMutation(
+    (value: CreateProjectMaterialDto) =>
+      operationsByTag.projectMaterial.projectMaterialControllerUpdate({
+        pathParams: { id: value.id },
+        body: {
+          materialId: value.materialName,
+          profit: +value.profit,
+          projectId,
+        },
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["materialByProjectId"]);
+      },
+    }
+  );
+  const deleteMutation = useMutation(
+    (id: string) =>
+      operationsByTag.projectMaterial.projectMaterialControllerRemove({
+        pathParams: { id },
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["materialByProjectId"]);
+      },
+    }
+  );
+  const {
+    isLoading: materialIsLoading,
+    error: materialError,
+    data: materials,
+    isFetching: materialIsFetching,
+  } = useQuery(
+    ["materialByCompanyId"],
+    () =>
+      operationsByTag.material.materialControllerFindMaterialByCompanyId({
+        pathParams: { companyId },
+      }) as unknown as Promise<MaterialEntity[]>
+  );
+
+  const createMutation = useMutation(projectMaterial, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["materialByProjectId"]);
+    },
+  });
+
+  if (!data || !materials) return null;
+  const projectName = data[0]?.project?.projectName;
+  console.log({ projectName });
 
   const colTest = [
     {
@@ -78,108 +131,142 @@ const ProjectMaterialTable = () => {
     {
       accessorKey: "materialName",
       header: "Material Name",
-      size: 180,
+      size: 160,
 
-      // muiTableBodyCellEditTextFieldProps: {
-      //   select: true, //change to select for a dropdown
-      //   children: materials
-      //     ? materials
-      //         .sort((a, b) => (a.materialName > b.materialName ? 1 : -1))
-      //         .map((state) => (
-      //           <MenuItem key={state.id} value={state.materialName}>
-      //             {state.materialName}
-      //           </MenuItem>
-      //         ))
-      //     : [],
-      // },
+      muiTableBodyCellEditTextFieldProps: {
+        select: true, //change to select for a dropdown
+        children: materials
+          ? materials
+              .sort((a, b) => (a.materialName > b.materialName ? 1 : -1))
+              .map((state) => (
+                <MenuItem key={state.id} value={state.id}>
+                  {state.materialName}
+                </MenuItem>
+              ))
+          : [],
+      },
+
       muiTableBodyCellCopyButtonProps: {
         fullWidth: true,
         startIcon: <ContentCopy />,
         sx: { justifyContent: "flex-start" },
       },
     },
-  ] as MRT_ColumnDef<MaterialEntity>[];
+    {
+      accessorKey: "profit",
+      header: "Profit",
+      size: 80,
+    },
+  ] as MRT_ColumnDef<ProjecTMaterialTest>[];
 
   const dataTable = data
     ? data.map((column) => {
         return {
-          ...column,
+          //ts-ignore
+          materialName: column?.material?.materialName,
+          id: column.id,
+          profit: column.profit,
         };
       })
     : [];
 
   //Actions
   //delete
-  const handleDeleteRow = (row: MRT_Row<CreateProjectMaterialDto>) => {
+  const handleDeleteRow = (row: MRT_Row<UpdateProjectMaterialDto>) => {
     console.log(row.original.id);
 
     if (!confirm(`Are you sure you want to delete ${row.getValue("id")}`)) {
       return;
     }
 
-    // deleteMutation.mutate(row.original.id);
+    deleteMutation.mutate(row.original.id);
     //send api delete request here, then refetch or update local table data for re-render Delete
   };
   //Create
 
-  const handleCreateNewRow = (values: MaterialEntity) => {
-    // createMutation.mutate({ ...values, companyId, userId });
+  const handleCreateNewRow = (values: CreateProjectMaterialDto) => {
+    createMutation.mutate({
+      materialId: values.materialId,
+      projectId,
+      profit: Number(values.profit),
+    });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
+  const handleSaveRowEdits: MaterialReactTableProps<UpdateProjectMaterialDto>["onEditingRowSave"] =
+    async ({ exitEditingMode, row, values }) => {
+      //send/receive api updates here, then refetch or update local table data for re-render Update
+
+      console.log({ values });
+      updateMutation.mutate(values);
+      exitEditingMode();
+    };
 
   return (
-    <Paper>
-      <ReusableTable
-        isLoading={isLoading}
-        enableStickyFooter
-        initialState={{ columnVisibility: { id: false } }}
-        columns={colTest}
-        data={[]}
-        // onEditingRowSave={handleSaveRowEdits}
-        enableEditing
-        renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            <Tooltip arrow placement="left" title="Edit">
-              <IconButton onClick={() => table.setEditingRow(row)} color="info">
-                <Edit />
-              </IconButton>
-            </Tooltip>
-            <Tooltip arrow placement="right" title="Delete">
-              <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                <Delete />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        )}
-        renderTopToolbarCustomActions={() => (
-          <Fab
-            color="info"
-            onClick={() => setCreateModalOpen(true)}
-            aria-label="add"
-            size="small"
-          >
-            <AddIcon />
-          </Fab>
-        )}
-      />
+    <>
+      <Paper sx={{ mb: 3, p: 1, textAlign: "center" }}>
+        <Typography variant="h4" component="h4" color={"#011627"}>
+          {projectName}
+        </Typography>
+      </Paper>
+      <Paper>
+        <ReusableTable
+          isLoading={isLoading}
+          enableStickyFooter
+          initialState={{ columnVisibility: { id: false } }}
+          columns={colTest}
+          data={dataTable}
+          onEditingRowSave={handleSaveRowEdits}
+          enableEditing
+          renderRowActions={({ row, table }) => (
+            <Box sx={{ display: "flex", gap: "0.5rem" }}>
+              <Tooltip arrow placement="left" title="Edit">
+                <IconButton
+                  onClick={() => table.setEditingRow(row)}
+                  color="info"
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+              <Tooltip arrow placement="right" title="Delete">
+                <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                  <Delete />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
+          renderTopToolbarCustomActions={() => (
+            <Fab
+              color="info"
+              onClick={() => setCreateModalOpen(true)}
+              aria-label="add"
+              size="small"
+            >
+              <AddIcon />
+            </Fab>
+          )}
+        />
 
-      <CreateNewAccountModal
-        columns={colTest}
-        open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onSubmit={handleCreateNewRow}
-      />
-    </Paper>
+        <CreateNewAccountModal
+          columns={colTest}
+          open={createModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+          onSubmit={handleCreateNewRow}
+          materials={materials}
+        />
+      </Paper>
+    </>
   );
 };
 
 export default ProjectMaterialTable;
+
 export const CreateNewAccountModal: FC<{
-  columns: MRT_ColumnDef<CreateProjectMaterialDto>[];
+  columns: MRT_ColumnDef<ProjecTMaterialTest>[];
   onClose: () => void;
+  materials: MaterialEntity[];
   onSubmit: (values: CreateProjectMaterialDto) => void;
   open: boolean;
-}> = ({ open, columns, onClose, onSubmit }) => {
+}> = ({ open, columns, onClose, onSubmit, materials }) => {
   const [values, setValues] = React.useState<any>(() =>
     columns.reduce((acc, column) => {
       acc[column.accessorKey ?? ""] = "";
@@ -192,26 +279,9 @@ export const CreateNewAccountModal: FC<{
     onSubmit(values);
     onClose();
   };
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
-  if (user.length < 1) return null;
-  const { companyId, id: userId } = user[0];
-  //   //Fetch Materials
-  const { projectId }: { projectId: string } = useParams();
-  const {
-    isLoading: materialIsLoading,
-    error: materialError,
-    data: materials,
-    isFetching: materialIsFetching,
-  } = useQuery(
-    ["materialByCompanyId"],
-    () =>
-      operationsByTag.material.materialControllerFindMaterialByCompanyId({
-        pathParams: { companyId },
-      }) as unknown as Promise<MaterialEntity[]>
-  );
-  if (!materials) return null;
-
+  if (!columns) {
+    return null;
+  }
   return (
     <Dialog open={open}>
       <DialogTitle textAlign="center">Create New Material</DialogTitle>
@@ -231,17 +301,17 @@ export const CreateNewAccountModal: FC<{
                   return (
                     <Select
                       key={column.accessorKey}
-                      label="userType"
-                      value={values["userType"]}
+                      label="materialId"
+                      value={values["materialId"]}
                       onChange={(e) =>
                         setValues({
                           ...values,
-                          userType: e.target.value,
+                          materialId: e.target.value,
                         })
                       }
                     >
                       {materials.map((state) => (
-                        <MenuItem key={state.id} value={state.materialName}>
+                        <MenuItem key={state.id} value={state.id}>
                           {state.materialName}
                         </MenuItem>
                       ))}
@@ -265,7 +335,7 @@ export const CreateNewAccountModal: FC<{
       <DialogActions sx={{ p: "1.25rem" }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button color="secondary" onClick={handleSubmit} variant="contained">
-          Create New Material
+          Select Material
         </Button>
       </DialogActions>
     </Dialog>

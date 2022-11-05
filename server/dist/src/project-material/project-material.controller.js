@@ -35,6 +35,7 @@ let ProjectMaterialController = class ProjectMaterialController {
         return this.projectMaterialService.findByProjectId(id);
     }
     update(id, updateProjectMaterialDto) {
+        console.log(updateProjectMaterialDto);
         return this.projectMaterialService.update(id, updateProjectMaterialDto);
     }
     remove(id) {

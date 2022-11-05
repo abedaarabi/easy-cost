@@ -42,3 +42,23 @@ export type ColumnTypeProject = {
   workByhour: number;
   companyId?: string;
 };
+
+export interface ProjecTMaterialTest {
+  id: string;
+  materialId: string;
+  projectId: string;
+  createdAt: string;
+  profit: number;
+  material: Material;
+  project: Project;
+}
+
+export interface Material {
+  materialName: string;
+  price: number;
+  workByhour: number;
+  unit: string;
+}
+export interface Project {
+  projectName: string;
+}

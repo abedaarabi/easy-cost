@@ -187,8 +187,8 @@ const ProjectTable = () => {
         )}
         displayColumnDefOptions={{
           "mrt-row-actions": {
-            header: "Change Account Settings", //change header text
-            size: 300, //make actions column wider
+            header: "Actions", //change header text
+            size: 100, //make actions column wider
           },
         }}
         renderTopToolbarCustomActions={() => (

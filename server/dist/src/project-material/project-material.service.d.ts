@@ -13,6 +13,9 @@ export declare class ProjectMaterialService {
             workByhour: number;
             unit: string;
         };
+        project: {
+            projectName: string;
+        };
     })[]>;
     findOne(id: string): Promise<import(".prisma/client").ProjecMaterial>;
     update(id: string, updateProjectMaterialDto: UpdateProjectMaterialDto): import(".prisma/client").Prisma.Prisma__ProjecMaterialClient<import(".prisma/client").ProjecMaterial, never>;

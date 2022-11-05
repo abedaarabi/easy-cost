@@ -22,6 +22,11 @@ export class ProjectMaterialService {
         projectId: id,
       },
       include: {
+        project: {
+          select: {
+            projectName: true,
+          },
+        },
         material: {
           select: {
             materialName: true,

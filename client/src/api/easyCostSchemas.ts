@@ -24,13 +24,13 @@ export type UserEntity = {
 };
 
 export type UpdateUserDto = {
-  name?: string;
-  email?: string;
-  avatar?: string;
-  userType?: string;
-  companyId?: string;
-  userId?: string;
-  id?: string;
+  name: string;
+  email: string;
+  avatar: string;
+  userType: string;
+  companyId: string;
+  userId: string;
+  id: string;
 };
 
 export type CreateMaterialDto = {
@@ -104,24 +104,25 @@ export type ProjectEntity = {
 
 export type UpdateProjectDto = {
   id: string;
-  projectName?: string;
-  userId?: string;
-  workByhour?: number;
-  companyId?: string;
+  projectName: string;
+  userId: string;
+  workByhour: number;
+  companyId: string;
 };
 
 export type CreateProjectMaterialDto = {
-  id: string;
+  id?: string;
   materialId: string;
   projectId: string;
   profit: number;
 };
 
 export type UpdateProjectMaterialDto = {
+  materialName: string;
   id: string;
-  materialId?: string;
-  projectId?: string;
-  profit?: number;
+  materialId: string;
+  projectId: string;
+  profit: number;
 };
 
 export type CreateInvitedUserDto = {

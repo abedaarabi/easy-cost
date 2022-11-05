@@ -14,6 +14,9 @@ export declare class ProjectMaterialController {
             workByhour: number;
             unit: string;
         };
+        project: {
+            projectName: string;
+        };
     })[]>;
     update(id: string, updateProjectMaterialDto: UpdateProjectMaterialDto): import(".prisma/client").Prisma.Prisma__ProjecMaterialClient<import(".prisma/client").ProjecMaterial, never>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__ProjecMaterialClient<import(".prisma/client").ProjecMaterial, never>;

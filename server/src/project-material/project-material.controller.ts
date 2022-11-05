@@ -43,6 +43,8 @@ export class ProjectMaterialController {
     @Param('id') id: string,
     @Body() updateProjectMaterialDto: UpdateProjectMaterialDto,
   ) {
+    console.log(updateProjectMaterialDto);
+
     return this.projectMaterialService.update(id, updateProjectMaterialDto);
   }
 
