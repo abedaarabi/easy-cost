@@ -556,7 +556,7 @@ export const projectMaterialControllerCreate = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerCreateError,
     Schemas.CreateProjectMaterialDto,
     {},
@@ -593,7 +593,7 @@ export const projectMaterialControllerFindOne = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerFindOneError,
     undefined,
     {},
@@ -618,7 +618,7 @@ export const projectMaterialControllerUpdate = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerUpdateError,
     Schemas.UpdateProjectMaterialDto,
     {},
@@ -642,7 +642,7 @@ export const projectMaterialControllerRemove = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerRemoveError,
     undefined,
     {},
@@ -657,6 +657,9 @@ export type ProjectMaterialControllerFindByProjectIdPathParams = {
 export type ProjectMaterialControllerFindByProjectIdError =
   Fetcher.ErrorWrapper<undefined>;
 
+export type ProjectMaterialControllerFindByProjectIdResponse =
+  Schemas.ProjectMaterialEntity[];
+
 export type ProjectMaterialControllerFindByProjectIdVariables = {
   pathParams: ProjectMaterialControllerFindByProjectIdPathParams;
 };
@@ -666,7 +669,7 @@ export const projectMaterialControllerFindByProjectId = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    ProjectMaterialControllerFindByProjectIdResponse,
     ProjectMaterialControllerFindByProjectIdError,
     undefined,
     {},
@@ -780,6 +783,157 @@ export const invitedUserControllerRemove = (
     InvitedUserControllerRemovePathParams
   >({ url: '/invited-user/{id}', method: 'delete', ...variables, signal });
 
+export type TableCustomFieldsControllerCreateError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type TableCustomFieldsControllerCreateVariables = {
+  body: Schemas.CreateTableCustomFieldDto;
+};
+
+export const tableCustomFieldsControllerCreate = (
+  variables: TableCustomFieldsControllerCreateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.TableCustomFieldEntities,
+    TableCustomFieldsControllerCreateError,
+    Schemas.CreateTableCustomFieldDto,
+    {},
+    {},
+    {}
+  >({ url: '/table-custom-fields', method: 'post', ...variables, signal });
+
+export type TableCustomFieldsControllerFindAllError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type TableCustomFieldsControllerFindAllResponse =
+  Schemas.TableCustomFieldEntities[];
+
+export const tableCustomFieldsControllerFindAll = (signal?: AbortSignal) =>
+  easyCostFetch<
+    TableCustomFieldsControllerFindAllResponse,
+    TableCustomFieldsControllerFindAllError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: '/table-custom-fields', method: 'get', signal });
+
+export type TableCustomFieldsControllerFindOnePathParams = {
+  id: string;
+};
+
+export type TableCustomFieldsControllerFindOneError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type TableCustomFieldsControllerFindOneVariables = {
+  pathParams: TableCustomFieldsControllerFindOnePathParams;
+};
+
+export const tableCustomFieldsControllerFindOne = (
+  variables: TableCustomFieldsControllerFindOneVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.TableCustomFieldEntities,
+    TableCustomFieldsControllerFindOneError,
+    undefined,
+    {},
+    {},
+    TableCustomFieldsControllerFindOnePathParams
+  >({ url: '/table-custom-fields/{id}', method: 'get', ...variables, signal });
+
+export type TableCustomFieldsControllerUpdatePathParams = {
+  id: string;
+};
+
+export type TableCustomFieldsControllerUpdateError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type TableCustomFieldsControllerUpdateVariables = {
+  body?: Schemas.UpdateTableCustomFieldDto;
+  pathParams: TableCustomFieldsControllerUpdatePathParams;
+};
+
+export const tableCustomFieldsControllerUpdate = (
+  variables: TableCustomFieldsControllerUpdateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.TableCustomFieldEntities,
+    TableCustomFieldsControllerUpdateError,
+    Schemas.UpdateTableCustomFieldDto,
+    {},
+    {},
+    TableCustomFieldsControllerUpdatePathParams
+  >({
+    url: '/table-custom-fields/{id}',
+    method: 'patch',
+    ...variables,
+    signal,
+  });
+
+export type TableCustomFieldsControllerRemovePathParams = {
+  id: string;
+};
+
+export type TableCustomFieldsControllerRemoveError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type TableCustomFieldsControllerRemoveVariables = {
+  pathParams: TableCustomFieldsControllerRemovePathParams;
+};
+
+export const tableCustomFieldsControllerRemove = (
+  variables: TableCustomFieldsControllerRemoveVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.TableCustomFieldEntities,
+    TableCustomFieldsControllerRemoveError,
+    undefined,
+    {},
+    {},
+    TableCustomFieldsControllerRemovePathParams
+  >({
+    url: '/table-custom-fields/{id}',
+    method: 'delete',
+    ...variables,
+    signal,
+  });
+
+export type TableCustomFieldsControllerFindCustomFieldsByProjectIdPathParams = {
+  projectId: string;
+};
+
+export type TableCustomFieldsControllerFindCustomFieldsByProjectIdError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type TableCustomFieldsControllerFindCustomFieldsByProjectIdResponse =
+  Schemas.TableCustomFieldEntities[];
+
+export type TableCustomFieldsControllerFindCustomFieldsByProjectIdVariables = {
+  pathParams: TableCustomFieldsControllerFindCustomFieldsByProjectIdPathParams;
+};
+
+export const tableCustomFieldsControllerFindCustomFieldsByProjectId = (
+  variables: TableCustomFieldsControllerFindCustomFieldsByProjectIdVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    TableCustomFieldsControllerFindCustomFieldsByProjectIdResponse,
+    TableCustomFieldsControllerFindCustomFieldsByProjectIdError,
+    undefined,
+    {},
+    {},
+    TableCustomFieldsControllerFindCustomFieldsByProjectIdPathParams
+  >({
+    url: '/table-custom-fields/fields/{projectId}',
+    method: 'get',
+    ...variables,
+    signal,
+  });
+
 export const operationsByTag = {
   user: {
     userControllerCreate,
@@ -827,5 +981,13 @@ export const operationsByTag = {
     invitedUserControllerFindOne,
     invitedUserControllerUpdate,
     invitedUserControllerRemove,
+  },
+  tableCustomFields: {
+    tableCustomFieldsControllerCreate,
+    tableCustomFieldsControllerFindAll,
+    tableCustomFieldsControllerFindOne,
+    tableCustomFieldsControllerUpdate,
+    tableCustomFieldsControllerRemove,
+    tableCustomFieldsControllerFindCustomFieldsByProjectId,
   },
 };

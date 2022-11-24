@@ -37,7 +37,11 @@ import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 import { getUserByCompany, updateUser } from "../helper/db.fetchUser";
 import { projectsByCompany } from "../helper/db.fetchProject";
 import { operationsByTag } from "../../api/easyCostComponents";
-import { CreateProjectDto, UpdateProjectDto } from "../../api/easyCostSchemas";
+import {
+  CreateProjectDto,
+  ProjectEntity,
+  UpdateProjectDto,
+} from "../../api/easyCostSchemas";
 
 const ProjectTable = () => {
   const navigate = useNavigate();
@@ -51,9 +55,8 @@ const ProjectTable = () => {
     () =>
       operationsByTag.project.projectControllerProjectsByCompanyId({
         pathParams: { companyId },
-      }) as unknown as Promise<CreateProjectDto[]>
+      }) as unknown as Promise<ProjectEntity[]>
   );
-  console.log({ data });
 
   const deleteMutation = useMutation(
     (id: string) =>
@@ -66,9 +69,9 @@ const ProjectTable = () => {
   );
 
   const updateMutation = useMutation(
-    (value: UpdateProjectDto) =>
+    ({ id, value }: { id: string; value: UpdateProjectDto }) =>
       operationsByTag.project.projectControllerUpdate({
-        pathParams: { id: value.id },
+        pathParams: { id },
         body: {
           companyId: value.companyId,
           id: value.id,
@@ -110,18 +113,27 @@ const ProjectTable = () => {
     },
     {
       accessorKey: "workByhour",
-      header: "work By Hour",
-      size: 180,
+      header: "Work By Hour",
+      size: 80,
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: "Create Date",
+      size: 100,
     },
   ] as MRT_ColumnDef<CreateProjectDto>[];
 
   const dataTable = data.map((column) => {
-    return ({ ...column } = column);
+    // return ({ ...column } = column);
+    return {
+      projectName: column.projectName,
+      id: column.id,
+      createdAt: new Date(column.createdAt).toLocaleDateString(),
+    };
   });
 
   const handleDeleteRow = (row: MRT_Row<CreateProjectDto>) => {
-    console.log(row.original.id);
-
     if (
       !confirm(`Are you sure you want to delete ${row.getValue("projectName")}`)
     ) {
@@ -132,18 +144,18 @@ const ProjectTable = () => {
   };
 
   const handleCreateNewRow = (values: CreateProjectDto) => {
-    console.log({ ...values, companyId, userId });
-
     createMutation.mutate({ ...values, companyId, userId });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
-  const handleSaveRowEdits: MaterialReactTableProps<UpdateProjectDto>["onEditingRowSave"] =
+  const handleSaveRowEdits: MaterialReactTableProps<ProjectEntity>["onEditingRowSave"] =
     async ({ exitEditingMode, row, values }) => {
       //send/receive api updates here, then refetch or update local table data for re-render Update
 
-      console.log(values);
-      updateMutation.mutate({ ...values, companyId });
+      updateMutation.mutate({
+        id: values.id,
+        value: { ...values, companyId },
+      });
       exitEditingMode();
     };
 
@@ -247,7 +259,9 @@ export const CreateNewAccountModal: FC<{
             }}
           >
             {columns
-              .filter((i) => i.accessorKey !== "id")
+              .filter(
+                (i) => i.accessorKey !== "id" && i.accessorKey !== "createdAt"
+              )
               .map((column) => {
                 return (
                   <TextField

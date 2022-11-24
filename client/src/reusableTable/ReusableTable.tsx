@@ -20,9 +20,21 @@ function ReusableTable<TData extends RecordType>({
   ...props
 }: Props<TData>) {
   //should be memoized or stable
-  const memoColumns = useMemo(() => columns, []);
+  const memoColumns = useMemo(() => columns, [columns]);
   return (
     <MaterialReactTable
+      muiTableHeadCellProps={{
+        align: "center",
+      }}
+      muiTableBodyCellProps={{
+        align: "center",
+      }}
+      enableStickyFooter
+      initialState={{ columnVisibility: { id: false } }}
+      enableColumnFilterModes
+      enableColumnOrdering
+      enableGrouping
+      enablePinning
       columns={memoColumns}
       state={{ isLoading }}
       data={data}
@@ -31,7 +43,6 @@ function ReusableTable<TData extends RecordType>({
         sx: { maxHeight: "600px" },
       }}
       enableStickyHeader
-      enableStickyFooter
       pageCount={10}
     />
   );

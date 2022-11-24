@@ -44,6 +44,8 @@ export type ColumnTypeProject = {
 };
 
 export interface ProjecTMaterialTest {
+  getValue<T>(): unknown;
+  status: boolean;
   id: string;
   materialId: string;
   projectId: string;

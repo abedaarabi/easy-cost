@@ -24,13 +24,13 @@ export type UserEntity = {
 };
 
 export type UpdateUserDto = {
-  name: string;
-  email: string;
-  avatar: string;
-  userType: string;
-  companyId: string;
-  userId: string;
-  id: string;
+  name?: string;
+  email?: string;
+  avatar?: string;
+  userType?: string;
+  companyId?: string;
+  userId?: string;
+  id?: string;
 };
 
 export type CreateMaterialDto = {
@@ -64,7 +64,7 @@ export type MaterialEntity = {
 
 export type UpdateMaterialDto = {
   companyId?: string;
-  unit: string;
+  unit?: string;
   priceUnit?: string;
   image?: string;
   workByhour?: number;
@@ -89,6 +89,10 @@ export type UpdateCompanyDto = {
 export type CreateProjectDto = {
   id: string;
   projectName: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
   userId: string;
   workByhour: number;
   companyId: string;
@@ -97,32 +101,61 @@ export type CreateProjectDto = {
 export type ProjectEntity = {
   id: string;
   projectName: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
   userId: string;
   workByhour: number;
   companyId: string;
 };
 
 export type UpdateProjectDto = {
-  id: string;
-  projectName: string;
-  userId: string;
-  workByhour: number;
-  companyId: string;
+  id?: string;
+  projectName?: string;
+  /**
+   * @format date-time
+   */
+  createdAt?: string;
+  userId?: string;
+  workByhour?: number;
+  companyId?: string;
 };
 
 export type CreateProjectMaterialDto = {
-  id?: string;
+  id: string;
   materialId: string;
   projectId: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  profit: number;
+  status: boolean;
+};
+
+export type ProjectMaterialEntity = {
+  id: string;
+  materialId: string;
+  status: boolean;
+  projectId: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
   profit: number;
 };
 
 export type UpdateProjectMaterialDto = {
-  materialName: string;
-  id: string;
-  materialId: string;
-  projectId: string;
-  profit: number;
+  id?: string;
+  materialId?: string;
+  projectId?: string;
+  /**
+   * @format date-time
+   */
+  createdAt?: string;
+  profit?: number;
+  status?: boolean;
 };
 
 export type CreateInvitedUserDto = {
@@ -137,4 +170,28 @@ export type UpdateInvitedUserDto = {
   userId?: string;
   projectId?: string;
   token?: string;
+};
+
+export type CreateTableCustomFieldDto = {
+  id: string;
+  projectId: string;
+  columnName: string;
+  columnType: string;
+  customFieldValue: Record<string, any>;
+};
+
+export type TableCustomFieldEntities = {
+  id: string;
+  projectId: string;
+  columnName: string;
+  columnType: string;
+  customFieldValue: Record<string, any>;
+};
+
+export type UpdateTableCustomFieldDto = {
+  id?: string;
+  projectId?: string;
+  columnName?: string;
+  columnType?: string;
+  customFieldValue?: Record<string, any>;
 };

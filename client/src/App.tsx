@@ -32,7 +32,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import { Alert, Snackbar } from "@mui/material";
 import ProjectTable from "./dashboard/components/ProjectTable";
-import ProjectMaterialTable from "./dashboard/components/ProjectMaterialTable";
+import ProjectMaterialTable from "./project-material/page/ProjectMaterialTable";
 
 const router = createBrowserRouter([
   {

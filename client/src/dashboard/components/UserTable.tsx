@@ -80,9 +80,9 @@ const UserTable = () => {
   );
 
   const updateMutation = useMutation(
-    (value: UpdateUserDto) =>
+    ({ id, value }: { id: string; value: UpdateUserDto }) =>
       operationsByTag.user.userControllerUpdate({
-        pathParams: { id: value.id },
+        pathParams: { id },
         body: { ...value },
       }),
 
@@ -125,7 +125,7 @@ const UserTable = () => {
     {
       accessorKey: "avatar",
       header: "Avatar",
-      size: 80,
+      // size: 80,
       Cell: ({ cell, row }) => (
         <Box>
           <Avatar alt="Remy Sharp" src="" />
@@ -136,18 +136,18 @@ const UserTable = () => {
     {
       accessorKey: "name",
       header: "Name",
-      size: 180,
+      // size: 120,
     },
     {
       accessorKey: "email",
       header: "Email",
-      size: 140,
+      // size: 140,
     },
 
     {
       accessorKey: "userType",
       header: "User Type",
-      size: 80,
+      // size: 80,
       muiTableBodyCellEditTextFieldProps: {
         select: true, //change to select for a dropdown
         children: ["CompanyUser", "Client", "CompanyAdmin"].map((state) => (
@@ -204,7 +204,7 @@ const UserTable = () => {
       //send/receive api updates here, then refetch or update local table data for re-render Update
       console.log({ values });
 
-      updateMutation.mutate({ ...values, companyId });
+      updateMutation.mutate({ id: values.id, value: { ...values, companyId } });
       exitEditingMode();
     };
 
@@ -212,12 +212,7 @@ const UserTable = () => {
     <>
       <ReusableTable
         // isLoading={{ isLoading: false }}
-        enableStickyFooter
-        initialState={{ columnVisibility: { id: false } }}
-        enableColumnFilterModes
-        enableColumnOrdering
-        enableGrouping
-        enablePinning
+
         renderDetailPanel={({ row }) => (
           <Box
             sx={{

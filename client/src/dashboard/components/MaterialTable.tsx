@@ -30,12 +30,12 @@ import {
   IconButton,
   MenuItem,
   Paper,
+  Select,
   Stack,
   TextField,
   Tooltip,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 
 import { operationsByTag } from "../../api/easyCostComponents";
@@ -150,6 +150,14 @@ const MaterialTable = () => {
       accessorKey: "unit",
       header: "Unit",
       size: 100,
+      muiTableBodyCellEditTextFieldProps: {
+        select: true,
+        children: ["m2", "mm", "feet", "inch", "m3", "stk"].map((state) => (
+          <MenuItem key={state} value={state}>
+            {state}
+          </MenuItem>
+        )),
+      },
     },
     {
       accessorKey: "priceUnit",
@@ -313,16 +321,43 @@ export const CreateNewAccountModal: FC<{
             {columns
               .filter((i) => i.accessorKey !== "id")
               .map((column) => {
-                return (
-                  <TextField
-                    key={column.accessorKey}
-                    label={column.header}
-                    name={column.accessorKey}
-                    onChange={(e) =>
-                      setValues({ ...values, [e.target.name]: e.target.value })
-                    }
-                  />
-                );
+                if (column.accessorKey == "unit") {
+                  return (
+                    <Select
+                      key={column.accessorKey}
+                      label="Unit"
+                      value={values["unit"]}
+                      onChange={(e) =>
+                        setValues({
+                          ...values,
+                          unit: e.target.value,
+                        })
+                      }
+                    >
+                      {["m2", "mm", "feet", "inch", "m3", "stk"].map(
+                        (state) => (
+                          <MenuItem key={state} value={state}>
+                            {state}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  );
+                } else {
+                  return (
+                    <TextField
+                      key={column.accessorKey}
+                      label={column.header}
+                      name={column.accessorKey}
+                      onChange={(e) =>
+                        setValues({
+                          ...values,
+                          [e.target.name]: e.target.value,
+                        })
+                      }
+                    />
+                  );
+                }
               })}
           </Stack>
         </form>
