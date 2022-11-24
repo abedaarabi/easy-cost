@@ -6,7 +6,10 @@ export class ProjectMaterialEntity implements ProjecMaterial {
   @ApiProperty()
   materialId: string;
   @ApiProperty()
+  status: boolean;
+  @ApiProperty()
   projectId: string;
+  @ApiProperty()
   createdAt: Date;
   @ApiProperty()
   profit: number;

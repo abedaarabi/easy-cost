@@ -27,7 +27,15 @@ __decorate([
 ], CreateProjectMaterialDto.prototype, "projectId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Date)
+], CreateProjectMaterialDto.prototype, "createdAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)
 ], CreateProjectMaterialDto.prototype, "profit", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Boolean)
+], CreateProjectMaterialDto.prototype, "status", void 0);
 exports.CreateProjectMaterialDto = CreateProjectMaterialDto;
 //# sourceMappingURL=create-project-material.dto.js.map

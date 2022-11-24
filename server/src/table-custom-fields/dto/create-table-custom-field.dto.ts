@@ -1,16 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 
-export class CreateProjectMaterialDto {
+export class CreateTableCustomFieldDto {
   @ApiProperty()
   id: string;
   @ApiProperty()
-  materialId: string;
-  @ApiProperty()
   projectId: string;
   @ApiProperty()
-  createdAt?: Date;
+  columnName: string;
   @ApiProperty()
-  profit: number;
+  columnType: string;
   @ApiProperty()
-  status: boolean;
+  customFieldValue: Prisma.JsonValue;
 }

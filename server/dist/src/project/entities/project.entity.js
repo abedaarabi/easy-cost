@@ -23,6 +23,10 @@ __decorate([
 ], ProjectEntity.prototype, "projectName", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Date)
+], ProjectEntity.prototype, "createdAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ProjectEntity.prototype, "userId", void 0);
 __decorate([

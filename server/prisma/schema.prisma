@@ -74,24 +74,48 @@ model Material {
 }
 
 model Project {
-  id             String           @id @default(uuid())
-  projectName    String
-  createdAt      DateTime         @default(now())
-  User           User?            @relation(fields: [userId], references: [id])
-  userId         String?
-  workByhour     Int
-  companyId      String
-  Company        Company          @relation(fields: [companyId], references: [id])
-  ProjecMaterial ProjecMaterial[]
-  InvitedUser    InvitedUser[]
+  id                String              @id @default(uuid())
+  projectName       String
+  createdAt         DateTime            @default(now())
+  User              User?               @relation(fields: [userId], references: [id])
+  userId            String?
+  workByhour        Int
+  companyId         String
+  Company           Company             @relation(fields: [companyId], references: [id])
+  ProjecMaterial    ProjecMaterial[]
+  InvitedUser       InvitedUser[]
+  TableCustomFields TableCustomFields[]
 }
 
 model ProjecMaterial {
   id         String   @id @default(uuid())
   material   Material @relation(fields: [materialId], references: [id])
-  project    Project  @relation(fields: [projectId], references: [id])
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   materialId String
   projectId  String
+  status     Boolean  @default(false)
   createdAt  DateTime @default(now())
   profit     Float    @default(3.9) // percentage added %
+  // TableCustomFieldsValues TableCustomFieldsValues[]
 }
+
+model TableCustomFields {
+  id               String   @id @default(uuid())
+  project          Project? @relation(fields: [projectId], references: [id])
+  projectId        String?
+  columnName       String
+  columnType       String
+  // TableCustomFieldsValues TableCustomFieldsValues[]
+  customFieldValue Json
+
+  @@unique([columnName, projectId])
+}
+
+// model TableCustomFieldsValues {
+//   id                String            @id @default(uuid())
+//   customField       TableCustomFields @relation(fields: [customFieldId], references: [id])
+//   customFieldId     String
+//   projectMaterial   ProjecMaterial    @relation(fields: [projectMaterialId], references: [id])
+//   projectMaterialId String
+//   value             String
+// }

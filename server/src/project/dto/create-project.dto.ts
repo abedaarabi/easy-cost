@@ -4,6 +4,7 @@ export class CreateProjectDto {
   id: string;
   @ApiProperty()
   projectName: string;
+  @ApiProperty()
   createdAt: Date;
   @ApiProperty()
   userId: string;

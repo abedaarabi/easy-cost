@@ -23,8 +23,16 @@ __decorate([
 ], ProjectMaterialEntity.prototype, "materialId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Boolean)
+], ProjectMaterialEntity.prototype, "status", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ProjectMaterialEntity.prototype, "projectId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Date)
+], ProjectMaterialEntity.prototype, "createdAt", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Number)

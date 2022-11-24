@@ -13,7 +13,7 @@ async function bootstrap() {
     .setTitle('Easy Cost')
     .setDescription('Easy Cost API description')
     .setVersion('1.0')
-    .addServer('http://localhost', 'sfdada', { port: { default: 3000 } })
+    // .addServer('http://localhost/api', 'sfdada', { port: { default: 3000 } })
     .addTag('Easy Cost')
     .build();
 

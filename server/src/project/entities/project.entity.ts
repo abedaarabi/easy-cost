@@ -6,6 +6,7 @@ export class ProjectEntity implements Project {
   id: string;
   @ApiProperty()
   projectName: string;
+  @ApiProperty()
   createdAt: Date;
   @ApiProperty()
   userId: string;

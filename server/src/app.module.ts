@@ -8,6 +8,7 @@ import { CompanyModule } from './company/company.module';
 import { ProjectModule } from './project/project.module';
 import { ProjectMaterialModule } from './project-material/project-material.module';
 import { InvitedUserModule } from './invited-user/invited-user.module';
+import { TableCustomFieldsModule } from './table-custom-fields/table-custom-fields.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { InvitedUserModule } from './invited-user/invited-user.module';
     ProjectModule,
     ProjectMaterialModule,
     InvitedUserModule,
+    TableCustomFieldsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

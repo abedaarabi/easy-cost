@@ -18,6 +18,7 @@ const project_material_service_1 = require("./project-material.service");
 const create_project_material_dto_1 = require("./dto/create-project-material.dto");
 const update_project_material_dto_1 = require("./dto/update-project-material.dto");
 const swagger_1 = require("@nestjs/swagger");
+const project_material_entity_1 = require("./entities/project-material.entity");
 let ProjectMaterialController = class ProjectMaterialController {
     constructor(projectMaterialService) {
         this.projectMaterialService = projectMaterialService;
@@ -35,7 +36,7 @@ let ProjectMaterialController = class ProjectMaterialController {
         return this.projectMaterialService.findByProjectId(id);
     }
     update(id, updateProjectMaterialDto) {
-        console.log(updateProjectMaterialDto);
+        console.log(updateProjectMaterialDto, id);
         return this.projectMaterialService.update(id, updateProjectMaterialDto);
     }
     remove(id) {
@@ -44,6 +45,10 @@ let ProjectMaterialController = class ProjectMaterialController {
 };
 __decorate([
     (0, common_1.Post)(),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_material_entity_1.ProjectMaterialEntity,
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_project_material_dto_1.CreateProjectMaterialDto]),
@@ -57,6 +62,10 @@ __decorate([
 ], ProjectMaterialController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_material_entity_1.ProjectMaterialEntity,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -64,6 +73,11 @@ __decorate([
 ], ProjectMaterialController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Get)('projectMaterial/:projectId'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_material_entity_1.ProjectMaterialEntity,
+        isArray: true,
+    }),
     __param(0, (0, common_1.Param)('projectId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -71,6 +85,10 @@ __decorate([
 ], ProjectMaterialController.prototype, "findByProjectId", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_material_entity_1.ProjectMaterialEntity,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -79,6 +97,10 @@ __decorate([
 ], ProjectMaterialController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'The record has been successfully created.',
+        type: project_material_entity_1.ProjectMaterialEntity,
+    }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
