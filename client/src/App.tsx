@@ -33,15 +33,18 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { Alert, Snackbar } from "@mui/material";
 import ProjectTable from "./dashboard/components/ProjectTable";
 import ProjectMaterialTable from "./project-material/page/ProjectMaterialTable";
+import Page404 from "./Page404";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <SignInSide />,
-    errorElement: <ErrorPage />,
+    errorElement: <Page404 />,
   },
   {
     path: "/dashboard",
+    errorElement: <Page404 />,
+
     element: (
       <ProtectedRoutes>
         <MiniDrawer />

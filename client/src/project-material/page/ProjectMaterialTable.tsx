@@ -1,5 +1,10 @@
 import React, { FC } from "react";
-import { useQuery, useMutation, useQueryClient, UseMutationResult } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseMutationResult,
+} from "@tanstack/react-query";
 import { useAuth } from "../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 import Avatar from "@mui/material/Avatar";
@@ -430,7 +435,20 @@ const ProjectMaterialTable = () => {
 
 export default ProjectMaterialTable;
 
-function name(data: { id: string; }[], setMid: { (value: React.SetStateAction<{ mId: string; } | undefined>): void; (arg0: { mId: string; }): void; }, materials: MaterialEntity[], updateMaterialStatus: UseMutationResult<ProjectMaterialEntity, unknown, { id: string; values: UpdateProjectMaterialDto; }, unknown>) {
+function name(
+  data: { id: string }[],
+  setMid: {
+    (value: React.SetStateAction<{ mId: string } | undefined>): void;
+    (arg0: { mId: string }): void;
+  },
+  materials: MaterialEntity[],
+  updateMaterialStatus: UseMutationResult<
+    ProjectMaterialEntity,
+    unknown,
+    { id: string; values: UpdateProjectMaterialDto },
+    unknown
+  >
+) {
   return [
     {
       accessorKey: "id",
