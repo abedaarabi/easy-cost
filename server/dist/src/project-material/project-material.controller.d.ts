@@ -10,9 +10,9 @@ export declare class ProjectMaterialController {
     findByProjectId(id: string): import(".prisma/client").PrismaPromise<(import(".prisma/client").ProjecMaterial & {
         material: {
             materialName: string;
+            unit: string;
             price: number;
             workByhour: number;
-            unit: string;
         };
         project: {
             projectName: string;
