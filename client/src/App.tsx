@@ -37,13 +37,12 @@ import Page404 from "./Page404";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <SignInSide />,
-    errorElement: <Page404 />,
   },
   {
-    path: "/dashboard",
-    errorElement: <Page404 />,
+    path: "/",
+    errorElement: <ErrorPage />,
 
     element: (
       <ProtectedRoutes>
@@ -52,26 +51,22 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
-        element: <Main />,
-      },
-      {
-        path: "/dashboard",
+        path: "/",
         element: <Main />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "/dashboard/material",
+        path: "/material",
         element: <MaterialTable />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "/dashboard/user",
+        path: "/user",
         element: <UserTable />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "/dashboard/project",
+        path: "/project",
         element: <ProjectTable />,
         errorElement: <ErrorPage />,
         // children: [
@@ -83,7 +78,7 @@ const router = createBrowserRouter([
         // ],
       },
       {
-        path: "/dashboard/project/:projectId",
+        path: "/project/:projectId",
         element: <ProjectMaterialTable />,
         errorElement: <ErrorPage />,
       },

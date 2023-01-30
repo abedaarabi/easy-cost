@@ -20,29 +20,24 @@ const theme = createTheme();
 
 export default function SignInSide() {
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
+
+  const { user, setUser, login } = useAuth();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
+    const password = data.get("password");
 
-    const userResponse = await getUserByEmail(email);
-    console.log(userResponse);
-
-    // setUser("abed@moe.dk");
-
-    if (userResponse?.length > 0) {
-      setUser(userResponse);
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   React.useEffect(() => {
-    if (user) {
-      console.log(user);
-
-      navigate("/dashboard");
-    }
-  }, [navigate, user]);
+    user && navigate("/");
+  }, [user]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -54,7 +49,8 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: "url(https://source.unsplash.com/random)",
+            backgroundImage:
+              "url(https://nesthost.ca/wp-content/uploads/2021/05/construction-winnipeg.jpg)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"

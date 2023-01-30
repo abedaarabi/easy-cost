@@ -242,9 +242,8 @@ const MaterialTable = () => {
   return (
     <Paper>
       <ReusableTable
-        isLoading={isLoading}
         enableStickyFooter
-        initialState={{ columnVisibility: { id: false } }}
+        initialState={{ columnVisibility: { id: false }, isLoading:isFetching }}
         columns={colTest}
         data={dataTable}
         onEditingRowSave={handleSaveRowEdits}

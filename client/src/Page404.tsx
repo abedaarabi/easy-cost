@@ -7,13 +7,14 @@ import { Button, Typography, Container, Box } from "@mui/material";
 // ----------------------------------------------------------------------
 
 const StyledContent = styled("div")(({ theme }) => ({
-  maxWidth: 480,
+  // maxWidth: 480,
   margin: "auto",
-  minHeight: "100vh",
+  // minHeight: "100vh",
   display: "flex",
   justifyContent: "center",
   flexDirection: "column",
-  padding: theme.spacing(12, 0),
+  alignItems: "center",
+  padding: theme.spacing(8, 0),
 }));
 
 // ----------------------------------------------------------------------
@@ -22,24 +23,19 @@ export default function Page404() {
   return (
     <>
       <Container>
-        <StyledContent sx={{ textAlign: "center", alignItems: "center" }}>
-          <Typography variant="h3" paragraph>
+        <StyledContent sx={{}}>
+          {/* <Typography variant="h3" paragraph>
             Sorry, page not found!
-          </Typography>
-
-          <Typography sx={{ color: "text.secondary" }}>
-            Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve
-            mistyped the URL? Be sure to check your spelling.
-          </Typography>
+          </Typography> */}
 
           <Box
             component="img"
             src="https://miro.medium.com/max/750/0*QOZm9X5er1Y0r5-t"
-            sx={{ height: 260, mx: "auto", my: { xs: 5, sm: 10 } }}
+            sx={{ height: 360, mx: "auto", my: { xs: 5, sm: 10 } }}
           />
 
           <Button
-            to="/"
+            to="/login"
             size="large"
             variant="contained"
             component={RouterLink}

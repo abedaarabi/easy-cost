@@ -7,8 +7,8 @@ export function ProtectedRoutes({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
 
   React.useEffect(() => {
-    !user && navigate("/");
+    !user && navigate("/login");
   }, [user]);
 
-  return <div>{children}</div>;
+  return <div>{user ? children : null}</div>;
 }

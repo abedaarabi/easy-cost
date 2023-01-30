@@ -101,8 +101,10 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { user, setUser, setLoading } = useAuth();
-  const { companyId, id: userId, name } = user[0];
+  const { logout } = useAuth();
+
+  //TODO: Display name on header bar!
+  // const { companyId, id: userId, name } = user[0];
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -145,12 +147,12 @@ export default function MiniDrawer() {
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mr: 2 }}>
               <Typography
                 component="p"
-                variant="p"
+                variant="inherit"
                 color="inherit"
                 noWrap
                 sx={{ flexGrow: 1 }}
               >
-                {name}
+                {/* {name} */}
               </Typography>
               <Avatar></Avatar>
             </Box>
@@ -162,8 +164,8 @@ export default function MiniDrawer() {
             <IconButton
               color="inherit"
               onClick={() => {
-                setUser(null);
-                navigate("/");
+                logout();
+                // navigate("/login");
               }}
             >
               <LogoutOutlinedIcon />
@@ -236,25 +238,25 @@ const drawerLinks = [
     id: 1,
     text: "Dashboard",
     icon: <DnsIcon color="info" />,
-    link: "/dashboard",
+    link: "/",
   },
   {
     id: 2,
     text: "Material",
     icon: <DashboardOutlinedIcon color="info" />,
-    link: "/dashboard/material",
+    link: "/material",
   },
   {
     id: 3,
     text: "User",
     icon: <PermIdentityIcon color="info" />,
-    link: "/dashboard/user",
+    link: "/user",
   },
   {
     id: 4,
     text: "Project",
     icon: <WorkOutlineIcon color="info" />,
-    link: "/dashboard/project",
+    link: "/project",
   },
   // {
   //   id: 5,
