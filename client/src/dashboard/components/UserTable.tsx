@@ -54,12 +54,16 @@ import {
   UserEntity,
   CreateUserDto,
 } from "../../api/easyCostSchemas";
+import { useNavigate } from "react-router-dom";
 
 const UserTable = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
   const queryClient = useQueryClient();
   if (user.length < 1) return null;
-  const { companyId, id: userId } = user[0];
+  const { companyId, id: userId } = user;
+  // const companyId = "86656b02-5dbc-4d20-8127-5a4f08741eb3";
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["userByCompanyId"],
@@ -122,17 +126,17 @@ const UserTable = () => {
       enableHiding: true,
       size: 80,
     },
-    {
-      accessorKey: "avatar",
-      header: "Avatar",
-      // size: 80,
-      Cell: ({ cell, row }) => (
-        <Box>
-          <Avatar alt="Remy Sharp" src="" />
-          {/* <Typography>{cell.getValue<string>()}</Typography> */}
-        </Box>
-      ),
-    },
+    // {
+    //   accessorKey: "avatar",
+    //   header: "Avatar",
+    //   // size: 80,
+    //   Cell: ({ cell, row }) => (
+    //     <Box>
+    //       <Avatar alt="Remy Sharp" src="" />
+    //       {/* <Typography>{cell.getValue<string>()}</Typography> */}
+    //     </Box>
+    //   ),
+    // },
     {
       accessorKey: "name",
       header: "Name",
@@ -193,9 +197,13 @@ const UserTable = () => {
   };
 
   const handleCreateNewRow = (values: Omit<CreateUserDto, "id">) => {
-    console.log({ values });
+    console.log({ ...values, companyId });
+    // navigate(`/company/${companyId}/type/${values.userType}/sing-up`);
 
-    createMutation.mutate({ ...values, companyId });
+    createMutation.mutate({
+      ...values,
+      companyId,
+    });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 

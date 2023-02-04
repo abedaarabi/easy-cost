@@ -83,39 +83,39 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.company.deleteMany();
 
-  for (let i = 0; i < 10; i++) {
-    const userList = await users();
-    const materialList = await materials();
-    const materialId = materialList[0].id;
+  // for (let i = 0; i < 10; i++) {
+  //   const userList = await users();
+  //   const materialList = await materials();
+  //   const materialId = materialList[0].id;
 
-    const projectList = await project();
-    const projectId = projectList[0].id;
-    await prisma.company.create({
-      data: {
-        country: faker.address.country(),
-        logo: faker.name.jobTitle(),
-        name: faker.company.name(),
-        User: {
-          create: userList,
-        },
-        Material: {
-          create: materialList,
-        },
-        Project: {
-          create: projectList,
-        },
-      },
-    });
-    for (let i = 0; i < 10; i++) {
-      await prisma.projecMaterial.create({
-        data: {
-          materialId: materialId,
-          projectId: projectId,
-          profit: Number(faker.finance.amount(5, 10, 0)),
-        },
-      });
-    }
-  }
+  //   const projectList = await project();
+  //   const projectId = projectList[0].id;
+  //   await prisma.company.create({
+  //     data: {
+  //       country: faker.address.country(),
+  //       logo: faker.name.jobTitle(),
+  //       name: faker.company.name(),
+  //       User: {
+  //         create: userList,
+  //       },
+  //       Material: {
+  //         create: materialList,
+  //       },
+  //       Project: {
+  //         create: projectList,
+  //       },
+  //     },
+  //   });
+  //   for (let i = 0; i < 10; i++) {
+  //     await prisma.projecMaterial.create({
+  //       data: {
+  //         materialId: materialId,
+  //         projectId: projectId,
+  //         profit: Number(faker.finance.amount(5, 10, 0)),
+  //       },
+  //     });
+  //   }
+  // }
 }
 
 main()

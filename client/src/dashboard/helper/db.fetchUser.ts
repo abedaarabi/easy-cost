@@ -1,5 +1,6 @@
 import axios from "axios";
 import { CreateUserDto } from "../../api/easyCostSchemas";
+import { sendPasswordReset, signUp } from "../../config/firebase";
 import { ColumnTypeUser } from "../types";
 
 export async function getUserByCompany(
@@ -56,18 +57,19 @@ export async function updateUser(
 }
 
 export async function createUser(
-  material: Omit<CreateUserDto, "id">
+  material: CreateUserDto
 ): Promise<CreateUserDto> {
   try {
-    console.log(material, "post");
+    const userDetails: any = await signUp(material.email);
 
     const { data, status } = await axios.post(
       "http://localhost:3000/user",
 
       {
+        id: userDetails.uid,
         name: material.name,
         email: material.email,
-        avatar: material.avatar,
+
         userType: material.userType,
         companyId: material.companyId,
       },
@@ -79,6 +81,7 @@ export async function createUser(
         },
       }
     );
+    await sendPasswordReset(data.email);
 
     return data;
   } catch (error) {

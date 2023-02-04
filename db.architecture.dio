@@ -1,29 +1,47 @@
 <mxfile host="65bd71144e">
     <diagram id="EkmhJNftspw9LD2Qc4nb" name="Page-1">
-        <mxGraphModel dx="1541" dy="512" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1676" dy="554" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="2" value="invited user:&lt;br&gt;userId&lt;br&gt;company-id&lt;br&gt;project-id&lt;br&gt;tokekn" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                <mxCell id="2" value="invited user:&lt;br&gt;userId&lt;br&gt;company-id&lt;br&gt;project-id&lt;br&gt;tokekn" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="320" y="40" width="120" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="user&lt;br&gt;id&lt;br&gt;type:[client, company-user, company-admin]&lt;br&gt;company-id" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                <mxCell id="3" value="user&lt;br&gt;id&lt;br&gt;type:[client, company-user, company-admin]&lt;br&gt;company-id" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="40" y="40" width="110" height="110" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="materilaid-id&lt;br&gt;m-name&lt;br&gt;user-id&lt;br&gt;unit" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                <mxCell id="4" value="materilaid-id&lt;br&gt;m-name&lt;br&gt;user-id&lt;br&gt;unit" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="40" y="150" width="80" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="project-id&lt;br&gt;p-name&lt;br&gt;uers-id" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                <mxCell id="5" value="project-id&lt;br&gt;p-name&lt;br&gt;uers-id" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="41" y="230" width="80" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="6" value="project-material&lt;br&gt;materila-id&lt;br&gt;%- null&lt;br&gt;project-id&lt;br&gt;quantity" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                <mxCell id="6" value="project-material&lt;br&gt;materila-id&lt;br&gt;%- null&lt;br&gt;project-id&lt;br&gt;quantity" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="41" y="310" width="129" height="129" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="it sould be something else (account)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                <mxCell id="9" value="it sould be something else (account)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="-25" y="10" width="210" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="10" value="company&lt;br&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                <mxCell id="10" value="company&lt;br&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="170" y="20" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Inviting user from the same compay" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="-750" y="30" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="Inviting users outside the company&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="-740" y="250" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="viewer the app in clients mode" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="-750" y="430" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="&lt;h1&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;company user&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span style=&quot;background-color: initial; font-size: 12px; font-weight: normal;&quot;&gt;Shall we use singup form so the user can create his password.or, shall we created as an admin when invite a new user the user will recive and email to rest the password?&lt;/span&gt;&lt;br&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="-500" y="10" width="420" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="&lt;h1&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;company client&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span style=&quot;background-color: initial; font-size: 12px; font-weight: normal;&quot;&gt;Shall we use singup form so the user can create his password.or, shall we created as an admin when invite a new user the user will recive and email to rest the password?&lt;/span&gt;&lt;br&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="-500" y="200" width="420" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="&lt;h1&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;superbase&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span style=&quot;background-color: initial; font-size: 12px; font-weight: normal;&quot;&gt;https://supabase.com/docs/guides/database/overview&lt;/span&gt;&lt;br&gt;&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="-450" y="550" width="190" height="120" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

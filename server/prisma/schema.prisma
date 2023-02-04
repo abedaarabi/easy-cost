@@ -29,10 +29,10 @@ model Company {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  name         String        @unique
-  email        String        @unique
-  avatar       String
+  id    String @id @unique
+  name  String
+  email String
+
   createdAt    DateTime      @default(now())
   materialName Material[]
   projectName  Project[]
@@ -40,6 +40,8 @@ model User {
   companyId    String
   Company      Company       @relation(fields: [companyId], references: [id])
   InvitedUser  InvitedUser[]
+
+  @@unique([email, companyId])
 }
 
 model InvitedUser {
@@ -52,6 +54,7 @@ model InvitedUser {
   Project   Project  @relation(fields: [projectId], references: [id])
   projectId String
   token     String
+  //userType
 }
 
 model Material {

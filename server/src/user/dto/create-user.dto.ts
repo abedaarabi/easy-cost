@@ -10,8 +10,8 @@ export class CreateUserDto {
   @ApiProperty()
   @IsEmail()
   email: string;
-  @ApiProperty()
-  avatar: string;
+  // @ApiProperty()
+  // avatar: string;
   @ApiProperty()
   userType: UserType;
   @ApiProperty()

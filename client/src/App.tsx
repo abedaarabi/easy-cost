@@ -30,15 +30,21 @@ import UserTable from "./dashboard/components/UserTable";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, AlertTitle, Snackbar, Stack } from "@mui/material";
 import ProjectTable from "./dashboard/components/ProjectTable";
 import ProjectMaterialTable from "./project-material/page/ProjectMaterialTable";
 import Page404 from "./Page404";
+import SignUp from "./singup/SingUp";
+import { useNetworkStatus } from "./hooks/useNetworkStatus";
 
 const router = createBrowserRouter([
   {
     path: "/login",
     element: <SignInSide />,
+  },
+  {
+    path: "/company/:companyId/sing-up",
+    element: <SignUp />,
   },
   {
     path: "/",
@@ -89,7 +95,7 @@ const router = createBrowserRouter([
 function App() {
   const queryClient = new QueryClient();
   const { user, setUser, setLoading, loading } = useAuth();
-
+  const isOnline = useNetworkStatus();
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
@@ -103,6 +109,30 @@ function App() {
         </Alert>
       </Snackbar>
       <RouterProvider router={router} fallbackElement={<MiniDrawer />} />
+      {!isOnline && (
+        <Stack
+          sx={{
+            width: "20%",
+            // m: "auto",
+            zIndex: "9999",
+            position: "absolute",
+            top: "10%",
+            left: "40%",
+            marginTop: "-50px",
+            marginLeft: "-50px",
+
+            // height: "100px",
+          }}
+          spacing={2}
+        >
+          <Alert severity="error">
+            <AlertTitle>
+              <strong>Error</strong>
+            </AlertTitle>
+            No Internet Access
+          </Alert>
+        </Stack>
+      )}
     </QueryClientProvider>
   );
 }

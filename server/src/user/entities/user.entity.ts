@@ -4,8 +4,8 @@ import { User, UserType } from '@prisma/client';
 export class UserEntity implements User {
   @ApiProperty()
   email: string;
-  @ApiProperty()
-  avatar: string;
+  // @ApiProperty()
+  // avatar: string;
   @ApiProperty()
   userType: UserType;
   @ApiProperty()

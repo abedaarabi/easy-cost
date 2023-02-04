@@ -29,10 +29,6 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
-], CreateUserDto.prototype, "avatar", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    __metadata("design:type", String)
 ], CreateUserDto.prototype, "userType", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),

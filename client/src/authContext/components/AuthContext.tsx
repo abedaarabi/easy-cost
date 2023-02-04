@@ -13,6 +13,10 @@ import {
 import { auth } from "../../config/firebase";
 import { async } from "@firebase/util";
 import { Box } from "@mui/system";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+
+import { operationsByTag } from "../../api/easyCostComponents";
+import { UserEntity } from "../../api/easyCostSchemas";
 
 const AuthContext = createContext<any>({});
 
@@ -28,10 +32,15 @@ export const AuthContextProvider = ({
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        const useDetails = await operationsByTag.user.userControllerFindOne({
+          pathParams: { id: user.uid },
+        });
+        console.log(useDetails);
+
         setUser({
           uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
+          // email: user.email,
+          ...useDetails,
         });
       } else {
         setUser(null);

@@ -21,10 +21,6 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
-], UserEntity.prototype, "avatar", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    __metadata("design:type", String)
 ], UserEntity.prototype, "userType", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),

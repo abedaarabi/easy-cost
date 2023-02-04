@@ -48,7 +48,7 @@ const ProjectTable = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   if (user.length < 1) return null;
-  const { companyId, id: userId } = user[0];
+  const { companyId, id: userId } = user
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["userByCompanyId"],

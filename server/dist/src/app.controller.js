@@ -17,17 +17,17 @@ let AppController = class AppController {
         this.appService = appService;
     }
     getHello() {
-        return this.appService.getHello();
+        return this.appService.oAuth2();
     }
 };
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Object)
 ], AppController.prototype, "getHello", null);
 AppController = __decorate([
-    (0, common_1.Controller)(),
+    (0, common_1.Controller)('/token'),
     __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);
 exports.AppController = AppController;

@@ -8,7 +8,7 @@ import {
 import { useAuth } from "../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 import Avatar from "@mui/material/Avatar";
-
+import SendIcon from "@mui/icons-material/Send";
 import ReusableTable from "../../reusableTable/ReusableTable";
 import Box from "@mui/material/Box";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
@@ -48,6 +48,17 @@ import { MySelect } from "../components/MySelect";
 import { CustomFields } from "../components/CustomFields";
 import CommentDialog from "../components/CommentDialog";
 import TemporaryDrawer from "../components/CommentsDrawer";
+import { Viewer } from "../../viewer/ForgeViewer";
+import { Stack } from "@mui/system";
+import { styled } from "@mui/material/styles";
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  // textAlign: "center",
+  color: theme.palette.text.primary,
+}));
 
 const ProjectMaterialTable = () => {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
@@ -57,7 +68,7 @@ const ProjectMaterialTable = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   if (user.length < 1 || !projectId) return null;
-  const { companyId, id: userId } = user[0];
+  const { companyId, id: userId } = user;
 
   //Model
   const [open, setOpen] = React.useState(false);
@@ -292,80 +303,94 @@ const ProjectMaterialTable = () => {
 
   return (
     <>
-      <Paper sx={{ mb: 3, p: 1, textAlign: "center" }}>
-        <Typography variant="h4" component="h4" color={"#011627"}>
-          {projectName}
-        </Typography>
-      </Paper>
-      <Paper>
-        <ReusableTable
-          enableColumnDragging
-          muiTableHeadCellProps={{
-            align: "center",
-          }}
-          muiTableBodyCellProps={{
-            color: "white",
-            align: "center",
-          }}
-          // muiTableBodyProps={{
-          //   sx: (theme) => ({
-          //     "& tr:nth-of-type(odd)": {
-          //       backgroundColor: darken(theme.palette.background.paper, 0.1),
-          //     },
-          //   }),
-          // }}
-          isLoading={isLoading}
-          enableStickyFooter
-          initialState={{ columnVisibility: { id: false } }}
-          columns={colTest}
-          data={dataTable}
-          onEditingRowSave={handleSaveRowEdits}
-          enableEditing
-          renderRowActions={({ row, table }) => (
-            <Box sx={{ display: "flex", gap: "0.5rem" }}>
-              <Tooltip arrow placement="left" title="Edit">
-                <IconButton
-                  onClick={() => {
-                    table.setEditingRow(row);
-                  }}
-                  color="info"
-                >
-                  <Edit />
-                </IconButton>
-              </Tooltip>
-              <Tooltip arrow placement="right" title="Delete">
-                <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                  <Delete />
-                </IconButton>
-              </Tooltip>
-              <Tooltip arrow placement="right" title="Add Comment">
-                <IconButton
-                  color="primary"
-                  onClick={() => {
-                    setProjectMaterialId(row.original.id);
+      <Stack
+        sx={{}}
+        direction={{ xs: "column", sm: "column" }}
+        spacing={{ xs: 1, sm: 2, md: 1 }}
+      >
+        <Item sx={{ flex: 20, overflow: "auto" }}>
+          <Box
+            sx={{
+              height: "25rem",
 
-                    toggleSliderOpen();
-                  }}
+              position: "relative",
+            }}
+          >
+            <Viewer />
+          </Box>
+        </Item>
+        <Box sx={{ flex: 1, mt: 1 }}>
+          <ReusableTable
+            enableColumnDragging
+            muiTableHeadCellProps={{
+              align: "center",
+            }}
+            muiTableBodyCellProps={{
+              color: "white",
+              align: "center",
+            }}
+            // muiTableBodyProps={{
+            //   sx: (theme) => ({
+            //     "& tr:nth-of-type(odd)": {
+            //       backgroundColor: darken(theme.palette.background.paper, 0.1),
+            //     },
+            //   }),
+            // }}
+            isLoading={isLoading}
+            enableStickyFooter
+            initialState={{ columnVisibility: { id: false } }}
+            columns={colTest}
+            data={dataTable}
+            onEditingRowSave={handleSaveRowEdits}
+            enableEditing
+            renderRowActions={({ row, table }) => (
+              <Box sx={{ display: "flex", gap: "0.5rem" }}>
+                <Tooltip arrow placement="left" title="Edit">
+                  <IconButton
+                    onClick={() => {
+                      table.setEditingRow(row);
+                    }}
+                    color="info"
+                  >
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip arrow placement="right" title="Delete">
+                  <IconButton
+                    color="error"
+                    onClick={() => handleDeleteRow(row)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip arrow placement="right" title="Add Comment">
+                  <IconButton
+                    color="primary"
+                    onClick={() => {
+                      setProjectMaterialId(row.original.id);
+
+                      toggleSliderOpen();
+                    }}
+                  >
+                    {/* variant="dot" */}
+                    <Badge badgeContent={4} color="secondary">
+                      <InsertCommentIcon />
+                    </Badge>
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+            renderTopToolbarCustomActions={() => (
+              <Box sx={{ pl: 2, display: "flex", gap: 2 }}>
+                <Fab
+                  color="info"
+                  onClick={() => setCreateModalOpen(true)}
+                  aria-label="add"
+                  size="small"
                 >
-                  {/* variant="dot" */}
-                  <Badge badgeContent={4} color="secondary">
-                    <InsertCommentIcon />
-                  </Badge>
-                </IconButton>
-              </Tooltip>
-            </Box>
-          )}
-          renderTopToolbarCustomActions={() => (
-            <Box sx={{ pl: 2, display: "flex", gap: 2 }}>
-              <Fab
-                color="info"
-                onClick={() => setCreateModalOpen(true)}
-                aria-label="add"
-                size="small"
-              >
-                <AddIcon />
-              </Fab>
-              {/* <Fab
+                  <AddIcon />
+                </Fab>
+                {/* <Fab
                 color="success"
                 onClick={() => {
                   handleOpen();
@@ -375,60 +400,68 @@ const ProjectMaterialTable = () => {
               >
                 <LibraryAddIcon />
               </Fab> */}
-            </Box>
-          )}
-          renderDetailPanel={({ row }) => (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-around",
-                alignItems: "center",
-              }}
-            >
-              <p>Comments:</p>
-              {["apple", "banana", "tomato"].map((items) => (
-                <Box
-                  key={items}
-                  sx={{
-                    mt: 1,
-                    p: 1,
-                    width: "100%",
-                    bgcolor: "yellowgreen",
-                    color: "white",
+                <Fab
+                  color="inherit"
+                  onClick={() => {
+                    alert(projectId);
                   }}
+                  aria-label="add"
+                  size="small"
                 >
-                  {items}
-                </Box>
-              ))}
-            </Box>
-          )}
-        />
-
-        <CreateNewAccountModal
-          columns={colTest}
-          open={createModalOpen}
-          onClose={() => setCreateModalOpen(false)}
-          onSubmit={handleCreateNewRow}
-          materials={materials}
-        />
-
-        <CustomFields
-          projectId={projectId}
-          handleClose={handleClose}
-          handleOpen={handleOpen}
-          open={open}
-        />
-
-        <TemporaryDrawer
-          projectId={projectId}
-          projectMaterialId={projectMaterialId}
-          userId={userId}
-          openDrawer={openDrawer}
-          toggleSliderOpen={toggleSliderOpen}
-          toggleSliderClose={toggleSliderClose}
-        />
-      </Paper>
+                  <SendIcon fontSize="small" />
+                </Fab>
+              </Box>
+            )}
+            renderDetailPanel={({ row }) => (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                <p>Comments:</p>
+                {["apple", "banana", "tomato"].map((items) => (
+                  <Box
+                    key={items}
+                    sx={{
+                      mt: 1,
+                      p: 1,
+                      width: "100%",
+                      bgcolor: "yellowgreen",
+                      color: "white",
+                    }}
+                  >
+                    {items}
+                  </Box>
+                ))}
+              </Box>
+            )}
+          />
+          <CreateNewAccountModal
+            columns={colTest}
+            open={createModalOpen}
+            onClose={() => setCreateModalOpen(false)}
+            onSubmit={handleCreateNewRow}
+            materials={materials}
+          />
+          <CustomFields
+            projectId={projectId}
+            handleClose={handleClose}
+            handleOpen={handleOpen}
+            open={open}
+          />
+          <TemporaryDrawer
+            projectId={projectId}
+            projectMaterialId={projectMaterialId}
+            userId={userId}
+            openDrawer={openDrawer}
+            toggleSliderOpen={toggleSliderOpen}
+            toggleSliderClose={toggleSliderClose}
+          />
+        </Box>
+      </Stack>
     </>
   );
 };
@@ -436,7 +469,10 @@ const ProjectMaterialTable = () => {
 export default ProjectMaterialTable;
 
 function name(
-  data: { id: string }[],
+  data: {
+    materialId: string;
+    id: string;
+  }[],
   setMid: {
     (value: React.SetStateAction<{ mId: string } | undefined>): void;
     (arg0: { mId: string }): void;

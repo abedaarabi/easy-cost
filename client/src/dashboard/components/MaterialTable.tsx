@@ -44,7 +44,7 @@ import { MaterialEntity } from "../../api/easyCostSchemas";
 const MaterialTable = () => {
   const queryClient = useQueryClient();
   const { user, setLoading, loading } = useAuth();
-  const { companyId, id: userId } = user[0];
+  const { companyId, id: userId } = user
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["materialByCompanyId"],

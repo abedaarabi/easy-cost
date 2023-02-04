@@ -7,8 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
+const ForgeSDK = require("forge-apis");
 const common_1 = require("@nestjs/common");
+const oAuth2TwoLegged = new ForgeSDK.AuthClientTwoLegged('', '', ['data:read', 'data:create', 'data:write'], false);
 let AppService = class AppService {
+    async oAuth2() {
+        const credentials = await oAuth2TwoLegged.authenticate();
+        return credentials;
+    }
     getHello() {
         return 'Hello World!';
     }

@@ -27,6 +27,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import DnsIcon from "@mui/icons-material/Dns";
 import { Avatar, Badge } from "@mui/material";
 import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
+import ProjectMaterialTable from "../../project-material/page/ProjectMaterialTable";
+import ProjectMaterialUser from "../../project-material/components/ProjectMaterialUser";
 const drawerWidth = 220;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -102,9 +104,10 @@ export default function MiniDrawer() {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { user } = useAuth();
 
   //TODO: Display name on header bar!
-  // const { companyId, id: userId, name } = user[0];
+  const { companyId, id: userId, name } = user;
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -152,7 +155,7 @@ export default function MiniDrawer() {
                 noWrap
                 sx={{ flexGrow: 1 }}
               >
-                {/* {name} */}
+                {name}
               </Typography>
               <Avatar></Avatar>
             </Box>
@@ -173,62 +176,73 @@ export default function MiniDrawer() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {drawerLinks.map(({ text, link, icon, id }) => (
-            <ListItem
-              key={id}
-              disablePadding
-              sx={{
-                display: "block",
-              }}
-              selected={location.pathname === link && true}
-            >
-              <Link to={link} style={{ textDecoration: "none", color: "gray" }}>
-                <ListItemButton
+      {false ? (
+        <Box sx={{ m: "auto", mt: 12, width: "85%" }}>
+          <ProjectMaterialUser />
+        </Box>
+      ) : (
+        <>
+          <Drawer variant="permanent" open={open}>
+            <DrawerHeader>
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === "rtl" ? (
+                  <ChevronRightIcon />
+                ) : (
+                  <ChevronLeftIcon />
+                )}
+              </IconButton>
+            </DrawerHeader>
+            <Divider />
+            <List>
+              {drawerLinks.map(({ text, link, icon, id }) => (
+                <ListItem
+                  key={id}
+                  disablePadding
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
+                    display: "block",
                   }}
+                  selected={location.pathname === link && true}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
+                  <Link
+                    to={link}
+                    style={{ textDecoration: "none", color: "gray" }}
                   >
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text}
-                    sx={{
-                      opacity: open ? 1 : 0,
-                      color: location.pathname === link ? "#003844" : "",
-                    }}
-                  />
-                </ListItemButton>
-              </Link>
-            </ListItem>
-          ))}
-        </List>
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={text}
+                        sx={{
+                          opacity: open ? 1 : 0,
+                          color: location.pathname === link ? "#003844" : "",
+                        }}
+                      />
+                    </ListItemButton>
+                  </Link>
+                </ListItem>
+              ))}
+            </List>
 
-        <Divider />
-      </Drawer>
-      <Box sx={{ m: "auto", mt: 12, width: "80%" }}>
-        <Outlet />
-      </Box>
+            <Divider />
+          </Drawer>
+          <Box sx={{ m: "auto", mt: 12, width: "85%" }}>
+            <Outlet />
+          </Box>
+        </>
+      )}
     </Box>
   );
 }

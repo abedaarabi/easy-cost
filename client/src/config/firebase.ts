@@ -27,8 +27,38 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
+  deleteUser,
 } from "firebase/auth";
 
 export const auth = getAuth();
 
+export const signUp = async (email: string, password = "password") => {
+  try {
+    const { user } = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const sendPasswordReset = async (email: string) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset link sent!");
+  } catch (err) {
+    console.error(err);
+  }
+};
+// export const deleteUserFirebase = async (uid: string) => {
+//   try {
+//     await deleteUser(uid);
+//     alert("Password reset link sent!");
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };

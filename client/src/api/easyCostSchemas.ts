@@ -10,7 +10,7 @@ export type CreateUserDto = {
   userType: string;
   companyId: string;
   userId: string;
-  id: string;
+  id?: string;
 };
 
 export type UserEntity = {
