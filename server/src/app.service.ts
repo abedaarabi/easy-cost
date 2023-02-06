@@ -6,8 +6,8 @@ import * as sg from '@sendgrid/mail';
 import { readFileSync, writeFileSync } from 'fs';
 
 const oAuth2TwoLegged = new ForgeSDK.AuthClientTwoLegged(
-  '7KQ4vqb7uJFWgWYgNRnhE6T5ZDnbxPcn',
-  'GMgjs3ljOpfRLuMW',
+  '',
+  '',
   ['data:read', 'data:create', 'data:write'],
   false,
 );
@@ -47,12 +47,6 @@ const html = `
 
 @Injectable()
 export class AppService {
-  constructor() {
-    sg.setApiKey(
-      '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',
-    );
-  }
-
   async oAuth2(): Promise<any> {
     const credentials = await oAuth2TwoLegged.authenticate();
     return credentials;
