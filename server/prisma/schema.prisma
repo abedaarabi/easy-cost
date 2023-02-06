@@ -54,7 +54,7 @@ model InvitedUser {
   Project   Project  @relation(fields: [projectId], references: [id])
   projectId String
   token     String
-  //userType
+  role      String
 }
 
 model Material {

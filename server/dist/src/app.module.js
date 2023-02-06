@@ -18,6 +18,7 @@ const project_module_1 = require("./project/project.module");
 const project_material_module_1 = require("./project-material/project-material.module");
 const invited_user_module_1 = require("./invited-user/invited-user.module");
 const table_custom_fields_module_1 = require("./table-custom-fields/table-custom-fields.module");
+const invite_users_module_1 = require("./invite-users/invite-users.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -31,6 +32,7 @@ AppModule = __decorate([
             project_material_module_1.ProjectMaterialModule,
             invited_user_module_1.InvitedUserModule,
             table_custom_fields_module_1.TableCustomFieldsModule,
+            invite_users_module_1.InviteUsersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

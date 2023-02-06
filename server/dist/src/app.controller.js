@@ -17,7 +17,10 @@ let AppController = class AppController {
         this.appService = appService;
     }
     getHello() {
-        return this.appService.oAuth2();
+        return this.appService.getHello();
+    }
+    sendEmail() {
+        return this.appService.sendEmail();
     }
 };
 __decorate([
@@ -26,6 +29,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Object)
 ], AppController.prototype, "getHello", null);
+__decorate([
+    (0, common_1.Get)('/mail'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Object)
+], AppController.prototype, "sendEmail", null);
 AppController = __decorate([
     (0, common_1.Controller)('/token'),
     __metadata("design:paramtypes", [app_service_1.AppService])

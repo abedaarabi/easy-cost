@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.2",
     "@prisma/client": "^4.6.1",
+    "@sendgrid/mail": "^7.7.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "forge-apis": "^0.9.5",

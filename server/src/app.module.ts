@@ -9,6 +9,7 @@ import { ProjectModule } from './project/project.module';
 import { ProjectMaterialModule } from './project-material/project-material.module';
 import { InvitedUserModule } from './invited-user/invited-user.module';
 import { TableCustomFieldsModule } from './table-custom-fields/table-custom-fields.module';
+import { InviteUsersModule } from './invite-users/invite-users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TableCustomFieldsModule } from './table-custom-fields/table-custom-fiel
     ProjectMaterialModule,
     InvitedUserModule,
     TableCustomFieldsModule,
+    InviteUsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

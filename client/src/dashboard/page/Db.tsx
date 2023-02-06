@@ -29,7 +29,7 @@ import { Avatar, Badge } from "@mui/material";
 import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
 import ProjectMaterialTable from "../../project-material/page/ProjectMaterialTable";
 import ProjectMaterialUser from "../../project-material/components/ProjectMaterialUser";
-const drawerWidth = 220;
+const drawerWidth = 200;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
