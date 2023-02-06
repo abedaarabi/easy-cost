@@ -5,4 +5,6 @@ export declare class CreateInvitedUserDto {
     userId: string;
     projectId: string;
     token: string;
+    email: string;
+    role: string;
 }

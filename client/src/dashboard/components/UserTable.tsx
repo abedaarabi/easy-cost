@@ -197,12 +197,10 @@ const UserTable = () => {
   };
 
   const handleCreateNewRow = (values: Omit<CreateUserDto, "id">) => {
-    console.log({ ...values, companyId });
-    // navigate(`/company/${companyId}/type/${values.userType}/sing-up`);
-
     createMutation.mutate({
       ...values,
       companyId,
+      id: user.id,
     });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
@@ -322,7 +320,7 @@ export const CreateNewAccountModal: FC<{
             }}
           >
             {columns
-              .filter((i) => i.accessorKey !== "id")
+              .filter((i) => i.accessorKey !== "id" && i.accessorKey !== "name")
               .map((column) => {
                 if (column.accessorKey == "userType") {
                   return (
@@ -337,13 +335,11 @@ export const CreateNewAccountModal: FC<{
                         })
                       }
                     >
-                      {["CompanyUser", "Client", "CompanyAdmin"].map(
-                        (state) => (
-                          <MenuItem key={state} value={state}>
-                            {state}
-                          </MenuItem>
-                        )
-                      )}
+                      {["Super User", "Admin"].map((state) => (
+                        <MenuItem key={state} value={state}>
+                          {state}
+                        </MenuItem>
+                      ))}
                     </Select>
                   );
                 }

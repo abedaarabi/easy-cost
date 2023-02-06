@@ -4,7 +4,7 @@ import { UpdateInvitedUserDto } from './dto/update-invited-user.dto';
 export declare class InvitedUserController {
     private readonly invitedUserService;
     constructor(invitedUserService: InvitedUserService);
-    create(createInvitedUserDto: CreateInvitedUserDto): import(".prisma/client").Prisma.Prisma__InvitedUserClient<import(".prisma/client").InvitedUser, never>;
+    create(createInvitedUserDto: CreateInvitedUserDto): Promise<[import("@sendgrid/mail").ClientResponse, {}]>;
     findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").InvitedUser[]>;
     findOne(id: string): Promise<import(".prisma/client").InvitedUser>;
     update(id: string, updateInvitedUserDto: UpdateInvitedUserDto): import(".prisma/client").Prisma.Prisma__InvitedUserClient<import(".prisma/client").InvitedUser, never>;

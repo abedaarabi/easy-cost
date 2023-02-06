@@ -1,10 +1,11 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateInvitedUserDto } from './dto/create-invited-user.dto';
 import { UpdateInvitedUserDto } from './dto/update-invited-user.dto';
+import * as sg from '@sendgrid/mail';
 export declare class InvitedUserService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(createInvitedUserDto: CreateInvitedUserDto): import(".prisma/client").Prisma.Prisma__InvitedUserClient<import(".prisma/client").InvitedUser, never>;
+    create(createInvitedUserDto: CreateInvitedUserDto): Promise<[sg.ClientResponse, {}]>;
     findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").InvitedUser[]>;
     findOne(id: string): Promise<import(".prisma/client").InvitedUser>;
     update(id: string, updateInvitedUserDto: UpdateInvitedUserDto): import(".prisma/client").Prisma.Prisma__InvitedUserClient<import(".prisma/client").InvitedUser, never>;

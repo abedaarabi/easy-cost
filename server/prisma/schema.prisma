@@ -51,10 +51,13 @@ model InvitedUser {
   companyId String
   User      User?    @relation(fields: [userId], references: [id])
   userId    String?
-  Project   Project  @relation(fields: [projectId], references: [id])
-  projectId String
-  token     String
+  Project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
+  token     String   @db.VarChar(5000)
+  email     String
   role      String
+
+  @@unique([email, companyId])
 }
 
 model Material {

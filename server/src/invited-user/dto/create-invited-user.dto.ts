@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateInvitedUserDto {
   id: string;
-
   createdAt: Date;
   @ApiProperty()
   companyId: string;
@@ -12,4 +11,8 @@ export class CreateInvitedUserDto {
   projectId: string;
   @ApiProperty()
   token: string;
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  role: string;
 }

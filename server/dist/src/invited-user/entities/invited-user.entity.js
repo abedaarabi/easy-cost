@@ -18,6 +18,11 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.MinLength)(5),
     __metadata("design:type", String)
+], InvitedUserEntity.prototype, "email", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.MinLength)(5),
+    __metadata("design:type", String)
 ], InvitedUserEntity.prototype, "companyId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),

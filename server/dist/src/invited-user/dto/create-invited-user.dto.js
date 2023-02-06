@@ -29,5 +29,13 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateInvitedUserDto.prototype, "token", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], CreateInvitedUserDto.prototype, "email", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], CreateInvitedUserDto.prototype, "role", void 0);
 exports.CreateInvitedUserDto = CreateInvitedUserDto;
 //# sourceMappingURL=create-invited-user.dto.js.map

@@ -57,21 +57,23 @@ export async function updateUser(
 }
 
 export async function createUser(
-  material: CreateUserDto
+  userInfo: CreateUserDto
 ): Promise<CreateUserDto> {
   try {
-    const userDetails: any = await signUp(material.email);
+    // const userDetails: any = await signUp(material.email);
+    console.log(userInfo);
 
     const { data, status } = await axios.post(
-      "http://localhost:3000/user",
+      "http://localhost:3000/invited-user",
 
       {
-        id: userDetails.uid,
-        name: material.name,
-        email: material.email,
+        userId: userInfo.id,
+        // name: userInfo.name,
+        email: userInfo.email,
 
-        userType: material.userType,
-        companyId: material.companyId,
+        companyId: userInfo.companyId,
+
+        role: userInfo.userType,
       },
 
       {
