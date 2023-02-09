@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ProjectMaterialService } from '../project-material/project-material.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,7 +9,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UserService {
   // TODO inject -- ask Younes
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private m: ProjectMaterialService,
+  ) {}
 
   create(createUserDto: CreateUserDto) {
     try {

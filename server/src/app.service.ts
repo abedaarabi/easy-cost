@@ -12,7 +12,7 @@ const oAuth2TwoLegged = new ForgeSDK.AuthClientTwoLegged(
   false,
 );
 
-const secret = 'secretKey';
+const secret = 'google12344321';
 const options = {
   expiresIn: '2d',
 };

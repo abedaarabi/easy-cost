@@ -56,7 +56,7 @@ export async function updateUser(
   }
 }
 
-export async function createUser(
+export async function createUserToken(
   userInfo: CreateUserDto
 ): Promise<CreateUserDto> {
   try {
@@ -83,7 +83,6 @@ export async function createUser(
         },
       }
     );
-    await sendPasswordReset(data.email);
 
     return data;
   } catch (error) {

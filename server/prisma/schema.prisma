@@ -125,3 +125,40 @@ model TableCustomFields {
 //   projectMaterialId String
 //   value             String
 // }
+
+// const { PrismaClient } = require('@prisma/client');
+
+// const prisma = new PrismaClient();
+
+// async function getFolderAndChildren(id, folders = []) {
+//   const folder = await prisma.folder.findOne({
+//     where: { id },
+//     include: { FolderOnProjects: true },
+//   });
+
+//   folders.push(folder);
+
+//   const children = await prisma.folder.findMany({
+//     where: { childId: id },
+//     include: { FolderOnProjects: true },
+//   });
+
+//   for (const child of children) {
+//     await getFolderAndChildren(child.id, folders);
+//   }
+
+//   return folders;
+// }
+
+// async function main() {
+//   const rootFolderId = 'some-root-folder-id';
+//   const folders = await getFolderAndChildren(rootFolderId);
+
+//   console.log(folders);
+// }
+
+// main()
+//   .catch(console.error)
+//   .finally(async () => {
+//     await prisma.disconnect();
+//   });

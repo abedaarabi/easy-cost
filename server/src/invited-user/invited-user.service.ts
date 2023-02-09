@@ -9,7 +9,7 @@ sg.setApiKey(process.env.SENDGRID);
 
 const secret = 'secretKey';
 const options = {
-  expiresIn: '2d',
+  expiresIn: '1m',
 };
 
 @Injectable()
@@ -43,7 +43,7 @@ export class InvitedUserService {
     <h1 style="color: blue; text-align: center;">Hello, World!</h1>
     <p style="color: white;">This is a sample email sent from SendGrid.</p>
     <p>your invited to project ${companyInfo.name}.</p>
-    <p><a href="http://localhost:5173/company/${token}/sing-up">Accept Invitation</a></p>
+    <p><a href="http://localhost:5173/token/${token}/sing-up">Accept Invitation</a></p>
   </div>
   </body>
 </html>
@@ -56,7 +56,7 @@ export class InvitedUserService {
       html,
     };
     const sendGrid = await sg.send(msg);
-    console.log(sendGrid);
+    console.log(sendGrid, '#####');
 
     return sendGrid;
   }

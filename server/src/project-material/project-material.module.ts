@@ -7,5 +7,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   controllers: [ProjectMaterialController],
   providers: [ProjectMaterialService],
   imports: [PrismaModule],
+  exports: [ProjectMaterialService],
 })
 export class ProjectMaterialModule {}

@@ -131,7 +131,6 @@ export const Viewer = () => {
       Autodesk.Viewing.Initializer(
         {
           env: "Local",
-          useADP: false,
 
           // env: "AutodeskProduction2",
           // api: "streamingV2",
@@ -204,7 +203,13 @@ export const Viewer = () => {
           //   //@ts-ignore
           // });
 
-          viewer.current.loadModel("../../pdf.pdf", onDocumentLoadSuccess);
+          viewer.current.loadModel(
+            "../../test.pdf",
+            {},
+            // @ts-ignore
+            onDocumentLoadSuccess,
+            onDocumentLoadFailure
+          );
 
           viewer?.current?.start();
 

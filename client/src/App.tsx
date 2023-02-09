@@ -36,6 +36,7 @@ import ProjectMaterialTable from "./project-material/page/ProjectMaterialTable";
 import Page404 from "./Page404";
 import SignUp from "./singup/SingUp";
 import { useNetworkStatus } from "./hooks/useNetworkStatus";
+import Invalidinvite from "./singup/Invalidinvite";
 
 const router = createBrowserRouter([
   {
@@ -43,8 +44,9 @@ const router = createBrowserRouter([
     element: <SignInSide />,
   },
   {
-    path: "/company/:companyId/sing-up",
+    path: `/token/:tokenId/sing-up`,
     element: <SignUp />,
+    errorElement: <Invalidinvite />,
   },
   {
     path: "/",
@@ -93,6 +95,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  console.log("abed");
+
   const queryClient = new QueryClient();
   const { user, setUser, setLoading, loading } = useAuth();
   const isOnline = useNetworkStatus();

@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import "./style.css";
 import {
   useQuery,
   useMutation,
@@ -44,7 +45,7 @@ import Button from "@mui/material/Button";
 
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 import {
-  createUser,
+  createUserToken,
   getUserByCompany,
   updateUser,
 } from "../helper/db.fetchUser";
@@ -63,7 +64,6 @@ const UserTable = () => {
   const queryClient = useQueryClient();
   if (user.length < 1) return null;
   const { companyId, id: userId } = user;
-  // const companyId = "86656b02-5dbc-4d20-8127-5a4f08741eb3";
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["userByCompanyId"],
@@ -97,7 +97,7 @@ const UserTable = () => {
     }
   );
 
-  const createMutation = useMutation(createUser, {
+  const createMutation = useMutation(createUserToken, {
     onSuccess: () => {
       queryClient.invalidateQueries(["userByCompanyId"]);
     },
@@ -126,17 +126,7 @@ const UserTable = () => {
       enableHiding: true,
       size: 80,
     },
-    // {
-    //   accessorKey: "avatar",
-    //   header: "Avatar",
-    //   // size: 80,
-    //   Cell: ({ cell, row }) => (
-    //     <Box>
-    //       <Avatar alt="Remy Sharp" src="" />
-    //       {/* <Typography>{cell.getValue<string>()}</Typography> */}
-    //     </Box>
-    //   ),
-    // },
+
     {
       accessorKey: "name",
       header: "Name",
@@ -189,7 +179,7 @@ const UserTable = () => {
   const handleDeleteRow = (row: MRT_Row<UpdateUserDto>) => {
     if (!row.original.id) return;
     console.log(row.original.id);
-    if (!confirm(`Are you sure you want to delete ${row.getValue("name")}`)) {
+    if (!confirm(`Are you sure you want to delete ${row.getValue("id")}`)) {
       return;
     }
     deleteMutation.mutate(row.original.id);
@@ -217,53 +207,39 @@ const UserTable = () => {
   return (
     <>
       <ReusableTable
-        // isLoading={{ isLoading: false }}
-
-        renderDetailPanel={({ row }) => (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-around",
-              alignItems: "center",
-            }}
-          >
-            <p>Comments:</p>
-            {["apple", "banana", "tomato"].map((items) => (
-              <Box
-                key={items}
-                sx={{
-                  mt: 1,
-                  p: 1,
-                  width: "100%",
-                  bgcolor: "yellowgreen",
-                  color: "white",
-                }}
-              >
-                {items}
-              </Box>
-            ))}
-          </Box>
-        )}
-        // enableClickToCopy
+        isLoading={isLoading}
+        enableClickToCopy
         columns={userColumn}
         data={dataTable}
         onEditingRowSave={handleSaveRowEdits}
         enableEditing
-        renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", gap: "0.5rem" }}>
-            <Tooltip arrow placement="left" title="Edit">
-              <IconButton onClick={() => table.setEditingRow(row)} color="info">
-                <Edit />
-              </IconButton>
-            </Tooltip>
-            <Tooltip arrow placement="right" title="Delete">
-              <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                <Delete />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        )}
+        //@ts-ignore
+        renderRowActions={({ row, table }) => {
+          console.log(row.original.id, user.uid);
+
+          return row.original.id === user.uid ? (
+            <div className="ring-container">
+              <div className="ringring"></div>
+              <div className="circle"></div>
+            </div>
+          ) : user.userType !== "CompanyAdmin" ? null : (
+            <Box sx={{ display: "flex", gap: "0.5rem" }}>
+              <Tooltip arrow placement="left" title="Edit">
+                <IconButton
+                  onClick={() => table.setEditingRow(row)}
+                  color="info"
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+              <Tooltip arrow placement="right" title="Delete">
+                <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                  <Delete />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          );
+        }}
         renderTopToolbarCustomActions={() => (
           <Fab
             color="info"
@@ -335,7 +311,7 @@ export const CreateNewAccountModal: FC<{
                         })
                       }
                     >
-                      {["Super User", "Admin"].map((state) => (
+                      {["Super User", "CompanyAdmin"].map((state) => (
                         <MenuItem key={state} value={state}>
                           {state}
                         </MenuItem>

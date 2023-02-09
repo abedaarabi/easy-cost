@@ -18,7 +18,10 @@ import {
   useQueryClient,
   useQueries,
 } from "@tanstack/react-query";
-import { createUser } from "../dashboard/helper/db.fetchUser";
+import { Params, useNavigate, useParams } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+import Invalidinvite from "./Invalidinvite";
+import { createNewUser } from "./singupHelper";
 
 function Copyright(props: any) {
   return (
@@ -41,10 +44,19 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignUp() {
-  // get the companyId for url and the user type form url
+  // get the tokenId for url and the user type form url
+  const { tokenId } = useParams<Params<string>>();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  const createMutation = useMutation(createUser, {
+  var decoded = jwt_decode(tokenId as string) as any;
+  // console.log(decoded, "#####");
+
+  if (!decoded) {
+    return <Invalidinvite />;
+  }
+
+  const createMutation = useMutation(createNewUser, {
     onSuccess: () => {
       queryClient.invalidateQueries(["userByCompanyId"]);
     },
@@ -53,11 +65,17 @@ export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
+
+    const formInfo = {
+      name: data.get("fullName"),
       password: data.get("password"),
-    });
-    // createMutation.mutate({ ...values, companyId });
+    };
+
+    createMutation.mutate({ ...formInfo, ...decoded });
+
+    console.log(createMutation);
+
+    createMutation.isSuccess && navigate("/project");
   };
 
   return (
@@ -92,7 +110,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="fullName"
-                  label="First Name"
+                  label="Full Name"
                   autoFocus
                 />
               </Grid>
@@ -106,7 +124,7 @@ export default function SignUp() {
                   autoComplete="family-name"
                 />
               </Grid> */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -115,7 +133,7 @@ export default function SignUp() {
                   name="email"
                   autoComplete="email"
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
