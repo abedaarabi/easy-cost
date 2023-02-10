@@ -117,7 +117,7 @@ const ProjectMaterialTable = () => {
         body: {
           materialId: mIds?.mId,
           projectId: projectId,
-          profit: Number(values.profit),
+          ...values,
         },
       }),
     {
@@ -260,13 +260,16 @@ const ProjectMaterialTable = () => {
 
   const dataTable = data
     ? data.map((column) => {
+        console.log(column);
+
         return {
           materialName: column?.material?.materialName,
           unit: column.material.unit,
           createdAt: new Date(column.createdAt).toLocaleDateString(),
           id: column.id,
-          profit: column.profit,
-          status: column.status,
+          quantity: column.quantity,
+          price: column.material.price,
+          hourPerQuantity: column.material.hourPerQuantity,
         };
       })
     : [];
@@ -363,21 +366,6 @@ const ProjectMaterialTable = () => {
                     <Delete />
                   </IconButton>
                 </Tooltip>
-                <Tooltip arrow placement="right" title="Add Comment">
-                  <IconButton
-                    color="primary"
-                    onClick={() => {
-                      setProjectMaterialId(row.original.id);
-
-                      toggleSliderOpen();
-                    }}
-                  >
-                    {/* variant="dot" */}
-                    <Badge badgeContent={4} color="secondary">
-                      <InsertCommentIcon />
-                    </Badge>
-                  </IconButton>
-                </Tooltip>
               </Box>
             )}
             renderTopToolbarCustomActions={() => (
@@ -412,32 +400,6 @@ const ProjectMaterialTable = () => {
                 </Fab>
               </Box>
             )}
-            renderDetailPanel={({ row }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-around",
-                  alignItems: "center",
-                }}
-              >
-                <p>Comments:</p>
-                {["apple", "banana", "tomato"].map((items) => (
-                  <Box
-                    key={items}
-                    sx={{
-                      mt: 1,
-                      p: 1,
-                      width: "100%",
-                      bgcolor: "yellowgreen",
-                      color: "white",
-                    }}
-                  >
-                    {items}
-                  </Box>
-                ))}
-              </Box>
-            )}
           />
           <CreateNewAccountModal
             columns={colTest}
@@ -452,14 +414,14 @@ const ProjectMaterialTable = () => {
             handleOpen={handleOpen}
             open={open}
           />
-          <TemporaryDrawer
+          {/* <TemporaryDrawer
             projectId={projectId}
             projectMaterialId={projectMaterialId}
             userId={userId}
             openDrawer={openDrawer}
             toggleSliderOpen={toggleSliderOpen}
             toggleSliderClose={toggleSliderClose}
-          />
+          /> */}
         </Box>
       </Stack>
     </>
@@ -524,37 +486,51 @@ function name(
     },
 
     {
-      accessorKey: "profit",
-      header: "Amount",
+      accessorKey: "quantity",
+      header: "Quantity",
+
       size: 100,
     },
     {
-      accessorKey: "status",
+      accessorKey: "price",
+      header: "Total Price",
       enableEditing: false, //disable editing on this column
+      enableSorting: false,
       enableHiding: false,
-      header: "Status",
-      size: 100,
-      Cell: ({ cell, row }) => (
-        <Box>
-          <Button
-            onClick={() => {
-              console.log(!row.original.status, "$$$$$");
 
-              updateMaterialStatus.mutate({
-                id: row.original.id,
-                values: row.original,
-              });
-            }}
-            variant="outlined"
-            color={!row.original.status ? "error" : "success"}
-          >
-            {cell.getValue<string>() ? "approved" : "not approved"}
-          </Button>
-          {/* <Avatar alt="Remy Sharp" src="" />
-          <Typography>{cell.getValue<string>()}</Typography> */}
-        </Box>
-      ),
+      size: 100,
+
+      Cell: ({ cell, column, row, table }) => {
+        console.log(row.original.project);
+
+        return row.original.quantity * row.original.price;
+      },
     },
+    {
+      accessorKey: "hourPerQuantity",
+      header: "Total Hours",
+      enableEditing: false, //disable editing on this column
+      enableSorting: false,
+      enableHiding: false,
+      size: 100,
+
+      Cell: ({ cell, column, row, table }) => {
+        // if (row.original.unit === "mm") {
+        //   (row.original.quantity / 1000) * row.original.hourPerQuantity;
+        // }
+
+        return row.original.quantity * row.original.hourPerQuantity;
+      },
+    },
+    // {
+    //   accessorKey: "hours",
+    //   header: "Total Hours",
+    //   size: 100,
+
+    //   Cell: ({ cell, column, row, table }) => {
+    //     return row.original.quantity * row.original.material.;
+    //   },
+    // },
 
     {
       accessorKey: "createdAt",
@@ -566,3 +542,21 @@ function name(
     },
   ] as MRT_ColumnDef<ProjecTMaterialTest>[];
 }
+
+//Action to add comments
+
+//  <Tooltip arrow placement="right" title="Add Comment">
+//    <IconButton
+//      color="primary"
+//      onClick={() => {
+//        setProjectMaterialId(row.original.id);
+
+//        toggleSliderOpen();
+//      }}
+//    >
+//      {/* variant="dot" */}
+//      <Badge badgeContent={4} color="secondary">
+//        <InsertCommentIcon />
+//      </Badge>
+//    </IconButton>
+//  </Tooltip>;

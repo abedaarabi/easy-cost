@@ -21,7 +21,7 @@ const theme = createTheme();
 export default function SignInSide() {
   const navigate = useNavigate();
 
-  const { user, setUser, login } = useAuth();
+  const { user, setUser, login, loginMsg, setLoginMsg } = useAuth();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -29,9 +29,11 @@ export default function SignInSide() {
     const password = data.get("password");
 
     try {
-      await login(email, password);
+      const loginResult = await login(email, password);
+      setLoginMsg(loginResult);
     } catch (error) {
       console.log(error);
+      setLoginMsg(error);
     }
   };
 

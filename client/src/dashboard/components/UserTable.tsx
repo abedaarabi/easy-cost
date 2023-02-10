@@ -215,13 +215,14 @@ const UserTable = () => {
         enableEditing
         //@ts-ignore
         renderRowActions={({ row, table }) => {
-          console.log(row.original.id, user.uid);
-
           return row.original.id === user.uid ? (
-            <div className="ring-container">
-              <div className="ringring"></div>
-              <div className="circle"></div>
-            </div>
+            <Box sx={{}}>
+              <Box className="ring-container">
+                <Box className="ringring"></Box>
+                <Box className="circle"></Box>
+              </Box>
+              {/* <Typography variant="overline">Logged in</Typography> */}
+            </Box>
           ) : user.userType !== "CompanyAdmin" ? null : (
             <Box sx={{ display: "flex", gap: "0.5rem" }}>
               <Tooltip arrow placement="left" title="Edit">

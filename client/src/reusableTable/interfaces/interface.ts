@@ -1,27 +1,25 @@
 export interface Material {
   companyId: string;
   createdAt: string;
-
+  hourPerQuantity: number;
   id: string;
 
-  image: string;
   materialName: string;
   price: number;
-  priceUnit: string;
-  supplier: string;
+
+  co2e: number;
   unit: string;
   userId: number | string | undefined;
-  workByhour: number;
 }
 
 export type ColumnType = {
   createdAt: string;
   id: string;
-  image: string;
+  co2e: number;
+
   materialName: string;
   price: number;
-  priceUnit: string;
-  supplier: string;
+
   unit: string;
-  workByhour: number;
+  hourPerQuantity: number;
 };

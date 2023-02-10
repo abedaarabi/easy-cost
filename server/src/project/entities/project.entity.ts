@@ -11,7 +11,9 @@ export class ProjectEntity implements Project {
   @ApiProperty()
   userId: string;
   @ApiProperty()
-  workByhour: number;
+  location: string;
   @ApiProperty()
   companyId: string;
+  @ApiProperty()
+  isActive: boolean;
 }

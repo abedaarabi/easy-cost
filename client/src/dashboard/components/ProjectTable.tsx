@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import "./style.css";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
@@ -48,7 +49,7 @@ const ProjectTable = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   if (user.length < 1) return null;
-  const { companyId, id: userId } = user
+  const { companyId, id: userId } = user;
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["userByCompanyId"],
@@ -77,7 +78,8 @@ const ProjectTable = () => {
           id: value.id,
           projectName: value.projectName,
           userId: value.userId,
-          workByhour: Number(value.workByhour),
+          isActive: Boolean(value.isActive),
+          location: value.location,
         },
       }),
     {
@@ -111,15 +113,41 @@ const ProjectTable = () => {
       header: "Project Name",
       size: 80,
     },
-    {
-      accessorKey: "workByhour",
-      header: "Work By Hour",
-      size: 80,
-    },
 
+    {
+      accessorKey: "isActive",
+      header: "Active",
+      size: 100,
+      Cell: ({ cell, row, table, column }) => {
+        // console.log({ cell, row, table, column });
+        console.log(cell.row.original.isActive);
+        const status = cell.row.original.isActive;
+
+        return (
+          <Box ml={5}>
+            {status ? (
+              <Box className="ring-container">
+                <Box className="ringring"></Box>
+                <Box className="circle"></Box>
+              </Box>
+            ) : (
+              <Box className="ring-container-red">
+                <Box className="ringring-red"></Box>
+                <Box className="circle-red"></Box>
+              </Box>
+            )}
+          </Box>
+        );
+      },
+    },
     {
       accessorKey: "createdAt",
       header: "Create Date",
+      size: 100,
+    },
+    {
+      accessorKey: "location",
+      header: "Location",
       size: 100,
     },
   ] as MRT_ColumnDef<CreateProjectDto>[];
@@ -128,6 +156,8 @@ const ProjectTable = () => {
     // return ({ ...column } = column);
     return {
       projectName: column.projectName,
+      isActive: column.isActive,
+      location: column.location,
       id: column.id,
       createdAt: new Date(column.createdAt).toLocaleDateString(),
     };

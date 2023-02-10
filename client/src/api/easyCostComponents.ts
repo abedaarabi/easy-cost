@@ -11,7 +11,16 @@ export type AppControllerGetHelloError = Fetcher.ErrorWrapper<undefined>;
 
 export const appControllerGetHello = (signal?: AbortSignal) =>
   easyCostFetch<undefined, AppControllerGetHelloError, undefined, {}, {}, {}>({
-    url: '/',
+    url: '/token',
+    method: 'get',
+    signal,
+  });
+
+export type AppControllerSendEmailError = Fetcher.ErrorWrapper<undefined>;
+
+export const appControllerSendEmail = (signal?: AbortSignal) =>
+  easyCostFetch<undefined, AppControllerSendEmailError, undefined, {}, {}, {}>({
+    url: '/token/mail',
     method: 'get',
     signal,
   });
@@ -172,6 +181,144 @@ export const userControllerRemove = (
     {},
     UserControllerRemovePathParams
   >({ url: '/user/{id}', method: 'delete', ...variables, signal });
+
+export type ProjectMaterialControllerCreateError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type ProjectMaterialControllerCreateVariables = {
+  body: Schemas.CreateProjectMaterialDto;
+};
+
+export const projectMaterialControllerCreate = (
+  variables: ProjectMaterialControllerCreateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.ProjectMaterialEntity,
+    ProjectMaterialControllerCreateError,
+    Schemas.CreateProjectMaterialDto,
+    {},
+    {},
+    {}
+  >({ url: '/project-material', method: 'post', ...variables, signal });
+
+export type ProjectMaterialControllerFindAllError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export const projectMaterialControllerFindAll = (signal?: AbortSignal) =>
+  easyCostFetch<
+    undefined,
+    ProjectMaterialControllerFindAllError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: '/project-material', method: 'get', signal });
+
+export type ProjectMaterialControllerFindOnePathParams = {
+  id: string;
+};
+
+export type ProjectMaterialControllerFindOneError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type ProjectMaterialControllerFindOneVariables = {
+  pathParams: ProjectMaterialControllerFindOnePathParams;
+};
+
+export const projectMaterialControllerFindOne = (
+  variables: ProjectMaterialControllerFindOneVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.ProjectMaterialEntity,
+    ProjectMaterialControllerFindOneError,
+    undefined,
+    {},
+    {},
+    ProjectMaterialControllerFindOnePathParams
+  >({ url: '/project-material/{id}', method: 'get', ...variables, signal });
+
+export type ProjectMaterialControllerUpdatePathParams = {
+  id: string;
+};
+
+export type ProjectMaterialControllerUpdateError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type ProjectMaterialControllerUpdateVariables = {
+  body?: Schemas.UpdateProjectMaterialDto;
+  pathParams: ProjectMaterialControllerUpdatePathParams;
+};
+
+export const projectMaterialControllerUpdate = (
+  variables: ProjectMaterialControllerUpdateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.ProjectMaterialEntity,
+    ProjectMaterialControllerUpdateError,
+    Schemas.UpdateProjectMaterialDto,
+    {},
+    {},
+    ProjectMaterialControllerUpdatePathParams
+  >({ url: '/project-material/{id}', method: 'patch', ...variables, signal });
+
+export type ProjectMaterialControllerRemovePathParams = {
+  id: string;
+};
+
+export type ProjectMaterialControllerRemoveError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type ProjectMaterialControllerRemoveVariables = {
+  pathParams: ProjectMaterialControllerRemovePathParams;
+};
+
+export const projectMaterialControllerRemove = (
+  variables: ProjectMaterialControllerRemoveVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.ProjectMaterialEntity,
+    ProjectMaterialControllerRemoveError,
+    undefined,
+    {},
+    {},
+    ProjectMaterialControllerRemovePathParams
+  >({ url: '/project-material/{id}', method: 'delete', ...variables, signal });
+
+export type ProjectMaterialControllerFindByProjectIdPathParams = {
+  projectId: string;
+};
+
+export type ProjectMaterialControllerFindByProjectIdError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type ProjectMaterialControllerFindByProjectIdResponse =
+  Schemas.ProjectMaterialEntity[];
+
+export type ProjectMaterialControllerFindByProjectIdVariables = {
+  pathParams: ProjectMaterialControllerFindByProjectIdPathParams;
+};
+
+export const projectMaterialControllerFindByProjectId = (
+  variables: ProjectMaterialControllerFindByProjectIdVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    ProjectMaterialControllerFindByProjectIdResponse,
+    ProjectMaterialControllerFindByProjectIdError,
+    undefined,
+    {},
+    {},
+    ProjectMaterialControllerFindByProjectIdPathParams
+  >({
+    url: '/project-material/projectMaterial/{projectId}',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
 export type MaterialControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
@@ -544,144 +691,6 @@ export const projectControllerRemove = (
     ProjectControllerRemovePathParams
   >({ url: '/project/{id}', method: 'delete', ...variables, signal });
 
-export type ProjectMaterialControllerCreateError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type ProjectMaterialControllerCreateVariables = {
-  body: Schemas.CreateProjectMaterialDto;
-};
-
-export const projectMaterialControllerCreate = (
-  variables: ProjectMaterialControllerCreateVariables,
-  signal?: AbortSignal,
-) =>
-  easyCostFetch<
-    Schemas.ProjectMaterialEntity,
-    ProjectMaterialControllerCreateError,
-    Schemas.CreateProjectMaterialDto,
-    {},
-    {},
-    {}
-  >({ url: '/project-material', method: 'post', ...variables, signal });
-
-export type ProjectMaterialControllerFindAllError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export const projectMaterialControllerFindAll = (signal?: AbortSignal) =>
-  easyCostFetch<
-    undefined,
-    ProjectMaterialControllerFindAllError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: '/project-material', method: 'get', signal });
-
-export type ProjectMaterialControllerFindOnePathParams = {
-  id: string;
-};
-
-export type ProjectMaterialControllerFindOneError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type ProjectMaterialControllerFindOneVariables = {
-  pathParams: ProjectMaterialControllerFindOnePathParams;
-};
-
-export const projectMaterialControllerFindOne = (
-  variables: ProjectMaterialControllerFindOneVariables,
-  signal?: AbortSignal,
-) =>
-  easyCostFetch<
-    Schemas.ProjectMaterialEntity,
-    ProjectMaterialControllerFindOneError,
-    undefined,
-    {},
-    {},
-    ProjectMaterialControllerFindOnePathParams
-  >({ url: '/project-material/{id}', method: 'get', ...variables, signal });
-
-export type ProjectMaterialControllerUpdatePathParams = {
-  id: string;
-};
-
-export type ProjectMaterialControllerUpdateError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type ProjectMaterialControllerUpdateVariables = {
-  body?: Schemas.UpdateProjectMaterialDto;
-  pathParams: ProjectMaterialControllerUpdatePathParams;
-};
-
-export const projectMaterialControllerUpdate = (
-  variables: ProjectMaterialControllerUpdateVariables,
-  signal?: AbortSignal,
-) =>
-  easyCostFetch<
-    Schemas.ProjectMaterialEntity,
-    ProjectMaterialControllerUpdateError,
-    Schemas.UpdateProjectMaterialDto,
-    {},
-    {},
-    ProjectMaterialControllerUpdatePathParams
-  >({ url: '/project-material/{id}', method: 'patch', ...variables, signal });
-
-export type ProjectMaterialControllerRemovePathParams = {
-  id: string;
-};
-
-export type ProjectMaterialControllerRemoveError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type ProjectMaterialControllerRemoveVariables = {
-  pathParams: ProjectMaterialControllerRemovePathParams;
-};
-
-export const projectMaterialControllerRemove = (
-  variables: ProjectMaterialControllerRemoveVariables,
-  signal?: AbortSignal,
-) =>
-  easyCostFetch<
-    Schemas.ProjectMaterialEntity,
-    ProjectMaterialControllerRemoveError,
-    undefined,
-    {},
-    {},
-    ProjectMaterialControllerRemovePathParams
-  >({ url: '/project-material/{id}', method: 'delete', ...variables, signal });
-
-export type ProjectMaterialControllerFindByProjectIdPathParams = {
-  projectId: string;
-};
-
-export type ProjectMaterialControllerFindByProjectIdError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type ProjectMaterialControllerFindByProjectIdResponse =
-  Schemas.ProjectMaterialEntity[];
-
-export type ProjectMaterialControllerFindByProjectIdVariables = {
-  pathParams: ProjectMaterialControllerFindByProjectIdPathParams;
-};
-
-export const projectMaterialControllerFindByProjectId = (
-  variables: ProjectMaterialControllerFindByProjectIdVariables,
-  signal?: AbortSignal,
-) =>
-  easyCostFetch<
-    ProjectMaterialControllerFindByProjectIdResponse,
-    ProjectMaterialControllerFindByProjectIdError,
-    undefined,
-    {},
-    {},
-    ProjectMaterialControllerFindByProjectIdPathParams
-  >({
-    url: '/project-material/projectMaterial/{projectId}',
-    method: 'get',
-    ...variables,
-    signal,
-  });
-
 export type InvitedUserControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type InvitedUserControllerCreateVariables = {
@@ -944,6 +953,14 @@ export const operationsByTag = {
     userControllerUpdate,
     userControllerRemove,
   },
+  projectMaterial: {
+    projectMaterialControllerCreate,
+    projectMaterialControllerFindAll,
+    projectMaterialControllerFindOne,
+    projectMaterialControllerUpdate,
+    projectMaterialControllerRemove,
+    projectMaterialControllerFindByProjectId,
+  },
   material: {
     materialControllerCreate,
     materialControllerFindAll,
@@ -966,14 +983,6 @@ export const operationsByTag = {
     projectControllerFindOne,
     projectControllerUpdate,
     projectControllerRemove,
-  },
-  projectMaterial: {
-    projectMaterialControllerCreate,
-    projectMaterialControllerFindAll,
-    projectMaterialControllerFindOne,
-    projectMaterialControllerUpdate,
-    projectMaterialControllerRemove,
-    projectMaterialControllerFindByProjectId,
   },
   invitedUser: {
     invitedUserControllerCreate,

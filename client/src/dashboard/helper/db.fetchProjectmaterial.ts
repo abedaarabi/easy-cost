@@ -9,13 +9,14 @@ export async function projectMaterial(
   value: CreateProjectMaterialDto
 ): Promise<CreateProjectMaterialDto> {
   try {
+    console.log({ value });
+
     const { data, status } = await axios.post(
       "http://localhost:3000/project-material",
       {
         projectId: value.projectId,
         materialId: value.materialId,
-
-        profit: Number(value.profit),
+        quantity: value.quantity,
       },
       {
         headers: {

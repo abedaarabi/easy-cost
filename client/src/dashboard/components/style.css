@@ -11,6 +11,7 @@
   /* top: 23px;
   left: 23px; */
   margin-left: 2.5rem;
+  margin-top: -0.5rem;
 }
 
 .ringring {
@@ -25,6 +26,37 @@
   -webkit-animation-iteration-count: infinite;
   opacity: 0;
   margin-left: 2.5rem;
+  margin-top: -0.5rem;
+}
+.ring-container-red {
+  position: relative;
+}
+
+.circle-red {
+  width: 15px;
+  height: 15px;
+  background-color: #D62839;
+  border-radius: 50%;
+  position: absolute;
+  /* top: 23px;
+  left: 23px; */
+  margin-left: 2.5rem;
+  margin-top: -0.5rem;
+}
+
+.ringring-red {
+  border: 3px solid #D62839;
+  -webkit-border-radius: 30px;
+  height: 25px;
+  width: 25px;
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  -webkit-animation: pulsate 1s ease-out;
+  -webkit-animation-iteration-count: infinite;
+  opacity: 0;
+  margin-left: 2.5rem;
+  margin-top: -0.5rem;
 }
 @-webkit-keyframes pulsate {
   0% {

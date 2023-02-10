@@ -28,6 +28,7 @@ export const AuthContextProvider = ({
 }) => {
   const [user, setUser] = React.useState(null) as any;
   const [loading, setLoading] = React.useState(true);
+  const [loginMsg, setLoginMsg] = React.useState<any>();
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -35,7 +36,8 @@ export const AuthContextProvider = ({
         const useDetails = await operationsByTag.user.userControllerFindOne({
           pathParams: { id: user.uid },
         });
-        console.log(useDetails);
+
+     
 
         setUser({
           uid: user.uid,
@@ -68,6 +70,8 @@ export const AuthContextProvider = ({
         setUser,
         logout,
         login,
+        loginMsg,
+        setLoginMsg,
       }}
     >
       {loading ? (

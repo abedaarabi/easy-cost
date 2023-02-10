@@ -52,11 +52,9 @@ export async function updateMaterial(
       {
         price: +material.price,
         materialName: material.materialName,
-        supplier: material.supplier,
-        image: material.image,
-        priceUnit: material.priceUnit,
+
         unit: material.unit,
-        workByhour: +material.workByhour,
+        hourPerQuantity: +material.hourPerQuantity,
       },
       {
         headers: {
@@ -85,11 +83,11 @@ export async function createMaterial(material: Material): Promise<Material> {
       {
         companyId: material.companyId,
         unit: material.unit,
-        priceUnit: material.priceUnit,
-        image: material.image,
-        workByhour: Number(material.workByhour),
+
+        co2e: Number(material.co2e),
+        hourPerQuantity: Number(material.hourPerQuantity),
         materialName: material.materialName,
-        supplier: material.supplier,
+
         price: Number(material.price),
         userId: material.userId,
       },

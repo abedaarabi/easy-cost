@@ -21,7 +21,7 @@ async function project() {
     companyList.push({
       id: uuidv4(),
       projectName: faker.company.name(),
-      workByhour: Number(faker.finance.amount(5, 10, 0)),
+
     });
   }
   return companyList;
@@ -77,7 +77,7 @@ async function main() {
   // );
   // const invitedUserService = app.get<InvitedUserService>(InvitedUserService);
   await prisma.invitedUser.deleteMany();
-  await prisma.projecMaterial.deleteMany();
+  await prisma.projectMaterial.deleteMany();
   await prisma.material.deleteMany();
   await prisma.project.deleteMany();
   await prisma.user.deleteMany();

@@ -44,7 +44,7 @@ import { MaterialEntity } from "../../api/easyCostSchemas";
 const MaterialTable = () => {
   const queryClient = useQueryClient();
   const { user, setLoading, loading } = useAuth();
-  const { companyId, id: userId } = user
+  const { companyId, id: userId } = user;
 
   const { isLoading, error, data, isFetching } = useQuery(
     ["materialByCompanyId"],
@@ -78,7 +78,6 @@ const MaterialTable = () => {
   });
 
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
-  console.log({ isLoading, error, data, isFetching });
 
   if (!data) return null;
 
@@ -93,18 +92,18 @@ const MaterialTable = () => {
       size: 80,
     },
 
-    {
-      accessorKey: "image",
-      header: "Image",
-      size: 80,
-      muiTableBodyCellEditTextFieldProps: ({ cell }) => ({}),
-      Cell: ({ cell, row }) => (
-        <Box>
-          <Avatar alt="Remy Sharp" src="" />
-          {/* <Typography>{cell.getValue<string>()}</Typography> */}
-        </Box>
-      ),
-    },
+    // {
+    //   accessorKey: "image",
+    //   header: "Image",
+    //   size: 80,
+    //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({}),
+    //   Cell: ({ cell, row }) => (
+    //     <Box>
+    //       <Avatar alt="Remy Sharp" src="" />
+    //       {/* <Typography>{cell.getValue<string>()}</Typography> */}
+    //     </Box>
+    //   ),
+    // },
 
     {
       accessorKey: "materialName",
@@ -133,18 +132,11 @@ const MaterialTable = () => {
       accessorKey: "price",
       header: "Price",
       size: 140,
-      Cell: ({ cell }) => (
-        <Box
-          sx={({}) => ({
-            // bgcolor: cell.getValue<number>() ? "tomato" : "lightblue",
-
-            color: "#0F5257",
-            borderRadius: 5,
-          })}
-        >
-          {cell.getValue<number>().toLocaleString()}
-        </Box>
-      ),
+    },
+    {
+      accessorKey: "co2e",
+      header: "Co2e",
+      size: 140,
     },
     {
       accessorKey: "unit",
@@ -159,33 +151,29 @@ const MaterialTable = () => {
         )),
       },
     },
+
+    // {
+    //   accessorKey: "supplier",
+    //   header: "Supplier",
+    //   size: 140,
+    //   Cell: ({ cell }) => (
+    //     <Box
+    //       sx={({}) => ({
+    //         bgcolor: "#5C95FF",
+    //         p: "6px",
+    //         color: "white",
+    //         borderRadius: 5,
+    //         display: "flex",
+    //         justifyContent: "center",
+    //       })}
+    //     >
+    //       <Box>{cell.getValue<string>().toLocaleString()}</Box>
+    //     </Box>
+    //   ),
+    // },
     {
-      accessorKey: "priceUnit",
-      header: "Price Unit",
-      size: 140,
-    },
-    {
-      accessorKey: "supplier",
-      header: "Supplier",
-      size: 140,
-      Cell: ({ cell }) => (
-        <Box
-          sx={({}) => ({
-            bgcolor: "#5C95FF",
-            p: "6px",
-            color: "white",
-            borderRadius: 5,
-            display: "flex",
-            justifyContent: "center",
-          })}
-        >
-          <Box>{cell.getValue<string>().toLocaleString()}</Box>
-        </Box>
-      ),
-    },
-    {
-      accessorKey: "workByhour",
-      header: "Work Hour",
+      accessorKey: "hourPerQuantity",
+      header: "Hour Per Quantity",
       size: 140,
     },
   ] as MRT_ColumnDef<Omit<MaterialEntity, "companyId" | "userId" | "Id">>[];
@@ -195,13 +183,13 @@ const MaterialTable = () => {
         return {
           createdAt: column.createdAt,
           id: column.id,
-          image: column.image,
+
           materialName: column.materialName,
           price: column.price,
-          priceUnit: column.priceUnit,
-          supplier: column.supplier,
+
+          co2e: column.co2e,
           unit: column.unit,
-          workByhour: column.workByhour,
+          hourPerQuantity: column.hourPerQuantity,
         };
       })
     : [];
@@ -225,7 +213,11 @@ const MaterialTable = () => {
   };
 
   const handleCreateNewRow = (values: MaterialEntity) => {
-    createMutation.mutate({ ...values, companyId, userId });
+    createMutation.mutate({
+      ...values,
+      companyId,
+      userId,
+    });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
@@ -243,7 +235,10 @@ const MaterialTable = () => {
     <Paper>
       <ReusableTable
         enableStickyFooter
-        initialState={{ columnVisibility: { id: false }, isLoading:isFetching }}
+        initialState={{
+          columnVisibility: { id: false },
+          isLoading: isFetching,
+        }}
         columns={colTest}
         data={dataTable}
         onEditingRowSave={handleSaveRowEdits}

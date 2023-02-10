@@ -58,9 +58,10 @@ export const CreateNewAccountModal: FC<{
               .filter(
                 (i) =>
                   i.accessorKey !== "id" &&
-                  i.accessorKey !== "unit" &&
+                  i.accessorKey !== "hourPerQuantity" &&
+                  i.accessorKey !== "price" &&
                   i.accessorKey !== "createdAt" &&
-                  i.accessorKey !== "status"
+                  i.accessorKey !== "unit"
               )
               .map((column, i) => {
                 if (column.accessorKey === "materialName") {

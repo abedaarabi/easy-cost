@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter,
   createBrowserRouter,
@@ -37,6 +37,7 @@ import Page404 from "./Page404";
 import SignUp from "./singup/SingUp";
 import { useNetworkStatus } from "./hooks/useNetworkStatus";
 import Invalidinvite from "./singup/Invalidinvite";
+import { Alerts } from "./shared/Alerts";
 
 const router = createBrowserRouter([
   {
@@ -95,11 +96,22 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  console.log("abed");
-
+  const [alert, setAlert] = React.useState(null) as any;
+  const [hide, setHide] = React.useState(false) as any;
   const queryClient = new QueryClient();
-  const { user, setUser, setLoading, loading } = useAuth();
+  const { user, setUser, login, loginMsg, setLoginMsg, loading } = useAuth();
+
   const isOnline = useNetworkStatus();
+
+  console.log({ loginMsg });
+
+  React.useEffect(() => {
+    const time = setTimeout(() => {
+      setLoginMsg("");
+    }, 3000);
+    return () => clearTimeout(time);
+  }, [alert, loginMsg]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
@@ -107,11 +119,12 @@ function App() {
       <Box sx={{ width: "100%", zIndex: 999999, position: "absolute" }}>
         {loading && <LinearProgress color="info" />}
       </Box>
-      <Snackbar open={true} autoHideDuration={6000} onClose={() => {}}>
-        <Alert onClose={() => {}} severity="error" sx={{ width: "100%" }}>
-          This is a success message!
-        </Alert>
-      </Snackbar>
+      {loginMsg && (
+        <Alerts
+          severity={loginMsg?.code ? "error" : "success"}
+          msg={loginMsg?.code ? loginMsg?.code : "Login Success"}
+        />
+      )}
       <RouterProvider router={router} fallbackElement={<MiniDrawer />} />
       {!isOnline && (
         <Stack

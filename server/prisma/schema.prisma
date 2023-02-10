@@ -61,47 +61,49 @@ model InvitedUser {
 }
 
 model Material {
-  id             String           @id @default(uuid())
-  materialName   String
-  unit           String
-  supplier       String
-  createdAt      DateTime         @default(now())
-  price          Int
-  priceUnit      String
-  image          String
-  User           User?            @relation(fields: [userId], references: [id])
+  id              String   @id @default(uuid())
+  materialName    String
+  unit            String
+  price           Int
+  createdAt       DateTime @default(now())
+  hourPerQuantity Int
+
+  User           User?             @relation(fields: [userId], references: [id])
   userId         String?
-  ProjecMaterial ProjecMaterial[]
-  workByhour     Int
-  Company        Company          @relation(fields: [companyId], references: [id])
+  ProjecMaterial ProjectMaterial[]
+  co2e           Int
+  Company        Company           @relation(fields: [companyId], references: [id])
   companyId      String
 
   @@unique([materialName, userId])
 }
 
 model Project {
-  id                String              @id @default(uuid())
-  projectName       String
-  createdAt         DateTime            @default(now())
-  User              User?               @relation(fields: [userId], references: [id])
-  userId            String?
-  workByhour        Int
-  companyId         String
-  Company           Company             @relation(fields: [companyId], references: [id])
-  ProjecMaterial    ProjecMaterial[]
-  InvitedUser       InvitedUser[]
+  id             String            @id @default(uuid())
+  projectName    String
+  createdAt      DateTime          @default(now())
+  User           User?             @relation(fields: [userId], references: [id])
+  userId         String?
+  location       String            @default("")
+  companyId      String
+  Company        Company           @relation(fields: [companyId], references: [id])
+  ProjecMaterial ProjectMaterial[]
+  InvitedUser    InvitedUser[]
+  isActive       Boolean           @default(false)
+
   TableCustomFields TableCustomFields[]
 }
 
-model ProjecMaterial {
+model ProjectMaterial {
   id         String   @id @default(uuid())
   material   Material @relation(fields: [materialId], references: [id])
   project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   materialId String
   projectId  String
-  status     Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  profit     Float    @default(3.9) // percentage added %
+
+  createdAt DateTime @default(now())
+  quantity  Decimal
+
   // TableCustomFieldsValues TableCustomFieldsValues[]
 }
 

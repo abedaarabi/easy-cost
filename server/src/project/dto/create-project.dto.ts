@@ -9,7 +9,9 @@ export class CreateProjectDto {
   @ApiProperty()
   userId: string;
   @ApiProperty()
-  workByhour: number;
+  location: string;
   @ApiProperty()
   companyId: string;
+  @ApiProperty()
+  isActive: boolean;
 }

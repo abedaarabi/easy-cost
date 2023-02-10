@@ -7,11 +7,9 @@ export interface Material {
   image: string;
   materialName: string;
   price: number;
-  priceUnit: string;
   supplier: string;
   unit: string;
   userId: number | string | undefined;
-  workByhour: number;
 }
 
 export type ColumnTypeMaterial = {
@@ -20,10 +18,8 @@ export type ColumnTypeMaterial = {
   image: string;
   materialName: string;
   price: number;
-  priceUnit: string;
   supplier: string;
   unit: string;
-  workByhour: number;
 };
 
 export type ColumnTypeUser = {
@@ -45,20 +41,23 @@ export type ColumnTypeProject = {
 
 export interface ProjecTMaterialTest {
   getValue<T>(): unknown;
-  status: boolean;
+
   id: string;
   materialId: string;
   projectId: string;
   createdAt: string;
-  profit: number;
+  unit: string;
+  quantity: number;
   material: Material;
   project: Project;
+  price: number;
+  hourPerQuantity: number;
 }
 
 export interface Material {
   materialName: string;
   price: number;
-  workByhour: number;
+  hourPerQuantity: number;
   unit: string;
 }
 export interface Project {

@@ -12,7 +12,7 @@ export async function projectsByCompany(
         companyId: value.companyId,
         projectName: value.projectName,
         userId: value.userId,
-        workByhour: Number(value.workByhour),
+        isActive: true,
       },
       {
         headers: {

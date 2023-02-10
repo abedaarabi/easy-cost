@@ -8,16 +8,16 @@ export class ProjectMaterialService {
   constructor(private prisma: PrismaService) {}
 
   create(createProjectMaterialDto: CreateProjectMaterialDto) {
-    return this.prisma.projecMaterial.create({
+    return this.prisma.projectMaterial.create({
       data: createProjectMaterialDto,
     });
   }
 
   findAll() {
-    return this.prisma.projecMaterial.findMany();
+    return this.prisma.projectMaterial.findMany();
   }
   findByProjectId(id: string) {
-    return this.prisma.projecMaterial.findMany({
+    return this.prisma.projectMaterial.findMany({
       where: {
         projectId: id,
       },
@@ -31,7 +31,8 @@ export class ProjectMaterialService {
           select: {
             materialName: true,
             price: true,
-            workByhour: true,
+            co2e: true,
+            hourPerQuantity: true,
             unit: true,
           },
         },
@@ -40,11 +41,11 @@ export class ProjectMaterialService {
   }
 
   async findOne(id: string) {
-    return this.prisma.projecMaterial.findUnique({ where: { id } });
+    return this.prisma.projectMaterial.findUnique({ where: { id } });
   }
 
   update(id: string, updateProjectMaterialDto: UpdateProjectMaterialDto) {
-    return this.prisma.projecMaterial.update({
+    return this.prisma.projectMaterial.update({
       where: {
         id,
       },
@@ -53,6 +54,6 @@ export class ProjectMaterialService {
   }
 
   remove(id: string) {
-    return this.prisma.projecMaterial.delete({ where: { id } });
+    return this.prisma.projectMaterial.delete({ where: { id } });
   }
 }

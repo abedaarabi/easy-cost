@@ -120,10 +120,7 @@ import Card from "@mui/material/Card";
 import { Box, Button } from "@mui/material";
 
 export const Viewer = () => {
-  const { isLoading, data, isError } = useQuery(["userToken"], getUserToken);
   const [masures, setMasures] = React.useState([]) as any;
-
-  console.log({ isLoading, data, isError });
 
   const viewer = React.useRef<Autodesk.Viewing.GuiViewer3D | undefined>();
   React.useEffect(() => {
@@ -204,7 +201,7 @@ export const Viewer = () => {
           // });
 
           viewer.current.loadModel(
-            "../../test.pdf",
+            "../../pdf.pdf",
             {},
             // @ts-ignore
             onDocumentLoadSuccess,
@@ -262,7 +259,7 @@ export const Viewer = () => {
     }
     initializeViewer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, []);
 
   function getMasures() {
     if (!viewer.current) {
