@@ -1,5 +1,10 @@
 import React, { FC } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+} from "@tanstack/react-query";
 import { useAuth } from "../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -40,10 +45,23 @@ import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 
 import { operationsByTag } from "../../api/easyCostComponents";
 import { MaterialEntity } from "../../api/easyCostSchemas";
+import { AxiosError, AxiosResponse } from "axios";
+import { Material } from "../types";
 
 const MaterialTable = () => {
-  const queryClient = useQueryClient();
-  const { user, setLoading, loading } = useAuth();
+  const queryClient = new QueryClient({
+    // defaultOptions: {
+    //   queries: {
+    //     staleTime: 0, // 5 mins
+    //     cacheTime: 10, // 10 mins
+    //   },
+    //   mutations: {
+    //     cacheTime: 5000,
+    //   },
+    // },
+  });
+  const { user, setLoading, loading, setLoginMsg } = useAuth();
+
   const { companyId, id: userId } = user;
 
   const { isLoading, error, data, isFetching } = useQuery(
@@ -71,9 +89,27 @@ const MaterialTable = () => {
       queryClient.invalidateQueries(["materialByCompanyId"]);
     },
   });
+
   const createMutation = useMutation(createMaterial, {
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries(["materialByCompanyId"]);
+      console.log({ response });
+
+      setLoginMsg({
+        code: 200,
+        msg: `${response.materialName} Successfully Added to Database.`,
+      });
+    },
+    onError: (error: AxiosError) => {
+      if (error) {
+        setLoginMsg({
+          code: error.response?.status,
+
+          msg: `Code Error:  ${
+            error.response?.status
+          }. ${error.response?.statusText.toLocaleLowerCase()}`,
+        });
+      }
     },
   });
 
@@ -91,19 +127,6 @@ const MaterialTable = () => {
       enableHiding: true,
       size: 80,
     },
-
-    // {
-    //   accessorKey: "image",
-    //   header: "Image",
-    //   size: 80,
-    //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({}),
-    //   Cell: ({ cell, row }) => (
-    //     <Box>
-    //       <Avatar alt="Remy Sharp" src="" />
-    //       {/* <Typography>{cell.getValue<string>()}</Typography> */}
-    //     </Box>
-    //   ),
-    // },
 
     {
       accessorKey: "materialName",
@@ -152,25 +175,6 @@ const MaterialTable = () => {
       },
     },
 
-    // {
-    //   accessorKey: "supplier",
-    //   header: "Supplier",
-    //   size: 140,
-    //   Cell: ({ cell }) => (
-    //     <Box
-    //       sx={({}) => ({
-    //         bgcolor: "#5C95FF",
-    //         p: "6px",
-    //         color: "white",
-    //         borderRadius: 5,
-    //         display: "flex",
-    //         justifyContent: "center",
-    //       })}
-    //     >
-    //       <Box>{cell.getValue<string>().toLocaleString()}</Box>
-    //     </Box>
-    //   ),
-    // },
     {
       accessorKey: "hourPerQuantity",
       header: "Hour Per Quantity",
@@ -218,6 +222,7 @@ const MaterialTable = () => {
       companyId,
       userId,
     });
+
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
@@ -239,6 +244,7 @@ const MaterialTable = () => {
           columnVisibility: { id: false },
           isLoading: isFetching,
         }}
+        isLoading={isFetching}
         columns={colTest}
         data={dataTable}
         onEditingRowSave={handleSaveRowEdits}
@@ -296,6 +302,10 @@ export const CreateNewAccountModal: FC<{
 
   const handleSubmit = () => {
     //put your validation logic here
+    if (!values.materialName) {
+      alert("fill the inputs");
+      return;
+    }
     onSubmit(values);
     onClose();
   };
@@ -321,6 +331,7 @@ export const CreateNewAccountModal: FC<{
                       key={column.accessorKey}
                       label="Unit"
                       value={values["unit"]}
+                      required
                       onChange={(e) =>
                         setValues({
                           ...values,
@@ -343,6 +354,7 @@ export const CreateNewAccountModal: FC<{
                       key={column.accessorKey}
                       label={column.header}
                       name={column.accessorKey}
+                      required
                       onChange={(e) =>
                         setValues({
                           ...values,

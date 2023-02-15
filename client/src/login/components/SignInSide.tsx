@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useAuth } from "../../authContext/components/AuthContext";
 import { getUserByEmail } from "../helper/db.fetchUser";
 import { useNavigate } from "react-router-dom";
+import { Code } from "@mui/icons-material";
 
 const theme = createTheme();
 
@@ -30,10 +31,11 @@ export default function SignInSide() {
 
     try {
       const loginResult = await login(email, password);
-      setLoginMsg(loginResult);
+      setLoginMsg({ code: 200, msg: "Login Successful" });
     } catch (error) {
       console.log(error);
-      setLoginMsg(error);
+      //@ts-ignore
+      setLoginMsg({ code: error.code, msg: error.message });
     }
   };
 

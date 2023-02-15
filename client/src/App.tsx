@@ -96,21 +96,18 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [alert, setAlert] = React.useState(null) as any;
   const [hide, setHide] = React.useState(false) as any;
   const queryClient = new QueryClient();
   const { user, setUser, login, loginMsg, setLoginMsg, loading } = useAuth();
 
   const isOnline = useNetworkStatus();
 
-  console.log({ loginMsg });
-
   React.useEffect(() => {
     const time = setTimeout(() => {
       setLoginMsg("");
     }, 3000);
     return () => clearTimeout(time);
-  }, [alert, loginMsg]);
+  }, [loginMsg]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -121,8 +118,8 @@ function App() {
       </Box>
       {loginMsg && (
         <Alerts
-          severity={loginMsg?.code ? "error" : "success"}
-          msg={loginMsg?.code ? loginMsg?.code : "Login Success"}
+          severity={loginMsg?.code !== 200 ? "error" : "success"}
+          msg={loginMsg?.code !== 200 ? loginMsg?.msg : loginMsg.msg}
         />
       )}
       <RouterProvider router={router} fallbackElement={<MiniDrawer />} />

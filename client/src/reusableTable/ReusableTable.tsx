@@ -30,7 +30,7 @@ function ReusableTable<TData extends RecordType>({
         align: "center",
       }}
       enableStickyFooter
-      initialState={{ columnVisibility: { id: false } }}
+      initialState={{ columnVisibility: { id: false }, density: "compact" }}
       enableColumnFilterModes
       enableColumnOrdering
       enableGrouping

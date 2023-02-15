@@ -1,4 +1,6 @@
 import React, { FC } from "react";
+import axios, { AxiosResponse, AxiosError } from "axios";
+
 import "./style.css";
 import {
   useQuery,
@@ -58,7 +60,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const UserTable = () => {
-  const { user } = useAuth();
+  const { user, setLoginMsg } = useAuth();
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
@@ -100,6 +102,11 @@ const UserTable = () => {
   const createMutation = useMutation(createUserToken, {
     onSuccess: () => {
       queryClient.invalidateQueries(["userByCompanyId"]);
+    },
+    onError: (error: AxiosError) => {
+      console.log(error);
+
+      return error.message;
     },
   });
 
@@ -153,20 +160,22 @@ const UserTable = () => {
       Cell: ({ cell }) => (
         <Box
           sx={({}) => ({
-            bgcolor:
+            color:
               cell.getValue<string>() === "CompanyAdmin"
                 ? "#F52F57"
                 : cell.getValue<string>() === "CompanyUser"
                 ? "#0F5257"
                 : "#5C95FF",
-            p: "6px",
+            px: "20px",
             display: "flex",
             justifyContent: "center",
-            color: "white",
-            borderRadius: 5,
+            // color: "white",
+            // borderRadius: 5,
           })}
         >
-          <Box>{cell.getValue<string>()}</Box>
+          <Typography sx={{ fontWeight: "bold" }} variant="overline">
+            {cell.getValue<string>()}
+          </Typography>
         </Box>
       ),
     },
@@ -192,6 +201,14 @@ const UserTable = () => {
       companyId,
       id: user.id,
     });
+    console.log(createMutation);
+
+    if (createMutation.isSuccess) {
+      setLoginMsg({ code: 200, msg: "Invitation sent" });
+    } else if (createMutation.isError) {
+      setLoginMsg({ code: 400, msg: "Error: Invitation Sent Failed " });
+    }
+
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
@@ -312,7 +329,7 @@ export const CreateNewAccountModal: FC<{
                         })
                       }
                     >
-                      {["Super User", "CompanyAdmin"].map((state) => (
+                      {["CompanyUser", "CompanyAdmin"].map((state) => (
                         <MenuItem key={state} value={state}>
                           {state}
                         </MenuItem>

@@ -1,8 +1,9 @@
 import * as fs from 'fs';
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { PrismaClientExceptionFilter } from './prisma-client-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,8 @@ async function bootstrap() {
   fs.writeFileSync('../swagger-spec.json', JSON.stringify(document));
 
   SwaggerModule.setup('api', app, document);
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   app.enableCors();
 

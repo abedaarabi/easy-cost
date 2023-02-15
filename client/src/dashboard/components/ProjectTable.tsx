@@ -144,6 +144,9 @@ const ProjectTable = () => {
       accessorKey: "createdAt",
       header: "Create Date",
       size: 100,
+      enableEditing: false, //disable editing on this column
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "location",

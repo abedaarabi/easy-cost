@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import {
   useQuery,
   useMutation,
@@ -97,17 +98,20 @@ const ProjectMaterialTable = () => {
     () =>
       operationsByTag.projectMaterial.projectMaterialControllerFindByProjectId({
         pathParams: { projectId },
-      }) as unknown as Promise<ProjecTMaterialTest[]>
+      }) as unknown as Promise<ProjecTMaterialTest[]> | undefined
   );
 
-  const { data: customFields } = useQuery(
-    ["customFieldsTable"],
+  const {
+    isLoading: materialIsLoading,
+    error: materialError,
+    data: materials,
+    isFetching: materialIsFetching,
+  } = useQuery(
+    ["materialByCompanyId"],
     () =>
-      operationsByTag.tableCustomFields.tableCustomFieldsControllerFindCustomFieldsByProjectId(
-        {
-          pathParams: { projectId },
-        }
-      ) as unknown as Promise<UpdateTableCustomFieldDto[]>
+      operationsByTag.material.materialControllerFindMaterialByCompanyId({
+        pathParams: { companyId },
+      }) as unknown as Promise<MaterialEntity[]>
   );
 
   const updateMutation = useMutation(
@@ -123,6 +127,10 @@ const ProjectMaterialTable = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["materialByProjectId"]);
+      },
+      onError: (error: AxiosError) => {
+        console.log(error.message);
+        console.log(error.status);
       },
     }
   );
@@ -153,126 +161,51 @@ const ProjectMaterialTable = () => {
     }
   );
 
-  const {
-    isLoading: materialIsLoading,
-    error: materialError,
-    data: materials,
-    isFetching: materialIsFetching,
-  } = useQuery(
-    ["materialByCompanyId"],
-    () =>
-      operationsByTag.material.materialControllerFindMaterialByCompanyId({
-        pathParams: { companyId },
-      }) as unknown as Promise<MaterialEntity[]>
-  );
-
   const createMutation = useMutation(projectMaterial, {
     onSuccess: () => {
       queryClient.invalidateQueries(["materialByProjectId"]);
     },
   });
 
-  if (!data || !materials || !customFields) return null;
-  const projectName = data[0]?.project?.projectName;
+  // const projectName = data[0]?.project?.projectName;
 
-  const colTest = name(data, setMid, materials, updateMaterialStatus);
+  // const colTest = name(data, setMid, materials, updateMaterialStatus);
 
-  // const colTest = [
-  //   {
-  //     accessorKey: "id",
-  //     header: "ID",
-  //     enableColumnOrdering: false,
-  //     enableEditing: false, //disable editing on this column
-  //     enableSorting: false,
-  //     enableHiding: false,
-  //     size: 80,
-  //   },
+  const colTest = React.useMemo<MRT_ColumnDef<ProjecTMaterialTest>[]>(
+    () => name(data, setMid, materials, updateMaterialStatus),
 
-  //   {
-  //     accessorKey: "materialName",
-  //     header: "Material Name",
-  //     size: 100,
-  //     Edit: ({ row, table }) => (
-  //       <MySelect
-  //         defaultValue={findById(data, row.original.id)!.materialId}
-  //         materials={materials}
-  //         onChange={(value) => setMid({ mId: value })}
-  //       />
-  //     ),
+    []
+  );
+  if (!data || !materials) return null;
+  const dataTable = data?.map((column) => {
+    return {
+      materialName: column?.material?.materialName,
+      unit: column.material.unit,
+      createdAt: new Date(column.createdAt).toLocaleDateString(),
+      id: column.id,
+      quantity: column.quantity,
+      price: column.material.price,
+      hourPerQuantity: column.material.hourPerQuantity,
+    };
+  });
 
-  //     muiTableBodyCellCopyButtonProps: {
-  //       fullWidth: true,
-  //       startIcon: <ContentCopy />,
-  //       sx: { justifyContent: "flex-start" },
-  //     },
-  //   },
-  //   {
-  //     accessorKey: "unit",
-  //     header: "Unit",
-  //     enableEditing: false, //disable editing on this column
-  //     enableSorting: false,
-  //     enableHiding: false,
-  //     size: 100,
-  //   },
+  // const dataTable = React.useMemo(
+  //   () =>
+  //     data?.map((column) => {
+  //       console.log(column);
 
-  //   {
-  //     accessorKey: "profit",
-  //     header: "Amount",
-  //     size: 100,
-  //   },
-  //   {
-  //     accessorKey: "status",
-  //     enableEditing: false, //disable editing on this column
-  //     enableHiding: false,
-  //     header: "Status",
-  //     size: 100,
-  //     Cell: ({ cell, row }) => (
-  //       <Box>
-  //         <Button
-  //           onClick={() => {
-  //             console.log(!row.original.status, "$$$$$");
-
-  //             updateMaterialStatus.mutate({
-  //               id: row.original.id,
-  //               values: row.original,
-  //             });
-  //           }}
-  //           variant="outlined"
-  //           color={!row.original.status ? "error" : "success"}
-  //         >
-  //           {cell.getValue<string>() ? "approved" : "not approved"}
-  //         </Button>
-  //         {/* <Avatar alt="Remy Sharp" src="" />
-  //         <Typography>{cell.getValue<string>()}</Typography> */}
-  //       </Box>
-  //     ),
-  //   },
-
-  //   {
-  //     accessorKey: "createdAt",
-  //     enableEditing: false, //disable editing on this column
-  //     enableSorting: false,
-  //     enableHiding: false,
-  //     header: "Create Date",
-  //     size: 100,
-  //   },
-  // ] as MRT_ColumnDef<ProjecTMaterialTest>[];
-
-  const dataTable = data
-    ? data.map((column) => {
-        console.log(column);
-
-        return {
-          materialName: column?.material?.materialName,
-          unit: column.material.unit,
-          createdAt: new Date(column.createdAt).toLocaleDateString(),
-          id: column.id,
-          quantity: column.quantity,
-          price: column.material.price,
-          hourPerQuantity: column.material.hourPerQuantity,
-        };
-      })
-    : [];
+  //       return {
+  //         materialName: column?.material?.materialName,
+  //         unit: column.material.unit,
+  //         createdAt: new Date(column.createdAt).toLocaleDateString(),
+  //         id: column.id,
+  //         quantity: column.quantity,
+  //         price: column.material.price,
+  //         hourPerQuantity: column.material.hourPerQuantity,
+  //       };
+  //     }),
+  //   []
+  // );
 
   //Actions
   //delete
@@ -341,7 +274,10 @@ const ProjectMaterialTable = () => {
             // }}
             isLoading={isLoading}
             enableStickyFooter
-            initialState={{ columnVisibility: { id: false } }}
+            initialState={{
+              columnVisibility: { id: false },
+              density: "compact",
+            }}
             columns={colTest}
             data={dataTable}
             onEditingRowSave={handleSaveRowEdits}
@@ -501,9 +437,17 @@ function name(
       size: 100,
 
       Cell: ({ cell, column, row, table }) => {
-        console.log(row.original.project);
-
         return row.original.quantity * row.original.price;
+      },
+      aggregationFn: "sum",
+
+      Footer: ({ table, column, footer }) => {
+        return (
+          <Stack>
+            Total:
+            <Box color="#1B998B">{convertCurrency(200)}</Box>
+          </Stack>
+        );
       },
     },
     {
@@ -520,6 +464,20 @@ function name(
         // }
 
         return row.original.quantity * row.original.hourPerQuantity;
+      },
+      aggregationFn: "sum",
+
+      Footer: ({ table, column, footer }) => {
+        console.log({ table, column, footer });
+
+        //I need to access the result of each row in the *hourPerQuantity* so can accumulate the result in the footer
+
+        return (
+          <Stack>
+            Total:
+            <Box color="#1B998B">{"Total hours"}</Box>
+          </Stack>
+        );
       },
     },
     // {
@@ -560,3 +518,21 @@ function name(
 //      </Badge>
 //    </IconButton>
 //  </Tooltip>;
+
+export function convertCurrency(currency: number) {
+  // return currency.toFixed(2);
+  return new Intl.NumberFormat("da-DK", {
+    style: "currency",
+    currency: "DKK",
+  }).format(currency);
+}
+
+// const { data: customFields } = useQuery(
+//   ["customFieldsTable"],
+//   () =>
+//     operationsByTag.tableCustomFields.tableCustomFieldsControllerFindCustomFieldsByProjectId(
+//       {
+//         pathParams: { projectId },
+//       }
+//     ) as unknown as Promise<UpdateTableCustomFieldDto[]>
+// );

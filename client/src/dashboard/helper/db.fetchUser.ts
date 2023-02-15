@@ -61,7 +61,6 @@ export async function createUserToken(
 ): Promise<CreateUserDto> {
   try {
     // const userDetails: any = await signUp(material.email);
-    console.log(userInfo);
 
     const { data, status } = await axios.post(
       "http://localhost:3000/invited-user",
