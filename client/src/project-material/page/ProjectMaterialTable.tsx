@@ -18,6 +18,7 @@ import MaterialReactTable, {
   MRT_ColumnDef,
   MRT_Row,
   MaterialReactTableProps,
+  MRT_Column,
 } from "material-react-table";
 import {
   Badge,
@@ -83,23 +84,14 @@ const ProjectMaterialTable = () => {
 
   //
 
-  const [openDrawer, setOpenDrawer] = React.useState(false);
-  const toggleSliderOpen = () => {
-    setOpenDrawer(true);
-  };
-  const toggleSliderClose = () => {
-    setOpenDrawer(false);
-  };
-
-  const [projectMaterialId, setProjectMaterialId] = React.useState("");
-
   const { isLoading, error, data, isFetching } = useQuery(
-    ["materialByProjectId"],
+    ["materialByProject"],
     () =>
       operationsByTag.projectMaterial.projectMaterialControllerFindByProjectId({
         pathParams: { projectId },
       }) as unknown as Promise<ProjecTMaterialTest[]> | undefined
   );
+  console.log({ isLoading, error, data, isFetching });
 
   const {
     isLoading: materialIsLoading,
@@ -121,12 +113,12 @@ const ProjectMaterialTable = () => {
         body: {
           materialId: mIds?.mId,
           projectId: projectId,
-          ...values,
+          quantity: values.quantity,
         },
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["materialByProjectId"]);
+        queryClient.invalidateQueries(["materialByProject"]);
       },
       onError: (error: AxiosError) => {
         console.log(error.message);
@@ -135,20 +127,6 @@ const ProjectMaterialTable = () => {
     }
   );
 
-  const updateMaterialStatus = useMutation(
-    ({ id, values }: { id: string; values: UpdateProjectMaterialDto }) =>
-      operationsByTag.projectMaterial.projectMaterialControllerUpdate({
-        pathParams: { id },
-        body: {
-          status: !values.status,
-        },
-      }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["materialByProjectId"]);
-      },
-    }
-  );
   const deleteMutation = useMutation(
     (id: string) =>
       operationsByTag.projectMaterial.projectMaterialControllerRemove({
@@ -156,27 +134,21 @@ const ProjectMaterialTable = () => {
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["materialByProjectId"]);
+        queryClient.invalidateQueries(["materialByProject"]);
       },
     }
   );
 
   const createMutation = useMutation(projectMaterial, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["materialByProjectId"]);
+      queryClient.invalidateQueries(["materialByProject"]);
     },
   });
 
-  // const projectName = data[0]?.project?.projectName;
-
-  // const colTest = name(data, setMid, materials, updateMaterialStatus);
-
-  const colTest = React.useMemo<MRT_ColumnDef<ProjecTMaterialTest>[]>(
-    () => name(data, setMid, materials, updateMaterialStatus),
-
-    []
-  );
   if (!data || !materials) return null;
+
+  const colTest = name(data, setMid, materials);
+
   const dataTable = data?.map((column) => {
     return {
       materialName: column?.material?.materialName,
@@ -189,25 +161,6 @@ const ProjectMaterialTable = () => {
     };
   });
 
-  // const dataTable = React.useMemo(
-  //   () =>
-  //     data?.map((column) => {
-  //       console.log(column);
-
-  //       return {
-  //         materialName: column?.material?.materialName,
-  //         unit: column.material.unit,
-  //         createdAt: new Date(column.createdAt).toLocaleDateString(),
-  //         id: column.id,
-  //         quantity: column.quantity,
-  //         price: column.material.price,
-  //         hourPerQuantity: column.material.hourPerQuantity,
-  //       };
-  //     }),
-  //   []
-  // );
-
-  //Actions
   //delete
   const handleDeleteRow = (row: MRT_Row<ProjecTMaterialTest>) => {
     if (
@@ -236,7 +189,6 @@ const ProjectMaterialTable = () => {
       delete values["materialName"];
       exitEditingMode();
     };
-
   return (
     <>
       <Stack
@@ -265,14 +217,7 @@ const ProjectMaterialTable = () => {
               color: "white",
               align: "center",
             }}
-            // muiTableBodyProps={{
-            //   sx: (theme) => ({
-            //     "& tr:nth-of-type(odd)": {
-            //       backgroundColor: darken(theme.palette.background.paper, 0.1),
-            //     },
-            //   }),
-            // }}
-            isLoading={isLoading}
+            isLoading={isFetching}
             enableStickyFooter
             initialState={{
               columnVisibility: { id: false },
@@ -314,16 +259,7 @@ const ProjectMaterialTable = () => {
                 >
                   <AddIcon />
                 </Fab>
-                {/* <Fab
-                color="success"
-                onClick={() => {
-                  handleOpen();
-                }}
-                aria-label="add"
-                size="small"
-              >
-                <LibraryAddIcon />
-              </Fab> */}
+
                 <Fab
                   color="inherit"
                   onClick={() => {
@@ -350,14 +286,6 @@ const ProjectMaterialTable = () => {
             handleOpen={handleOpen}
             open={open}
           />
-          {/* <TemporaryDrawer
-            projectId={projectId}
-            projectMaterialId={projectMaterialId}
-            userId={userId}
-            openDrawer={openDrawer}
-            toggleSliderOpen={toggleSliderOpen}
-            toggleSliderClose={toggleSliderClose}
-          /> */}
         </Box>
       </Stack>
     </>
@@ -375,13 +303,7 @@ function name(
     (value: React.SetStateAction<{ mId: string } | undefined>): void;
     (arg0: { mId: string }): void;
   },
-  materials: MaterialEntity[],
-  updateMaterialStatus: UseMutationResult<
-    ProjectMaterialEntity,
-    unknown,
-    { id: string; values: UpdateProjectMaterialDto },
-    unknown
-  >
+  materials: MaterialEntity[]
 ) {
   return [
     {
@@ -442,10 +364,12 @@ function name(
       aggregationFn: "sum",
 
       Footer: ({ table, column, footer }) => {
+        const totalHours = getTotalFooter(column, "price");
+
         return (
           <Stack>
             Total:
-            <Box color="#1B998B">{convertCurrency(200)}</Box>
+            <Box color="#1B998B">{convertCurrency(totalHours)}</Box>
           </Stack>
         );
       },
@@ -468,27 +392,16 @@ function name(
       aggregationFn: "sum",
 
       Footer: ({ table, column, footer }) => {
-        console.log({ table, column, footer });
-
-        //I need to access the result of each row in the *hourPerQuantity* so can accumulate the result in the footer
+        const totalHours = getTotalFooter(column, "hourPerQuantity");
 
         return (
           <Stack>
             Total:
-            <Box color="#1B998B">{"Total hours"}</Box>
+            <Box color="#1B998B">{totalHours}</Box>
           </Stack>
         );
       },
     },
-    // {
-    //   accessorKey: "hours",
-    //   header: "Total Hours",
-    //   size: 100,
-
-    //   Cell: ({ cell, column, row, table }) => {
-    //     return row.original.quantity * row.original.material.;
-    //   },
-    // },
 
     {
       accessorKey: "createdAt",
@@ -501,24 +414,6 @@ function name(
   ] as MRT_ColumnDef<ProjecTMaterialTest>[];
 }
 
-//Action to add comments
-
-//  <Tooltip arrow placement="right" title="Add Comment">
-//    <IconButton
-//      color="primary"
-//      onClick={() => {
-//        setProjectMaterialId(row.original.id);
-
-//        toggleSliderOpen();
-//      }}
-//    >
-//      {/* variant="dot" */}
-//      <Badge badgeContent={4} color="secondary">
-//        <InsertCommentIcon />
-//      </Badge>
-//    </IconButton>
-//  </Tooltip>;
-
 export function convertCurrency(currency: number) {
   // return currency.toFixed(2);
   return new Intl.NumberFormat("da-DK", {
@@ -527,12 +422,18 @@ export function convertCurrency(currency: number) {
   }).format(currency);
 }
 
-// const { data: customFields } = useQuery(
-//   ["customFieldsTable"],
-//   () =>
-//     operationsByTag.tableCustomFields.tableCustomFieldsControllerFindCustomFieldsByProjectId(
-//       {
-//         pathParams: { projectId },
-//       }
-//     ) as unknown as Promise<UpdateTableCustomFieldDto[]>
-// );
+function getTotalFooter(
+  values: MRT_Column<ProjecTMaterialTest>,
+  hourPerQuantity: string
+) {
+  const totalHoursRows = values.getFacetedRowModel().rows;
+
+  values.getFacetedRowModel().rows;
+  return totalHoursRows.reduce((acc: any, val) => {
+    const { quantity } = val.original;
+    //@ts-ignore
+    const total = val.original[hourPerQuantity];
+
+    return acc + total * +quantity;
+  }, 0);
+}

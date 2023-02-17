@@ -120,7 +120,6 @@ const ProjectTable = () => {
       size: 100,
       Cell: ({ cell, row, table, column }) => {
         // console.log({ cell, row, table, column });
-        console.log(cell.row.original.isActive);
         const status = cell.row.original.isActive;
 
         return (

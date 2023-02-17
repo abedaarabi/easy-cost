@@ -4,5 +4,3 @@ export function findById<T extends { id: string }>(
 ) {
   return entities.find((anEntity) => anEntity.id === id);
 }
-
-

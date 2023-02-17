@@ -54,7 +54,7 @@ export type ProjectMaterialEntity = {
 };
 
 export type UpdateProjectMaterialDto = {
-  status: any;
+
   materialId?: string;
   projectId?: string;
   /**
