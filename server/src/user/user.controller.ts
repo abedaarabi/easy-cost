@@ -8,6 +8,10 @@ import {
   Delete,
   NotFoundException,
   UseFilters,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,9 +21,23 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { PrismaClientExceptionFilter } from 'src/prisma-client-exception.filter';
 import { UserEntity } from './entities/user.entity';
 import { User } from '@prisma/client';
+import { RequestModel } from 'src/middleware/auth.middleware';
+import { RolesGuard } from 'src/middleware/auth.guard';
+import { Roles } from 'src/middleware/role.decorator';
+
+enum Role {
+  Admin = 'CompanyAdmin',
+}
 
 @Controller('user')
 @ApiTags('User')
+@UsePipes(
+  new ValidationPipe({
+    whitelist: true,
+    transform: true,
+  }),
+)
+@UseGuards(RolesGuard)
 @UseFilters(PrismaClientExceptionFilter)
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -35,8 +53,11 @@ export class UserController {
   }
 
   @Get()
+  @Roles(Role.Admin)
   @ApiCreatedResponse({ type: UserEntity, isArray: true })
-  findAll() {
+  findAll(@Req() req: RequestModel) {
+    console.log(req.user, 'Abed$$$$$$$$$$$$$$$');
+
     return this.userService.findAll();
   }
 

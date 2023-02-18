@@ -2,12 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class MaterialService {
   constructor(private prisma: PrismaService) {}
 
-  create(createMaterialDto: CreateMaterialDto) {
+  async create(createMaterialDto: CreateMaterialDto) {
+    const { uid } = await admin.auth().createUser({
+      displayName: 'aa',
+      email: 'asda@asd.df',
+      password: '11111111',
+    });
+    const result = await admin
+      .auth()
+      .setCustomUserClaims(uid, { role: 'admin' });
+
+    console.log(result, uid);
+
     return this.prisma.material.create({ data: createMaterialDto });
   }
 

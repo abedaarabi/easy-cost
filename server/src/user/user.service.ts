@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProjectMaterialService } from '../project-material/project-material.service';
 import { PrismaService } from '../prisma/prisma.service';
+import * as admin from 'firebase-admin';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,8 +17,6 @@ export class UserService {
 
   create(createUserDto: CreateUserDto) {
     try {
-      console.log(createUserDto);
-
       // const user = { ...createUserDto, userType: 'company' };
       return this.prisma.user.create({ data: createUserDto });
     } catch (error) {

@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -9,6 +14,8 @@ import { ProjectModule } from './project/project.module';
 import { ProjectMaterialModule } from './project-material/project-material.module';
 import { InvitedUserModule } from './invited-user/invited-user.module';
 import { TableCustomFieldsModule } from './table-custom-fields/table-custom-fields.module';
+import { LoginAuthModule } from './login-auth/login-auth.module';
+import { AuthMiddleware } from './middleware/auth.middleware';
 
 @Module({
   imports: [
@@ -21,8 +28,15 @@ import { TableCustomFieldsModule } from './table-custom-fields/table-custom-fiel
     InvitedUserModule,
     TableCustomFieldsModule,
     InvitedUserModule,
+    LoginAuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  public configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

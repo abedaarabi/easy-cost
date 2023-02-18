@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { PrismaClientExceptionFilter } from './prisma-client-exception.filter';
+import * as admin from 'firebase-admin';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,14 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      private_key: process.env.FIREBASE_PRIVATE_KEY,
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      project_id: process.env.FIREBASE_PROJECT_ID,
+    } as Partial<admin.ServiceAccount>),
+  });
+
   fs.writeFileSync('../swagger-spec.json', JSON.stringify(document));
 
   SwaggerModule.setup('api', app, document);
@@ -30,4 +39,5 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
+export default admin;
 bootstrap();
