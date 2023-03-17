@@ -58,6 +58,8 @@ export async function updateMaterial(
       },
       {
         headers: {
+          authorization: `Bearer ${localStorage.getItem("access_token")}`,
+
           "Content-Type": "application/json",
           Accept: "application/json",
         },
@@ -81,7 +83,7 @@ export async function createMaterial(material: Material): Promise<Material> {
       "http://localhost:3000/material",
 
       {
-        companyId: material.companyId,
+        // companyId: material.companyId,
         unit: material.unit,
 
         co2e: Number(material.co2e),
@@ -89,11 +91,13 @@ export async function createMaterial(material: Material): Promise<Material> {
         materialName: material.materialName,
 
         price: Number(material.price),
-        userId: material.userId,
+        // userId: material.userId,
       },
 
       {
         headers: {
+          authorization: `Bearer ${localStorage.getItem("access_token")}`,
+
           "Content-Type": "application/json",
           Accept: "application/json",
         },

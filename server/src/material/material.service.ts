@@ -8,19 +8,28 @@ import * as admin from 'firebase-admin';
 export class MaterialService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createMaterialDto: CreateMaterialDto) {
-    const { uid } = await admin.auth().createUser({
-      displayName: 'aa',
-      email: 'asda@asd.df',
-      password: '11111111',
-    });
-    const result = await admin
-      .auth()
-      .setCustomUserClaims(uid, { role: 'admin' });
+  async create(
+    createMaterialDto: CreateMaterialDto,
+    companyId: string,
+    userId: string,
+  ) {
+    const validateResult = {
+      unit: createMaterialDto.unit,
+      co2e: Number(createMaterialDto.co2e),
+      hourPerQuantity: Number(createMaterialDto.hourPerQuantity),
+      materialName: createMaterialDto.materialName,
+      price: Number(createMaterialDto.price),
+    };
 
-    console.log(result, uid);
+    try {
+      return this.prisma.material.create({
+        data: { ...validateResult, companyId, userId },
+      });
+    } catch (error) {
+      console.log(error);
 
-    return this.prisma.material.create({ data: createMaterialDto });
+      throw new Error(error);
+    }
   }
 
   findAll() {

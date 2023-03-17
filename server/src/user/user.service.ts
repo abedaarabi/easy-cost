@@ -28,13 +28,15 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  findUserByCompanyId(companyId: string) {
+  async findUserByCompanyId(companyId: string) {
     try {
-      const list = this.prisma.user.findMany({
+      const list = await this.prisma.user.findMany({
         where: {
           companyId,
         },
       });
+      console.log(list, 'list');
+
       return list;
     } catch (error) {
       throw new Error('not found');

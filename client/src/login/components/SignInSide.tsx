@@ -31,6 +31,7 @@ export default function SignInSide() {
 
     try {
       const loginResult = await login(email, password);
+
       setLoginMsg({ code: 200, msg: "Login Successful" });
     } catch (error) {
       console.log(error);

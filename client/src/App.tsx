@@ -20,7 +20,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Tune } from "@mui/icons-material";
 import MiniDrawer from "./dashboard/page/Db";
 import MaterialTable from "./dashboard/components/MaterialTable";
@@ -107,11 +107,11 @@ function App() {
       setLoginMsg("");
     }, 3000);
     return () => clearTimeout(time);
-  }, [loginMsg]);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
 
       <Box sx={{ width: "100%", zIndex: 999999, position: "absolute" }}>
         {loading && <LinearProgress color="info" />}

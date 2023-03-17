@@ -12,6 +12,7 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Headers,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -48,32 +49,41 @@ export class UserController {
     type: UserEntity,
   })
   @ApiCreatedResponse({ type: UserEntity })
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  create(
+    @Body() createUserDto: CreateUserDto,
+    @Headers('authorization') authorization: string,
+  ): Promise<User> {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
+  // @Get()
+  // @Roles(Role.Admin)
+  // @ApiCreatedResponse({ type: UserEntity, isArray: true })
+  // findAll(@Req() req: RequestModel, @Headers() authorization?: string) {
+  //   return this.userService.findAll();
+  // }
+
+  @Get('userByCompany/')
   @Roles(Role.Admin)
-  @ApiCreatedResponse({ type: UserEntity, isArray: true })
-  findAll(@Req() req: RequestModel) {
-    console.log(req.user, 'Abed$$$$$$$$$$$$$$$');
-
-    return this.userService.findAll();
-  }
-
-  @Get('userByCompany/:companyId')
   @ApiOkResponse({
     description: 'The record has been successfully created.',
     type: UserEntity,
     isArray: true,
   })
-  findUserByCompanyId(@Param('companyId') companyId: string): Promise<User[]> {
-    return this.userService.findUserByCompanyId(companyId);
+  findUserByCompanyId(
+    // @Param('companyId') companyId: string,
+    @Req() req: RequestModel,
+    @Headers('authorization') authorization: string,
+  ): Promise<User[]> {
+    return this.userService.findUserByCompanyId(req.user.companyId);
   }
 
   @Get('email/:email')
   @ApiCreatedResponse({ type: UserEntity })
-  async findUnique(@Param('email') email: string) {
+  async findUnique(
+    @Param('email') email: string,
+    @Headers('authorization') authorization: string,
+  ) {
     const user = await this.userService.findUniqueByEmail(email);
     if (!user) {
       throw new NotFoundException(`user with name: ${email} is not found`);
@@ -83,7 +93,10 @@ export class UserController {
 
   @Get(':id')
   @ApiCreatedResponse({ type: UserEntity })
-  async findOne(@Param('id') id: string) {
+  async findOne(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
     const user = await this.userService.findOne(id);
     if (!user) {
       throw new NotFoundException(`user with id: ${id} is not found`);
@@ -97,7 +110,13 @@ export class UserController {
     type: UserEntity,
   })
   @ApiCreatedResponse({ type: UserEntity })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    console.log(updateUserDto);
+
     return this.userService.update(id, updateUserDto);
   }
 
@@ -107,7 +126,10 @@ export class UserController {
     description: 'The record has been successfully created.',
     type: UserEntity,
   })
-  remove(@Param('id') id: string) {
+  remove(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.userService.remove(id);
   }
 }

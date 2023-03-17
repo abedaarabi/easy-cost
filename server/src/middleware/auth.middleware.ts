@@ -21,7 +21,7 @@ export class AuthMiddleware implements NestMiddleware {
 
   public async use(req: RequestModel, _: Response, next: NextFunction) {
     const { authorization } = req.headers;
-    console.log(authorization, 'authorization');
+    // console.log(req.headers, 'authorization');
 
     if (!authorization) {
       throw new HttpException(
@@ -34,6 +34,7 @@ export class AuthMiddleware implements NestMiddleware {
       const userRole = await this.prisma.user.findUnique({
         where: { id: user.uid },
       });
+      console.log({ ...user, role: userRole.userType, ...userRole });
 
       req.user = { ...user, role: userRole.userType, ...userRole };
       next();

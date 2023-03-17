@@ -35,7 +35,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 
-import { getUserByCompany, updateUser } from "../helper/db.fetchUser";
+// import { getUserByCompany, updateUser } from "../helper/db.fetchUser";
 import { projectsByCompany } from "../helper/db.fetchProject";
 import { operationsByTag } from "../../api/easyCostComponents";
 import {
@@ -55,13 +55,16 @@ const ProjectTable = () => {
     ["userByCompanyId"],
     () =>
       operationsByTag.project.projectControllerProjectsByCompanyId({
-        pathParams: { companyId },
+        headers: { authorization: `Bearer ${user.accessToken}` },
       }) as unknown as Promise<ProjectEntity[]>
   );
 
   const deleteMutation = useMutation(
     (id: string) =>
-      operationsByTag.project.projectControllerRemove({ pathParams: { id } }),
+      operationsByTag.project.projectControllerRemove({
+        pathParams: { id },
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["userByCompanyId"]);
@@ -73,6 +76,9 @@ const ProjectTable = () => {
     ({ id, value }: { id: string; value: UpdateProjectDto }) =>
       operationsByTag.project.projectControllerUpdate({
         pathParams: { id },
+
+        headers: { authorization: `Bearer ${user.accessToken}` },
+
         body: {
           companyId: value.companyId,
           id: value.id,

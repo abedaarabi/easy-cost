@@ -168,6 +168,8 @@ export default function MiniDrawer() {
               color="inherit"
               onClick={() => {
                 logout();
+                localStorage.removeItem("access_token");
+
                 // navigate("/login");
               }}
             >

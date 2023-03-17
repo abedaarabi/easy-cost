@@ -6,14 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  Headers,
+  UseFilters,
 } from '@nestjs/common';
 import { ProjectMaterialService } from './project-material.service';
 import { CreateProjectMaterialDto } from './dto/create-project-material.dto';
 import { UpdateProjectMaterialDto } from './dto/update-project-material.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ProjectMaterialEntity } from './entities/project-material.entity';
+import { RequestModel } from 'src/middleware/auth.middleware';
+import { PrismaClientExceptionFilter } from 'src/prisma-client-exception.filter';
 
 @Controller('project-material')
+@UseFilters(PrismaClientExceptionFilter)
 @ApiTags('project-material')
 export class ProjectMaterialController {
   constructor(
@@ -49,7 +55,11 @@ export class ProjectMaterialController {
     type: ProjectMaterialEntity,
     isArray: true,
   })
-  findByProjectId(@Param('projectId') id: string) {
+  findByProjectId(
+    @Param('projectId') id: string,
+    @Req() req: RequestModel,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.projectMaterialService.findByProjectId(id);
   }
 

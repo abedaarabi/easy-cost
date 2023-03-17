@@ -13,7 +13,7 @@ import SendIcon from "@mui/icons-material/Send";
 import ReusableTable from "../../reusableTable/ReusableTable";
 import Box from "@mui/material/Box";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
-
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import MaterialReactTable, {
   MRT_ColumnDef,
   MRT_Row,
@@ -53,6 +53,7 @@ import TemporaryDrawer from "../components/CommentsDrawer";
 import { Viewer } from "../../viewer/ForgeViewer";
 import { Stack } from "@mui/system";
 import { styled } from "@mui/material/styles";
+import FolderModel from "../../folderModel/FolderModel";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -64,6 +65,9 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const ProjectMaterialTable = () => {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
+  const [folderModel, setFolderModel] = React.useState(false);
+  const [path, setPath] = React.useState<string>("");
+
   const [mIds, setMid] = React.useState<{ mId: string }>();
 
   const { projectId } = useParams<Params<string>>();
@@ -89,6 +93,7 @@ const ProjectMaterialTable = () => {
     () =>
       operationsByTag.projectMaterial.projectMaterialControllerFindByProjectId({
         pathParams: { projectId },
+        headers: { authorization: `Bearer ${user.accessToken}` },
       }) as unknown as Promise<ProjecTMaterialTest[]> | undefined
   );
   console.log({ isLoading, error, data, isFetching });
@@ -103,6 +108,8 @@ const ProjectMaterialTable = () => {
     () =>
       operationsByTag.material.materialControllerFindMaterialByCompanyId({
         pathParams: { companyId },
+
+        headers: { authorization: `Bearer ${user.accessToken}` },
       }) as unknown as Promise<MaterialEntity[]>
   );
 
@@ -189,14 +196,34 @@ const ProjectMaterialTable = () => {
       delete values["materialName"];
       exitEditingMode();
     };
+
+  function getFilePath(filePath: string) {
+    setPath(filePath);
+  }
+
   return (
     <>
-      <Stack
-        sx={{}}
-        direction={{ xs: "column", sm: "column" }}
-        spacing={{ xs: 1, sm: 2, md: 1 }}
-      >
-        <Item sx={{ flex: 20, overflow: "auto" }}>
+      <Stack direction={"row"} gap={1}>
+        <Item sx={{ flex: 1 }}>
+          <Box
+            sx={{
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+              borderLeft: "#003049 solid 3px",
+              mt: 1,
+            }}
+          >
+            <IconButton
+              aria-label="fingerprint"
+              color="primary"
+              onClick={() => setFolderModel(true)}
+            >
+              <FolderOpenIcon fontSize="large" />
+            </IconButton>
+          </Box>
+        </Item>
+        <Item sx={{ flex: 25, overflow: "auto" }}>
           <Box
             sx={{
               height: "25rem",
@@ -204,75 +231,83 @@ const ProjectMaterialTable = () => {
               position: "relative",
             }}
           >
-            <Viewer />
+            <Viewer path={path} />
           </Box>
         </Item>
-        <Box sx={{ flex: 1, mt: 1 }}>
-          <ReusableTable
-            enableColumnDragging
-            muiTableHeadCellProps={{
-              align: "center",
-            }}
-            muiTableBodyCellProps={{
-              color: "white",
-              align: "center",
-            }}
-            isLoading={isFetching}
-            enableStickyFooter
-            initialState={{
-              columnVisibility: { id: false },
-              density: "compact",
-            }}
-            columns={colTest}
-            data={dataTable}
-            onEditingRowSave={handleSaveRowEdits}
-            enableEditing
-            renderRowActions={({ row, table }) => (
-              <Box sx={{ display: "flex", gap: "0.5rem" }}>
-                <Tooltip arrow placement="left" title="Edit">
-                  <IconButton
-                    onClick={() => {
-                      table.setEditingRow(row);
-                    }}
+      </Stack>
+      <Stack
+        sx={{}}
+        direction={{ xs: "column", sm: "column" }}
+        spacing={{ xs: 1, sm: 2, md: 1 }}
+      >
+        <Box sx={{ flex: 1, mt: 2 }}>
+          <Box mb={5}>
+            <ReusableTable
+              enableColumnDragging
+              muiTableHeadCellProps={{
+                align: "center",
+              }}
+              muiTableBodyCellProps={{
+                color: "white",
+                align: "center",
+              }}
+              isLoading={isFetching}
+              enableStickyFooter
+              initialState={{
+                columnVisibility: { id: false },
+                density: "compact",
+              }}
+              columns={colTest}
+              data={dataTable}
+              onEditingRowSave={handleSaveRowEdits}
+              enableEditing
+              renderRowActions={({ row, table }) => (
+                <Box sx={{ display: "flex", gap: "0.5rem" }}>
+                  <Tooltip arrow placement="left" title="Edit">
+                    <IconButton
+                      onClick={() => {
+                        table.setEditingRow(row);
+                      }}
+                      color="info"
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip arrow placement="right" title="Delete">
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDeleteRow(row)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              renderTopToolbarCustomActions={() => (
+                <Box sx={{ pl: 2, display: "flex", gap: 2 }}>
+                  <Fab
                     color="info"
+                    onClick={() => setCreateModalOpen(true)}
+                    aria-label="add"
+                    size="small"
                   >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip arrow placement="right" title="Delete">
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDeleteRow(row)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            renderTopToolbarCustomActions={() => (
-              <Box sx={{ pl: 2, display: "flex", gap: 2 }}>
-                <Fab
-                  color="info"
-                  onClick={() => setCreateModalOpen(true)}
-                  aria-label="add"
-                  size="small"
-                >
-                  <AddIcon />
-                </Fab>
+                    <AddIcon />
+                  </Fab>
 
-                <Fab
-                  color="inherit"
-                  onClick={() => {
-                    alert(projectId);
-                  }}
-                  aria-label="add"
-                  size="small"
-                >
-                  <SendIcon fontSize="small" />
-                </Fab>
-              </Box>
-            )}
-          />
+                  <Fab
+                    color="inherit"
+                    onClick={() => {
+                      alert(projectId);
+                    }}
+                    aria-label="add"
+                    size="small"
+                  >
+                    <SendIcon fontSize="small" />
+                  </Fab>
+                </Box>
+              )}
+            />
+          </Box>
           <CreateNewAccountModal
             columns={colTest}
             open={createModalOpen}
@@ -288,6 +323,14 @@ const ProjectMaterialTable = () => {
           />
         </Box>
       </Stack>
+
+      {folderModel && (
+        <FolderModel
+          openModel={folderModel}
+          setOpenModel={setFolderModel}
+          getFilePath={getFilePath}
+        />
+      )}
     </>
   );
 };

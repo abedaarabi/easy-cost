@@ -46,11 +46,7 @@ import {
 import Button from "@mui/material/Button";
 
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
-import {
-  createUserToken,
-  getUserByCompany,
-  updateUser,
-} from "../helper/db.fetchUser";
+import { createUserToken } from "../helper/db.fetchUser";
 import { operationsByTag } from "../../api/easyCostComponents";
 import {
   UpdateUserDto,
@@ -71,13 +67,17 @@ const UserTable = () => {
     ["userByCompanyId"],
     () =>
       operationsByTag.user.userControllerFindUserByCompanyId({
-        pathParams: { companyId },
+        headers: { authorization: `Bearer ${user.accessToken}` },
       }) as unknown as Promise<UserEntity[]>
   );
 
   const deleteMutation = useMutation(
     (id: string) =>
-      operationsByTag.user.userControllerRemove({ pathParams: { id } }),
+      operationsByTag.user.userControllerRemove({
+        pathParams: { id },
+
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["userByCompanyId"]);
@@ -90,6 +90,8 @@ const UserTable = () => {
       operationsByTag.user.userControllerUpdate({
         pathParams: { id },
         body: { ...value },
+
+        headers: { authorization: `Bearer ${user.accessToken}` },
       }),
 
     {

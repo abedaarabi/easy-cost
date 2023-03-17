@@ -16,6 +16,7 @@ import { InvitedUserModule } from './invited-user/invited-user.module';
 import { TableCustomFieldsModule } from './table-custom-fields/table-custom-fields.module';
 import { LoginAuthModule } from './login-auth/login-auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthMiddleware } from './middleware/auth.middleware';
     TableCustomFieldsModule,
     InvitedUserModule,
     LoginAuthModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -37,6 +39,7 @@ export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
+      .exclude({ path: '/api/:id/upload-file', method: RequestMethod.ALL })
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

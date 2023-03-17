@@ -54,7 +54,6 @@ export type ProjectMaterialEntity = {
 };
 
 export type UpdateProjectMaterialDto = {
-
   materialId?: string;
   projectId?: string;
   /**
@@ -201,4 +200,23 @@ export type UpdateTableCustomFieldDto = {
   columnName?: string;
   columnType?: string;
   customFieldValue?: Record<string, any>;
+};
+
+export type UserDTO = {
+  /**
+   * displayName
+   */
+  displayName: string;
+  /**
+   * email
+   */
+  email: string;
+  /**
+   * password
+   */
+  password: string;
+  /**
+   * role
+   */
+  role: string;
 };

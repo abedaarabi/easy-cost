@@ -25,10 +25,15 @@ export const appControllerSendEmail = (signal?: AbortSignal) =>
     signal,
   });
 
+export type UserControllerCreateHeaders = {
+  authorization: string;
+};
+
 export type UserControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type UserControllerCreateVariables = {
   body: Schemas.CreateUserDto;
+  headers: UserControllerCreateHeaders;
 };
 
 export const userControllerCreate = (
@@ -39,27 +44,13 @@ export const userControllerCreate = (
     Schemas.UserEntity,
     UserControllerCreateError,
     Schemas.CreateUserDto,
-    {},
+    UserControllerCreateHeaders,
     {},
     {}
   >({ url: '/user', method: 'post', ...variables, signal });
 
-export type UserControllerFindAllError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerFindAllResponse = Schemas.UserEntity[];
-
-export const userControllerFindAll = (signal?: AbortSignal) =>
-  easyCostFetch<
-    UserControllerFindAllResponse,
-    UserControllerFindAllError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: '/user', method: 'get', signal });
-
-export type UserControllerFindUserByCompanyIdPathParams = {
-  companyId: string;
+export type UserControllerFindUserByCompanyIdHeaders = {
+  authorization: string;
 };
 
 export type UserControllerFindUserByCompanyIdError =
@@ -68,7 +59,7 @@ export type UserControllerFindUserByCompanyIdError =
 export type UserControllerFindUserByCompanyIdResponse = Schemas.UserEntity[];
 
 export type UserControllerFindUserByCompanyIdVariables = {
-  pathParams: UserControllerFindUserByCompanyIdPathParams;
+  headers: UserControllerFindUserByCompanyIdHeaders;
 };
 
 export const userControllerFindUserByCompanyId = (
@@ -79,23 +70,23 @@ export const userControllerFindUserByCompanyId = (
     UserControllerFindUserByCompanyIdResponse,
     UserControllerFindUserByCompanyIdError,
     undefined,
+    UserControllerFindUserByCompanyIdHeaders,
     {},
-    {},
-    UserControllerFindUserByCompanyIdPathParams
-  >({
-    url: '/user/userByCompany/{companyId}',
-    method: 'get',
-    ...variables,
-    signal,
-  });
+    {}
+  >({ url: '/user/userByCompany', method: 'get', ...variables, signal });
 
 export type UserControllerFindUniquePathParams = {
   email: string;
 };
 
+export type UserControllerFindUniqueHeaders = {
+  authorization: string;
+};
+
 export type UserControllerFindUniqueError = Fetcher.ErrorWrapper<undefined>;
 
 export type UserControllerFindUniqueVariables = {
+  headers: UserControllerFindUniqueHeaders;
   pathParams: UserControllerFindUniquePathParams;
 };
 
@@ -107,7 +98,7 @@ export const userControllerFindUnique = (
     Schemas.UserEntity,
     UserControllerFindUniqueError,
     undefined,
-    {},
+    UserControllerFindUniqueHeaders,
     {},
     UserControllerFindUniquePathParams
   >({ url: '/user/email/{email}', method: 'get', ...variables, signal });
@@ -116,9 +107,14 @@ export type UserControllerFindOnePathParams = {
   id: string;
 };
 
+export type UserControllerFindOneHeaders = {
+  authorization: string;
+};
+
 export type UserControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
 
 export type UserControllerFindOneVariables = {
+  headers: UserControllerFindOneHeaders;
   pathParams: UserControllerFindOnePathParams;
 };
 
@@ -130,7 +126,7 @@ export const userControllerFindOne = (
     Schemas.UserEntity,
     UserControllerFindOneError,
     undefined,
-    {},
+    UserControllerFindOneHeaders,
     {},
     UserControllerFindOnePathParams
   >({ url: '/user/{id}', method: 'get', ...variables, signal });
@@ -139,10 +135,15 @@ export type UserControllerUpdatePathParams = {
   id: string;
 };
 
+export type UserControllerUpdateHeaders = {
+  authorization: string;
+};
+
 export type UserControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
 
 export type UserControllerUpdateVariables = {
   body?: Schemas.UpdateUserDto;
+  headers: UserControllerUpdateHeaders;
   pathParams: UserControllerUpdatePathParams;
 };
 
@@ -154,7 +155,7 @@ export const userControllerUpdate = (
     Schemas.UserEntity,
     UserControllerUpdateError,
     Schemas.UpdateUserDto,
-    {},
+    UserControllerUpdateHeaders,
     {},
     UserControllerUpdatePathParams
   >({ url: '/user/{id}', method: 'patch', ...variables, signal });
@@ -163,9 +164,14 @@ export type UserControllerRemovePathParams = {
   id: string;
 };
 
+export type UserControllerRemoveHeaders = {
+  authorization: string;
+};
+
 export type UserControllerRemoveError = Fetcher.ErrorWrapper<undefined>;
 
 export type UserControllerRemoveVariables = {
+  headers: UserControllerRemoveHeaders;
   pathParams: UserControllerRemovePathParams;
 };
 
@@ -177,7 +183,7 @@ export const userControllerRemove = (
     Schemas.UserEntity,
     UserControllerRemoveError,
     undefined,
-    {},
+    UserControllerRemoveHeaders,
     {},
     UserControllerRemovePathParams
   >({ url: '/user/{id}', method: 'delete', ...variables, signal });
@@ -292,6 +298,10 @@ export type ProjectMaterialControllerFindByProjectIdPathParams = {
   projectId: string;
 };
 
+export type ProjectMaterialControllerFindByProjectIdHeaders = {
+  authorization: string;
+};
+
 export type ProjectMaterialControllerFindByProjectIdError =
   Fetcher.ErrorWrapper<undefined>;
 
@@ -299,6 +309,7 @@ export type ProjectMaterialControllerFindByProjectIdResponse =
   Schemas.ProjectMaterialEntity[];
 
 export type ProjectMaterialControllerFindByProjectIdVariables = {
+  headers: ProjectMaterialControllerFindByProjectIdHeaders;
   pathParams: ProjectMaterialControllerFindByProjectIdPathParams;
 };
 
@@ -310,7 +321,7 @@ export const projectMaterialControllerFindByProjectId = (
     ProjectMaterialControllerFindByProjectIdResponse,
     ProjectMaterialControllerFindByProjectIdError,
     undefined,
-    {},
+    ProjectMaterialControllerFindByProjectIdHeaders,
     {},
     ProjectMaterialControllerFindByProjectIdPathParams
   >({
@@ -320,10 +331,15 @@ export const projectMaterialControllerFindByProjectId = (
     signal,
   });
 
+export type MaterialControllerCreateHeaders = {
+  authorization: string;
+};
+
 export type MaterialControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type MaterialControllerCreateVariables = {
   body: Schemas.CreateMaterialDto;
+  headers: MaterialControllerCreateHeaders;
 };
 
 export const materialControllerCreate = (
@@ -331,10 +347,10 @@ export const materialControllerCreate = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    Schemas.MaterialEntity,
     MaterialControllerCreateError,
     Schemas.CreateMaterialDto,
-    {},
+    MaterialControllerCreateHeaders,
     {},
     {}
   >({ url: '/material', method: 'post', ...variables, signal });
@@ -357,9 +373,14 @@ export type MaterialControllerFindOnePathParams = {
   id: string;
 };
 
+export type MaterialControllerFindOneHeaders = {
+  authorization: string;
+};
+
 export type MaterialControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
 
 export type MaterialControllerFindOneVariables = {
+  headers: MaterialControllerFindOneHeaders;
   pathParams: MaterialControllerFindOnePathParams;
 };
 
@@ -371,7 +392,7 @@ export const materialControllerFindOne = (
     Schemas.MaterialEntity,
     MaterialControllerFindOneError,
     undefined,
-    {},
+    MaterialControllerFindOneHeaders,
     {},
     MaterialControllerFindOnePathParams
   >({ url: '/material/{id}', method: 'get', ...variables, signal });
@@ -380,10 +401,15 @@ export type MaterialControllerUpdatePathParams = {
   id: string;
 };
 
+export type MaterialControllerUpdateHeaders = {
+  authorization: string;
+};
+
 export type MaterialControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
 
 export type MaterialControllerUpdateVariables = {
   body?: Schemas.UpdateMaterialDto;
+  headers: MaterialControllerUpdateHeaders;
   pathParams: MaterialControllerUpdatePathParams;
 };
 
@@ -395,7 +421,7 @@ export const materialControllerUpdate = (
     Schemas.MaterialEntity,
     MaterialControllerUpdateError,
     Schemas.UpdateMaterialDto,
-    {},
+    MaterialControllerUpdateHeaders,
     {},
     MaterialControllerUpdatePathParams
   >({ url: '/material/{id}', method: 'patch', ...variables, signal });
@@ -404,9 +430,14 @@ export type MaterialControllerRemovePathParams = {
   id: string;
 };
 
+export type MaterialControllerRemoveHeaders = {
+  authorization: string;
+};
+
 export type MaterialControllerRemoveError = Fetcher.ErrorWrapper<undefined>;
 
 export type MaterialControllerRemoveVariables = {
+  headers: MaterialControllerRemoveHeaders;
   pathParams: MaterialControllerRemovePathParams;
 };
 
@@ -418,13 +449,13 @@ export const materialControllerRemove = (
     Schemas.MaterialEntity,
     MaterialControllerRemoveError,
     undefined,
-    {},
+    MaterialControllerRemoveHeaders,
     {},
     MaterialControllerRemovePathParams
   >({ url: '/material/{id}', method: 'delete', ...variables, signal });
 
-export type MaterialControllerFindMaterialByCompanyIdPathParams = {
-  companyId: string;
+export type MaterialControllerFindMaterialByCompanyIdHeaders = {
+  authorization: string;
 };
 
 export type MaterialControllerFindMaterialByCompanyIdError =
@@ -434,7 +465,7 @@ export type MaterialControllerFindMaterialByCompanyIdResponse =
   Schemas.MaterialEntity[];
 
 export type MaterialControllerFindMaterialByCompanyIdVariables = {
-  pathParams: MaterialControllerFindMaterialByCompanyIdPathParams;
+  headers: MaterialControllerFindMaterialByCompanyIdHeaders;
 };
 
 export const materialControllerFindMaterialByCompanyId = (
@@ -445,11 +476,11 @@ export const materialControllerFindMaterialByCompanyId = (
     MaterialControllerFindMaterialByCompanyIdResponse,
     MaterialControllerFindMaterialByCompanyIdError,
     undefined,
+    MaterialControllerFindMaterialByCompanyIdHeaders,
     {},
-    {},
-    MaterialControllerFindMaterialByCompanyIdPathParams
+    {}
   >({
-    url: '/material/materialByCompany/{companyId}',
+    url: '/material/materialByCompany',
     method: 'get',
     ...variables,
     signal,
@@ -589,8 +620,8 @@ export const projectControllerFindAll = (signal?: AbortSignal) =>
     {}
   >({ url: '/project', method: 'get', signal });
 
-export type ProjectControllerProjectsByCompanyIdPathParams = {
-  companyId: string;
+export type ProjectControllerProjectsByCompanyIdHeaders = {
+  authorization: string;
 };
 
 export type ProjectControllerProjectsByCompanyIdError =
@@ -600,7 +631,7 @@ export type ProjectControllerProjectsByCompanyIdResponse =
   Schemas.ProjectEntity[];
 
 export type ProjectControllerProjectsByCompanyIdVariables = {
-  pathParams: ProjectControllerProjectsByCompanyIdPathParams;
+  headers: ProjectControllerProjectsByCompanyIdHeaders;
 };
 
 export const projectControllerProjectsByCompanyId = (
@@ -611,23 +642,23 @@ export const projectControllerProjectsByCompanyId = (
     ProjectControllerProjectsByCompanyIdResponse,
     ProjectControllerProjectsByCompanyIdError,
     undefined,
+    ProjectControllerProjectsByCompanyIdHeaders,
     {},
-    {},
-    ProjectControllerProjectsByCompanyIdPathParams
-  >({
-    url: '/project/projectByCompany/{companyId}',
-    method: 'get',
-    ...variables,
-    signal,
-  });
+    {}
+  >({ url: '/project/projectByCompany', method: 'get', ...variables, signal });
 
 export type ProjectControllerFindOnePathParams = {
   id: string;
 };
 
+export type ProjectControllerFindOneHeaders = {
+  authorization: string;
+};
+
 export type ProjectControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectControllerFindOneVariables = {
+  headers: ProjectControllerFindOneHeaders;
   pathParams: ProjectControllerFindOnePathParams;
 };
 
@@ -639,7 +670,7 @@ export const projectControllerFindOne = (
     Schemas.ProjectEntity,
     ProjectControllerFindOneError,
     undefined,
-    {},
+    ProjectControllerFindOneHeaders,
     {},
     ProjectControllerFindOnePathParams
   >({ url: '/project/{id}', method: 'get', ...variables, signal });
@@ -648,10 +679,15 @@ export type ProjectControllerUpdatePathParams = {
   id: string;
 };
 
+export type ProjectControllerUpdateHeaders = {
+  authorization: string;
+};
+
 export type ProjectControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectControllerUpdateVariables = {
   body?: Schemas.UpdateProjectDto;
+  headers: ProjectControllerUpdateHeaders;
   pathParams: ProjectControllerUpdatePathParams;
 };
 
@@ -663,7 +699,7 @@ export const projectControllerUpdate = (
     Schemas.ProjectEntity,
     ProjectControllerUpdateError,
     Schemas.UpdateProjectDto,
-    {},
+    ProjectControllerUpdateHeaders,
     {},
     ProjectControllerUpdatePathParams
   >({ url: '/project/{id}', method: 'patch', ...variables, signal });
@@ -672,9 +708,14 @@ export type ProjectControllerRemovePathParams = {
   id: string;
 };
 
+export type ProjectControllerRemoveHeaders = {
+  authorization: string;
+};
+
 export type ProjectControllerRemoveError = Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectControllerRemoveVariables = {
+  headers: ProjectControllerRemoveHeaders;
   pathParams: ProjectControllerRemovePathParams;
 };
 
@@ -686,7 +727,7 @@ export const projectControllerRemove = (
     Schemas.ProjectEntity,
     ProjectControllerRemoveError,
     undefined,
-    {},
+    ProjectControllerRemoveHeaders,
     {},
     ProjectControllerRemovePathParams
   >({ url: '/project/{id}', method: 'delete', ...variables, signal });
@@ -943,10 +984,47 @@ export const tableCustomFieldsControllerFindCustomFieldsByProjectId = (
     signal,
   });
 
+export type UserControllerCreateUserError = Fetcher.ErrorWrapper<undefined>;
+
+export type UserControllerCreateUserVariables = {
+  body: Schemas.UserDTO;
+};
+
+export const userControllerCreateUser = (
+  variables: UserControllerCreateUserVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    void,
+    UserControllerCreateUserError,
+    Schemas.UserDTO,
+    {},
+    {},
+    {}
+  >({ url: '/user-auth', method: 'post', ...variables, signal });
+
+export type UserControllerGerProductsError = Fetcher.ErrorWrapper<undefined>;
+
+export type UserControllerGerProductsVariables = {
+  body: Schemas.UserDTO;
+};
+
+export const userControllerGerProducts = (
+  variables: UserControllerGerProductsVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    void,
+    UserControllerGerProductsError,
+    Schemas.UserDTO,
+    {},
+    {},
+    {}
+  >({ url: '/user-auth/p', method: 'get', ...variables, signal });
+
 export const operationsByTag = {
   user: {
     userControllerCreate,
-    userControllerFindAll,
     userControllerFindUserByCompanyId,
     userControllerFindUnique,
     userControllerFindOne,
@@ -999,4 +1077,5 @@ export const operationsByTag = {
     tableCustomFieldsControllerRemove,
     tableCustomFieldsControllerFindCustomFieldsByProjectId,
   },
+  userAuth: { userControllerCreateUser, userControllerGerProducts },
 };

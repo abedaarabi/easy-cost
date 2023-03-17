@@ -3,58 +3,61 @@ import { CreateUserDto } from "../../api/easyCostSchemas";
 import { sendPasswordReset, signUp } from "../../config/firebase";
 import { ColumnTypeUser } from "../types";
 
-export async function getUserByCompany(
-  companyId?: string
-): Promise<ColumnTypeUser[]> {
-  try {
-    const { data, status } = await axios.get(
-      "http://localhost:3000/user/userByCompany/" + companyId,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+// // export async function getUserByCompany(
+// //   companyId?: string
+// // ): Promise<ColumnTypeUser[]> {
+// //   try {
+// //     const { data, status } = await axios.get(
+// //       "http://localhost:3000/user/userByCompany/" + companyId,
+// //       {
+// //         headers: {
+// //           authorization: `Bearer ${localStorage.getItem("access_token")}`,
 
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log("error message: ", error.message);
-    }
-    throw error;
-  }
-}
+// //           "Content-Type": "application/json",
+// //           Accept: "application/json",
+// //         },
+// //       }
+// //     );
 
-export async function updateUser(
-  user: ColumnTypeUser
-): Promise<ColumnTypeUser> {
-  try {
-    const { data, status } = await axios.patch(
-      "http://localhost:3000/user/" + user.id,
+// //     return data;
+// //   } catch (error) {
+// //     if (axios.isAxiosError(error)) {
+// //       console.log("error message: ", error.message);
+// //     }
+// //     throw error;
+// //   }
+// // }
 
-      {
-        email: user.email,
-        avatar: user.avatar,
-        userType: user.userType,
+// export async function updateUser(
+//   user: ColumnTypeUser
+// ): Promise<ColumnTypeUser> {
+//   try {
+//     const { data, status } = await axios.patch(
+//       "http://localhost:3000/user/" + user.id,
 
-        name: user.name,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    );
+//       {
+//         email: user.email,
+//         avatar: user.avatar,
+//         userType: user.userType,
 
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log("error message: ", error.message);
-    }
-    throw error;
-  }
-}
+//         name: user.name,
+//       },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           Accept: "application/json",
+//         },
+//       }
+//     );
+
+//     return data;
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       console.log("error message: ", error.message);
+//     }
+//     throw error;
+//   }
+// }
 
 export async function createUserToken(
   userInfo: CreateUserDto

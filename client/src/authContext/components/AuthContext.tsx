@@ -17,6 +17,7 @@ import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 import { operationsByTag } from "../../api/easyCostComponents";
 import { UserEntity } from "../../api/easyCostSchemas";
+import axios from "axios";
 
 const AuthContext = createContext<any>({});
 
@@ -37,12 +38,15 @@ export const AuthContextProvider = ({
 
         const useDetails = await operationsByTag.user.userControllerFindOne({
           pathParams: { id: user.uid },
+          //@ts-ignore
+          headers: { authorization: `Bearer ${user.accessToken}` },
         });
+        console.log({ useDetails });
 
         setUser({
           uid: user.uid,
-
-          // email: user.email,
+          //@ts-ignore
+          accessToken: user.accessToken,
           ...useDetails,
         });
       } else {
@@ -56,7 +60,6 @@ export const AuthContextProvider = ({
 
   async function login(email: string, password: string) {
     const loginResult = await signInWithEmailAndPassword(auth, email, password);
-    console.log(loginResult);
 
     return loginResult;
   }
@@ -98,3 +101,23 @@ export const AuthContextProvider = ({
     </AuthContext.Provider>
   );
 };
+
+// export async function postHeader(companyId?: string): Promise<any[]> {
+//   try {
+//     const { data, status } = await axios.get("http://localhost:3000/user/", {
+//       headers: {
+//         authorization: `Bearer ${localStorage.getItem("access_token")}`,
+
+//         "Content-Type": "application/json",
+//         Accept: "application/json",
+//       },
+//     });
+
+//     return data;
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       console.log("error message: ", error.message);
+//     }
+//     throw error;
+//   }
+// }

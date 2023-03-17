@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  Headers,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -13,6 +15,7 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ProjectEntity } from './entities/project.entity';
 import { Project } from '@prisma/client';
+import { RequestModel } from 'src/middleware/auth.middleware';
 
 @Controller('project')
 @ApiTags('project')
@@ -34,16 +37,20 @@ export class ProjectController {
     return this.projectService.findAll();
   }
 
-  @Get('projectByCompany/:companyId')
+  @Get('projectByCompany/')
   @ApiOkResponse({
     description: 'The record has been successfully created.',
     type: ProjectEntity,
     isArray: true,
   })
   projectsByCompanyId(
-    @Param('companyId') companyId: string,
+    // @Param('companyId') companyId: string,
+    @Req() req: RequestModel,
+    @Headers('authorization') authorization: string,
   ): Promise<Project[]> {
-    return this.projectService.projectsByCompanyId(companyId);
+    console.log(req.user);
+
+    return this.projectService.projectsByCompanyId(req.user.companyId);
   }
 
   @Get(':id')
@@ -51,7 +58,10 @@ export class ProjectController {
     description: 'The record has been successfully created.',
     type: ProjectEntity,
   })
-  findOne(@Param('id') id: string) {
+  findOne(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.projectService.findOne(id);
   }
 
@@ -60,7 +70,11 @@ export class ProjectController {
     description: 'The record has been successfully created.',
     type: ProjectEntity,
   })
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateProjectDto: UpdateProjectDto,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.projectService.update(id, updateProjectDto);
   }
 
@@ -69,7 +83,10 @@ export class ProjectController {
     description: 'The record has been successfully created.',
     type: ProjectEntity,
   })
-  remove(@Param('id') id: string) {
+  remove(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.projectService.remove(id);
   }
 }

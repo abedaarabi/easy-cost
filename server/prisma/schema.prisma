@@ -61,7 +61,7 @@ model InvitedUser {
 }
 
 model Material {
-  id              String   @id @default(uuid())
+  id              String   @id @unique @default(uuid())
   materialName    String
   unit            String
   price           Int

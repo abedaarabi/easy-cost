@@ -4,6 +4,7 @@
 // import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { getUserToken } from "./helper";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 // export const Viewer = () => {
 //   const viewerRef = React.useRef<Autodesk.Viewing.GuiViewer3D | undefined>();
@@ -119,7 +120,7 @@ import React from "react";
 import Card from "@mui/material/Card";
 import { Box, Button } from "@mui/material";
 
-export const Viewer = () => {
+export const Viewer = ({ path }: { path: string }) => {
   const [masures, setMasures] = React.useState([]) as any;
 
   const viewer = React.useRef<Autodesk.Viewing.GuiViewer3D | undefined>();
@@ -134,7 +135,7 @@ export const Viewer = () => {
           // getAccessToken: () => data?.access_token,
         },
 
-        function () {
+        async function () {
           viewer.current = new Autodesk.Viewing.GuiViewer3D(
             document.getElementById("viewer") as HTMLElement,
             {
@@ -161,6 +162,12 @@ export const Viewer = () => {
               /* HERE YOUR CODE */
             }
           );
+
+          viewer.current.addEventListener(
+            Autodesk.Viewing.TOOL_CHANGE_EVENT,
+            (x) => console.log(x)
+          );
+
           viewer.current.addEventListener(
             //@ts-ignore
             Autodesk.Viewing.MeasureCommon.Events.MEASUREMENT_COMPLETED_EVENT,
@@ -200,15 +207,20 @@ export const Viewer = () => {
           //   //@ts-ignore
           // });
 
+          //@ts-ignore
+
           viewer.current.loadModel(
-            "../../pdf.pdf",
+            // path,
+            "https://easy-cost.s3.eu-north-1.amazonaws.com/1239000.pdf",
             {},
             // @ts-ignore
             onDocumentLoadSuccess,
             onDocumentLoadFailure
           );
 
-          viewer?.current?.start();
+          viewer?.current?.start(
+            "https://easy-cost.s3.eu-north-1.amazonaws.com/1239000.pdf"
+          );
 
           // viewer.loadExtension("Autodesk.PDF").then(() => {
           //   //@ts-ignore
@@ -259,19 +271,37 @@ export const Viewer = () => {
     }
     initializeViewer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [path]);
+
+  async function name() {
+    return await fetch(
+      "https://easy-cost.s3.eu-north-1.amazonaws.com/12390009",
+      {
+        headers: {
+          "Content-Type": "application/pdf",
+          // "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((resp) => resp.blob())
+      .then((blob) => {
+        return blob;
+      });
+  }
 
   function getMasures() {
-    if (!viewer.current) {
-      return;
-    }
+    name();
+    return;
+    // if (!viewer.current) {
+    //   return;
+    // }
 
-    const m = viewer.current
-      .getExtension("Autodesk.Measure")
-      //@ts-ignore
-      .measureTool.getMeasurementList();
-    setMasures(m);
-    console.log("masures", masures, viewer.current);
+    // const m = viewer.current
+    //   .getExtension("Autodesk.Measure")
+    //   //@ts-ignore
+    //   .measureTool.getMeasurementList();
+    // setMasures(m);
+    // console.log("masures", masures, viewer.current);
   }
   function settMasures() {
     if (!viewer.current) {
@@ -286,17 +316,40 @@ export const Viewer = () => {
   }
   return (
     <Box>
-      <Box
-        sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          overflow: "hidden",
-          borderRadius: "5px",
-        }}
-        id="viewer"
-      ></Box>
-      <Box
+      {path ? (
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+            borderRadius: "5px",
+          }}
+          id="viewer"
+        ></Box>
+      ) : (
+        <Box
+          sx={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <PictureAsPdfIcon
+            fontSize="large"
+            color="error"
+            sx={{
+              margin: 0,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translateY(-50%)",
+            }}
+          />
+        </Box>
+      )}
+
+      {/* <Box
         sx={{
           position: "absolute",
           zIndex: "9999",
@@ -318,7 +371,7 @@ export const Viewer = () => {
           {" "}
           remove Measure
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   );
 };
