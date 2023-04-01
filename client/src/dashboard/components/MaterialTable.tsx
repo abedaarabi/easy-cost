@@ -35,6 +35,7 @@ import {
   Stack,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
@@ -59,9 +60,8 @@ const MaterialTable = () => {
     () =>
       operationsByTag.material.materialControllerFindMaterialByCompanyId({
         headers: { authorization: `Bearer ${user.accessToken}` },
-      }) as unknown as Promise<MaterialEntity[]>
+      }) as unknown as Promise<CreateMaterialDto[]>
   );
-  console.log(data, `Bearer ${user.accessToken}`);
 
   const deleteMutation = useMutation(
     (id: string) =>
@@ -132,37 +132,36 @@ const MaterialTable = () => {
       operationsByTag.material.materialControllerCreate({
         body: { ...value },
 
-        headers: { authorization: `Bearer ${user.accessToken}` },
+        // headers: { authorization: `Bearer ${user.accessToken}` },
       }),
     {
       onSuccess: (response) => {
         console.log({ response });
 
-        // queryClient.invalidateQueries(["materialByCompanyId_test"]);
         queryClient.invalidateQueries({
           queryKey: ["materialByCompanyId_test"],
         });
-        // setLoginMsg({
-        //   code: 200,
-        //   msg: `${response.materialName} Successfully Added to Database.`,
-        // });
+        setLoginMsg({
+          code: 200,
+          msg: `${response.materialName} Successfully Added to Database.`,
+        });
       },
 
-      // onError: (error: AxiosError) => {
-      //   console.log({ error });
+      onError: (error: AxiosError) => {
+        console.log({ error });
 
-      //   if (error) {
-      //     console.log(error);
+        if (error) {
+          console.log(error);
 
-      //     setLoginMsg({
-      //       code: error.response?.status,
+          setLoginMsg({
+            code: error.response?.status,
 
-      //       msg: `Code Error:  ${
-      //         error.response?.status
-      //       }. ${error.response?.statusText.toLocaleLowerCase()}`,
-      //     });
-      //   }
-      // },
+            msg: `Code Error:  ${
+              error.response?.status
+            }. ${error.response?.statusText.toLocaleLowerCase()}`,
+          });
+        }
+      },
     }
   );
 
@@ -187,7 +186,7 @@ const MaterialTable = () => {
       size: 180,
 
       muiTableBodyCellEditTextFieldProps: {
-        select: true, //change to select for a dropdown
+        select: false, //change to select for a dropdown
         children: data
           ? data
               .sort((a, b) => (a.materialName > b.materialName ? 1 : -1))
@@ -233,7 +232,7 @@ const MaterialTable = () => {
       header: "Hour Per Quantity",
       size: 140,
     },
-  ] as MRT_ColumnDef<Omit<MaterialEntity, "companyId" | "userId" | "Id">>[];
+  ] as MRT_ColumnDef<CreateMaterialDto>[];
 
   const dataTable = data
     ? data.map((column) => {
@@ -304,12 +303,15 @@ const MaterialTable = () => {
   }
 
   return (
-    <Paper>
+    <Box>
+      <Typography variant="h6" color={"#2c2c34"} mb={1}>
+        All Materials:
+      </Typography>
       <ReusableTable
         enableStickyFooter
         initialState={{
           columnVisibility: { id: false },
-          isLoading,
+          isLoading: isFetching,
         }}
         columns={colTest}
         data={dataTable}
@@ -319,7 +321,7 @@ const MaterialTable = () => {
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
             <Tooltip arrow placement="left" title="Edit">
               <IconButton onClick={() => table.setEditingRow(row)} color="info">
-                <Edit />
+                <Edit color="action" />
               </IconButton>
             </Tooltip>
             <Tooltip arrow placement="right" title="Delete">
@@ -331,7 +333,7 @@ const MaterialTable = () => {
         )}
         renderTopToolbarCustomActions={() => (
           <Fab
-            color="info"
+            color="success"
             onClick={() => setCreateModalOpen(true)}
             aria-label="add"
             size="small"
@@ -339,6 +341,32 @@ const MaterialTable = () => {
             <AddIcon />
           </Fab>
         )}
+        muiTablePaperProps={{
+          sx: {
+            borderRadius: "5px",
+
+            border: "1px  #e0e0e0 ",
+          },
+        }}
+        muiTopToolbarProps={{
+          sx: {
+            borderRadius: "5px",
+            bgcolor: "#81b29a",
+            height: 80,
+            border: "5px  #e0e0e0 ",
+          },
+        }}
+        muiBottomToolbarProps={{
+          sx: {
+            borderRadius: "5px",
+            bgcolor: "#99c1b9",
+
+            border: "5px  #e0e0e0 ",
+          },
+        }}
+        muiTableContainerProps={{
+          sx: { height: "65vh", maxHeight: "65vh" },
+        }}
       />
 
       <CreateNewAccountModal
@@ -347,7 +375,7 @@ const MaterialTable = () => {
         onClose={() => setCreateModalOpen(false)}
         onSubmit={handleCreateNewRow}
       />
-    </Paper>
+    </Box>
   );
 };
 

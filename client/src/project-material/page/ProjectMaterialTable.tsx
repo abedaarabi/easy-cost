@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import axios, { AxiosResponse, AxiosError } from "axios";
+import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import {
   useQuery,
   useMutation,
@@ -35,13 +36,16 @@ import { ContentCopy, Delete, Edit } from "@mui/icons-material";
 
 import { operationsByTag } from "../../api/easyCostComponents";
 import {
+  CreateDocumentMeasureDto,
   CreateProjectMaterialDto,
   MaterialEntity,
   ProjectMaterialEntity,
+  UpdateDocumentMeasureDto,
   UpdateProjectMaterialDto,
   UpdateTableCustomFieldDto,
 } from "../../api/easyCostSchemas";
-import { Params, useParams } from "react-router-dom";
+import { Params, useParams, useSearchParams } from "react-router-dom";
+
 import { ProjecTMaterialTest } from "../../dashboard/types";
 import { projectMaterial } from "../../dashboard/helper/db.fetchProjectmaterial";
 import { CreateNewAccountModal } from "../components/CreateNewAccountModal";
@@ -54,6 +58,7 @@ import { Viewer } from "../../viewer/ForgeViewer";
 import { Stack } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import FolderModel from "../../folderModel/FolderModel";
+import { Retryer } from "react-query/types/core/retryer";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -66,9 +71,16 @@ const Item = styled(Paper)(({ theme }) => ({
 const ProjectMaterialTable = () => {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [folderModel, setFolderModel] = React.useState(false);
-  const [path, setPath] = React.useState<string>("");
-
+  const [path, setPath] = React.useState<{ urlPath: string; id: string }>({
+    urlPath: "",
+    id: "",
+  });
+  const [pageNumber, setPageNumber] = React.useState<number | undefined>();
   const [mIds, setMid] = React.useState<{ mId: string }>();
+
+  const forwardViewer = React.useRef<
+    Autodesk.Viewing.GuiViewer3D | undefined
+  >();
 
   const { projectId } = useParams<Params<string>>();
   const { user } = useAuth();
@@ -86,8 +98,6 @@ const ProjectMaterialTable = () => {
     setOpen(false);
   };
 
-  //
-
   const { isLoading, error, data, isFetching } = useQuery(
     ["materialByProject"],
     () =>
@@ -96,7 +106,12 @@ const ProjectMaterialTable = () => {
         headers: { authorization: `Bearer ${user.accessToken}` },
       }) as unknown as Promise<ProjecTMaterialTest[]> | undefined
   );
-  console.log({ isLoading, error, data, isFetching });
+  const { data: projectById } = useQuery(["projectById"], () =>
+    operationsByTag.project.projectControllerFindOne({
+      pathParams: { id: projectId },
+      headers: { authorization: `Bearer ${user.accessToken}` },
+    })
+  );
 
   const {
     isLoading: materialIsLoading,
@@ -107,8 +122,6 @@ const ProjectMaterialTable = () => {
     ["materialByCompanyId"],
     () =>
       operationsByTag.material.materialControllerFindMaterialByCompanyId({
-        pathParams: { companyId },
-
         headers: { authorization: `Bearer ${user.accessToken}` },
       }) as unknown as Promise<MaterialEntity[]>
   );
@@ -117,6 +130,8 @@ const ProjectMaterialTable = () => {
     ({ id, values }: { id: string; values: UpdateProjectMaterialDto }) =>
       operationsByTag.projectMaterial.projectMaterialControllerUpdate({
         pathParams: { id },
+        headers: { authorization: `Bearer ${user.accessToken}` },
+
         body: {
           materialId: mIds?.mId,
           projectId: projectId,
@@ -138,6 +153,7 @@ const ProjectMaterialTable = () => {
     (id: string) =>
       operationsByTag.projectMaterial.projectMaterialControllerRemove({
         pathParams: { id },
+        headers: { authorization: `Bearer ${user.accessToken}` },
       }),
     {
       onSuccess: () => {
@@ -146,13 +162,38 @@ const ProjectMaterialTable = () => {
     }
   );
 
-  const createMutation = useMutation(projectMaterial, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["materialByProject"]);
-    },
-  });
+  const createMutation = useMutation(
+    (values: CreateProjectMaterialDto) =>
+      operationsByTag.projectMaterial.projectMaterialControllerCreate({
+        body: values,
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["materialByProject"]);
+      },
+    }
+  );
+  const createMeasures = useMutation(
+    (values: CreateDocumentMeasureDto) =>
+      operationsByTag.documentMeasures.documentMeasuresControllerCreate({
+        body: values,
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
+    {
+      onSuccess: (response) => {},
 
-  if (!data || !materials) return null;
+      onError: (error: AxiosError) => {
+        console.log({ error });
+
+        if (error) {
+          console.log(error);
+        }
+      },
+    }
+  );
+
+  if (!data || !materials || !projectById) return null;
 
   const colTest = name(data, setMid, materials);
 
@@ -184,8 +225,10 @@ const ProjectMaterialTable = () => {
 
   const handleCreateNewRow = (values: CreateProjectMaterialDto) => {
     createMutation.mutate({
+      materialId: values.materialId,
       projectId,
-      ...values,
+      createdAt: values.createdAt,
+      quantity: values.quantity,
     });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
@@ -197,51 +240,28 @@ const ProjectMaterialTable = () => {
       exitEditingMode();
     };
 
-  function getFilePath(filePath: string) {
-    setPath(filePath);
+  function getFilePath(filePath: any) {
+    setPath({ urlPath: filePath.urlPath, id: filePath.id });
   }
 
   return (
     <>
-      <Stack direction={"row"} gap={1}>
-        <Item sx={{ flex: 1 }}>
-          <Box
-            sx={{
-              alignItems: "center",
-              justifyContent: "center",
-              display: "flex",
-              borderLeft: "#003049 solid 3px",
-              mt: 1,
-            }}
-          >
-            <IconButton
-              aria-label="fingerprint"
-              color="primary"
-              onClick={() => setFolderModel(true)}
-            >
-              <FolderOpenIcon fontSize="large" />
-            </IconButton>
-          </Box>
-        </Item>
-        <Item sx={{ flex: 25, overflow: "auto" }}>
-          <Box
-            sx={{
-              height: "25rem",
-
-              position: "relative",
-            }}
-          >
-            <Viewer path={path} />
-          </Box>
-        </Item>
-      </Stack>
+      <Box sx={{}}>
+        <Typography
+          m={1}
+          variant="overline"
+          sx={{ textDecoration: "underline" }}
+        >
+          {projectById?.projectName}
+        </Typography>
+      </Box>
       <Stack
         sx={{}}
-        direction={{ xs: "column", sm: "column" }}
+        direction={{ xs: "column", sm: "column", md: "row" }}
         spacing={{ xs: 1, sm: 2, md: 1 }}
       >
-        <Box sx={{ flex: 1, mt: 2 }}>
-          <Box mb={5}>
+        <Box sx={{ flex: 5, overflow: "auto" }}>
+          <>
             <ReusableTable
               enableColumnDragging
               muiTableHeadCellProps={{
@@ -284,30 +304,99 @@ const ProjectMaterialTable = () => {
                 </Box>
               )}
               renderTopToolbarCustomActions={() => (
-                <Box sx={{ pl: 2, display: "flex", gap: 2 }}>
-                  <Fab
-                    color="info"
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                  <Box
+                    sx={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      display: "flex",
+                      bgcolor: "#edede9",
+                      borderLeft: "#ffc300 solid 3px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <IconButton
+                      aria-label="fingerprint"
+                      color="primary"
+                      onClick={() => setFolderModel(true)}
+                    >
+                      <FolderOpenIcon fontSize="medium" />
+                    </IconButton>
+                  </Box>
+
+                  <IconButton
                     onClick={() => setCreateModalOpen(true)}
                     aria-label="add"
-                    size="small"
+                    size="medium"
+                    color="success"
                   >
                     <AddIcon />
-                  </Fab>
+                  </IconButton>
 
-                  <Fab
+                  <IconButton
                     color="inherit"
                     onClick={() => {
                       alert(projectId);
                     }}
                     aria-label="add"
-                    size="small"
+                    size="medium"
                   >
-                    <SendIcon fontSize="small" />
-                  </Fab>
+                    <SendIcon fontSize="medium" color="action" />
+                  </IconButton>
+                  {path?.id && (
+                    <IconButton
+                      onClick={() => {
+                        const MsToDb = getMeasure(forwardViewer?.current);
+                        if (MsToDb.length === 0) {
+                          alert("open measure tab");
+                          return;
+                        }
+
+                        const normalizeMeasureValues = MsToDb?.map((i: any) => {
+                          return {
+                            measureValues: JSON.stringify(i),
+                            measurementId: generateMeasureId(i),
+                            projectId: projectById.id,
+                            uploadFileId: path?.id,
+                            pageNumber: pageNumber ? pageNumber : 1,
+                          };
+                        });
+
+                        createMeasures.mutate(normalizeMeasureValues);
+                      }}
+                      aria-label="UpLoad Measures"
+                    >
+                      <SquareFootIcon fontSize="medium" color="error" />
+                    </IconButton>
+                  )}
                 </Box>
               )}
+              muiTablePaperProps={{
+                sx: {
+                  borderRadius: "5px",
+                  border: "1px  #e0e0e0 ",
+                },
+              }}
+              muiTopToolbarProps={{
+                sx: {
+                  borderRadius: "5px",
+                  bgcolor: "#81b29a",
+                  height: 80,
+                  border: "5px  #e0e0e0 ",
+                },
+              }}
+              muiBottomToolbarProps={{
+                sx: {
+                  borderRadius: "5px",
+                  bgcolor: "#99c1b9",
+                  border: "5px  #e0e0e0 ",
+                },
+              }}
+              muiTableContainerProps={{
+                sx: { height: "65vh", maxHeight: "65vh" },
+              }}
             />
-          </Box>
+          </>
           <CreateNewAccountModal
             columns={colTest}
             open={createModalOpen}
@@ -322,6 +411,22 @@ const ProjectMaterialTable = () => {
             open={open}
           />
         </Box>
+        <Item sx={{ flex: 5, overflow: "auto" }}>
+          <Box
+            sx={{
+              height: "25rem",
+
+              position: "relative",
+            }}
+          >
+            <Viewer
+              path={path}
+              forwardViewer={forwardViewer}
+              setPageNumber={setPageNumber}
+              pageNumber={pageNumber}
+            />
+          </Box>
+        </Item>
       </Stack>
 
       {folderModel && (
@@ -377,21 +482,7 @@ function name(
         sx: { justifyContent: "flex-start" },
       },
     },
-    {
-      accessorKey: "unit",
-      header: "Unit",
-      enableEditing: false, //disable editing on this column
-      enableSorting: false,
-      enableHiding: false,
-      size: 100,
-    },
 
-    {
-      accessorKey: "quantity",
-      header: "Quantity",
-
-      size: 100,
-    },
     {
       accessorKey: "price",
       header: "Total Price",
@@ -440,10 +531,25 @@ function name(
         return (
           <Stack>
             Total:
-            <Box color="#1B998B">{totalHours}</Box>
+            <Box color="#1B998B">{totalHours} hours</Box>
           </Stack>
         );
       },
+    },
+    {
+      accessorKey: "unit",
+      header: "Unit",
+      enableEditing: false, //disable editing on this column
+      enableSorting: false,
+      enableHiding: false,
+      size: 100,
+    },
+
+    {
+      accessorKey: "quantity",
+      header: "Quantity",
+
+      size: 100,
     },
 
     {
@@ -479,4 +585,58 @@ function getTotalFooter(
 
     return acc + total * +quantity;
   }, 0);
+}
+
+function getMeasure(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
+  console.log({ viewer });
+
+  if (!viewer) {
+    return;
+  }
+
+  const allMs = viewer
+    .getExtension("Autodesk.Measure")
+    //@ts-ignore
+
+    .measureTool.getMeasurementList();
+
+  return allMs;
+}
+function deleteAllMeasurements(
+  viewer: Autodesk.Viewing.GuiViewer3D | undefined
+) {
+  console.log({ viewer });
+
+  if (!viewer) {
+    return;
+  }
+  viewer
+    .getExtension("Autodesk.Measure")
+    //@ts-ignore
+
+    .measureTool.deleteAllMeasurements();
+}
+
+// define interface for pick object
+interface Pick {
+  intersection: {
+    x: number;
+    y: number;
+    z: number;
+  };
+}
+
+// define interface for input object
+interface InputObj {
+  picks: Pick[];
+}
+
+// input data
+
+function generateMeasureId(data: InputObj) {
+  const { picks } = data;
+  const intersections = picks
+    .slice(0, 2)
+    .map((pick) => `${pick.intersection.x},${pick.intersection.y}`);
+  return intersections.join(",");
 }

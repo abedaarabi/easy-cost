@@ -92,6 +92,7 @@ model Project {
   isActive       Boolean           @default(false)
 
   TableCustomFields TableCustomFields[]
+  fileUpload        UploadFile[]
 }
 
 model ProjectMaterial {
@@ -117,6 +118,33 @@ model TableCustomFields {
   customFieldValue Json
 
   @@unique([columnName, projectId])
+}
+
+model UploadFile {
+  id               String             @id @default(uuid())
+  createdAt        DateTime           @default(now())
+  fileName         String
+  urlPath          String
+  Project          Project?           @relation(fields: [projectId], references: [id])
+  projectId        String?
+  size             Float              @default(0)
+  DocumentMeasures DocumentMeasures[]
+
+  @@unique([fileName, projectId])
+}
+
+model DocumentMeasures {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  pageNumber Int
+
+  measureValues String      @db.Text
+  measurementId String      @unique()
+  projectId     String
+  UploadFile    UploadFile? @relation(fields: [uploadFileId], references: [id])
+  uploadFileId  String?
+
+  @@unique([pageNumber, measurementId, projectId])
 }
 
 // model TableCustomFieldsValues {

@@ -5,7 +5,6 @@ import { AppModule } from './app.module';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { PrismaClientExceptionFilter } from './prisma-client-exception.filter';
 import * as admin from 'firebase-admin';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -17,6 +16,17 @@ async function bootstrap() {
     .setVersion('1.0')
     // .addServer('http://localhost/api', 'sfdada', { port: { default: 3000 } })
     .addTag('Easy Cost')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

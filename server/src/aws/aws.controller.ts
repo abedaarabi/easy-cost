@@ -10,6 +10,7 @@ import {
   UploadedFile,
   Request,
   ParseUUIDPipe,
+  Headers,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AwsService } from './aws.service';
@@ -17,40 +18,51 @@ import { CreateAwDto } from './dto/create-aw.dto';
 import { UpdateAwDto } from './dto/update-aw.dto';
 import { Express } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { AwsEntity } from './entities/aw.entity';
 
 @Controller('api')
+@ApiTags('upload file')
 export class AwsController {
-  constructor(
-    private readonly awsService: AwsService,
-    private configService: ConfigService,
-  ) {}
-
+  constructor(private readonly awsService: AwsService) {}
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+  })
   @UseInterceptors(FileInterceptor('file'))
-  @Post('/:id/upload-file')
-  async addImageToRecipe(
+  @Post(':projectId/upload-file')
+  async addFileToProject(
     @UploadedFile() file: Express.Multer.File,
-    @Param('id') id: string,
+    @Param('projectId') projectId: string,
     @Request() req,
+    @Headers('authorization') authorization: string,
   ) {
-    console.log(file);
+    const awsResult = await this.awsService.uploadFile(
+      file,
+      file.originalname,
+      projectId,
+    );
+    console.log(awsResult);
 
-    return await this.awsService.uploadFile(file, id);
-    return {
-      tt: this.configService.get<string>('S3_REGION') || 'eu-west-2',
-      yy: this.configService.get<string>('S3_BUCKET') || 'eu-west-2',
-      fileName: file.originalname,
-    };
-    // const { sub: email } = req.user;
-    // await this.recipeService.addFileTorecipe(file, id, email);
+    return awsResult;
   }
+
   @Post()
   create(@Body() createAwDto: CreateAwDto) {
     return this.awsService.create(createAwDto);
   }
 
-  @Get()
-  findAll() {
-    return this.awsService.findAll();
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: AwsEntity,
+    isArray: true,
+  })
+  @Get(':projectId/upload-file')
+  findAllByProjectId(
+    @Param('projectId') projectId: string,
+    @Headers('authorization') authorization: string,
+  ) {
+    return this.awsService.findAllByProjectId(projectId);
   }
 
   @Get(':id')
@@ -62,9 +74,16 @@ export class AwsController {
   update(@Param('id') id: string, @Body() updateAwDto: UpdateAwDto) {
     return this.awsService.update(+id, updateAwDto);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.awsService.remove(+id);
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: AwsEntity,
+    isArray: false,
+  })
+  @Delete(':id/')
+  remove(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
+    return this.awsService.remove(id);
   }
 }

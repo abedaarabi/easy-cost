@@ -10,7 +10,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Box } from "@mui/system";
-
+import HouseSidingIcon from "@mui/icons-material/HouseSiding";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import {
   ListItemButton,
@@ -19,6 +21,17 @@ import {
   TextField,
 } from "@mui/material";
 import { Dropzone } from "./DropZone";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+} from "@tanstack/react-query";
+import { operationsByTag } from "../api/easyCostComponents";
+import { useAuth } from "../authContext/components/AuthContext";
+import { Params, useParams } from "react-router-dom";
+import { StyledTreeItem } from "./StyledList";
+import { async } from "@firebase/util";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(1),
@@ -67,8 +80,38 @@ export default function FolderModel({
 }: {
   openModel: boolean;
   setOpenModel: (param: boolean) => void;
-  getFilePath: (param: string) => void;
+  getFilePath: (param: any) => void;
 }) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { projectId } = useParams<Params<string>>();
+
+  const { isLoading, isError, data, isFetching } = useQuery(
+    ["uploadFileToS3"],
+
+    () =>
+      operationsByTag.uploadFile.awsControllerFindAllByProjectId({
+        pathParams: { projectId: projectId! },
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      })
+  );
+
+  const deleteMutationObject = useMutation(
+    (id: string) =>
+      operationsByTag.uploadFile.awsControllerRemove({
+        pathParams: { id },
+
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
+
+    {
+      onSuccess: (response) => {
+        queryClient.invalidateQueries(["uploadFileToS3"]);
+      },
+    }
+  );
+
   const [openAddObject, setOpenAddObject] = React.useState(false);
   const handleClickOpen = () => {
     setOpenModel(true);
@@ -76,6 +119,21 @@ export default function FolderModel({
   const handleClose = () => {
     setOpenModel(false);
   };
+
+  const totalFileSize = React.useMemo(() => {
+    return data?.reduce((acc, val) => acc + val.size, 0);
+  }, [isLoading, isFetching]);
+
+  if (isLoading) {
+    return <Typography>Loading</Typography>;
+  }
+  if (isError) {
+    return <Typography>Error</Typography>;
+  }
+
+  async function deleteS3Bucket(objectId: string) {
+    deleteMutationObject.mutate(objectId);
+  }
 
   return (
     <div>
@@ -92,53 +150,110 @@ export default function FolderModel({
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: 3,
-              mt: 2,
+              justifyContent: "space-between",
+              // borderLeft: "#2a9d8f solid 3px",
+              // gap: 3,
             }}
           >
-            <IconButton
-              aria-label="fingerprint"
-              color="primary"
-              onClick={() => setOpenAddObject(true)}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                borderLeft: "#ffb703 solid 5px",
+                borderTop: "#ffb703 solid 5px",
+              }}
             >
-              <CloudUploadIcon fontSize="large" color="success" />
-            </IconButton>
-            <Typography variant="overline">Files Storage</Typography>
-          </Box>
-        </BootstrapDialogTitle>
+              <IconButton
+                aria-label="fingerprint"
+                color="primary"
+                onClick={() => setOpenAddObject(true)}
+              >
+                <CloudUploadIcon fontSize="large" color="success" />
+              </IconButton>
 
-        <DialogContent
-          dividers
-          sx={{
-            width: "20rem",
-            height: "20rem",
-            maxHeight: "25rem",
-            overflow: "scroll",
-          }}
-        >
+              <Typography variant="body2" ml={2}>
+                {totalFileSize && totalFileSize?.toFixed(2)} MB
+              </Typography>
+            </Box>
+            <Typography
+              color={"#6c757d"}
+              variant="inherit"
+              pr={8}
+              // sx={{ textDecoration: "underline" }}
+            >
+              File Storage
+            </Typography>
+          </Box>
+
           <TextField
+            sx={{ mt: 2 }}
             size="small"
             fullWidth
             id="outlined-basic"
             label="Find Your File"
             variant="outlined"
           />
-          <Box>
-            {pdfFiles.map((item) => (
-              <ListItemButton
-                key={item.id}
+        </BootstrapDialogTitle>
+
+        <DialogContent
+          dividers
+          sx={{
+            maxWidth: "30rem",
+            width: "30rem",
+            height: "20rem",
+            maxHeight: "25rem",
+          }}
+        >
+          {data.map((item) => (
+            <Box key={item.id} display={"flex"} alignItems={"center"}>
+              <Box
+                sx={{ width: "30rem" }}
                 onClick={() => {
-                  getFilePath(item.path);
+                  console.log(item);
+
+                  getFilePath(item);
                   handleClose();
                 }}
               >
-                <ListItemIcon>
-                  <PictureAsPdfIcon color="error" />
-                </ListItemIcon>
-                <ListItemText primary={item.fileName} />
-              </ListItemButton>
-            ))}
-          </Box>
+                <StyledTreeItem
+                  labelText={item.fileName}
+                  labelInfo={String(item.size) + " " + "MB"}
+                  labelIcon={
+                    imageFormat.find((i) => item.fileName.endsWith(i))
+                      ? WallpaperIcon
+                      : item.fileName.endsWith(".dwf")
+                      ? HouseSidingIcon
+                      : PictureAsPdfIcon
+                  }
+                  bgColor={
+                    imageFormat.find((i) => item.fileName.endsWith(i))
+                      ? "#2a9d8f"
+                      : item.fileName.endsWith(".dwf")
+                      ? "#0096c7"
+                      : "#e63946"
+                  }
+                  iconColor={
+                    imageFormat.find((i) => item.fileName.endsWith(i))
+                      ? "#2a9d8f"
+                      : item.fileName.endsWith(".dwf")
+                      ? "#0096c7"
+                      : "#e63946"
+                  }
+                  nodeId={""}
+                />
+              </Box>
+              <Box ml={1}>
+                <IconButton
+                  size="small"
+                  onClick={() => deleteS3Bucket(item.id)}
+                >
+                  <DeleteOutlineIcon />
+                </IconButton>
+              </Box>
+            </Box>
+          ))}
         </DialogContent>
         <DialogActions>
           {/* <Button autoFocus onClick={handleClose}>
@@ -157,15 +272,33 @@ export default function FolderModel({
   );
 }
 
-const pdfFiles = [
-  {
-    id: 1,
-    fileName: "STU Project Stuen--01",
-    path: "../../pdf.pdf",
-  },
-  {
-    id: 2,
-    fileName: "STU Project Stuen--02",
-    path: "../../test.pdf",
-  },
+const imageFormat = [
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "bmp",
+  "webp",
+  "svg",
+  "tiff",
+  "ico",
+  "heif",
+  "avif",
 ];
+
+// <ListItemButton
+//   key={item.id}
+//   onClick={() => {
+//     getFilePath(item.urlPath);
+//     handleClose();
+//   }}
+// >
+//   <ListItemIcon >
+//     {imageFormat.find((i) => item.fileName.endsWith(i)) ? (
+//       <WallpaperIcon color="secondary" />
+//     ) : (
+//       <PictureAsPdfIcon color="error" />
+//     )}
+//   </ListItemIcon>
+//   <ListItemText primary={item.fileName} />
+// </ListItemButton>

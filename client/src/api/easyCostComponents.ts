@@ -188,11 +188,16 @@ export const userControllerRemove = (
     UserControllerRemovePathParams
   >({ url: '/user/{id}', method: 'delete', ...variables, signal });
 
+export type ProjectMaterialControllerCreateHeaders = {
+  authorization: string;
+};
+
 export type ProjectMaterialControllerCreateError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectMaterialControllerCreateVariables = {
   body: Schemas.CreateProjectMaterialDto;
+  headers: ProjectMaterialControllerCreateHeaders;
 };
 
 export const projectMaterialControllerCreate = (
@@ -203,7 +208,7 @@ export const projectMaterialControllerCreate = (
     Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerCreateError,
     Schemas.CreateProjectMaterialDto,
-    {},
+    ProjectMaterialControllerCreateHeaders,
     {},
     {}
   >({ url: '/project-material', method: 'post', ...variables, signal });
@@ -225,10 +230,15 @@ export type ProjectMaterialControllerFindOnePathParams = {
   id: string;
 };
 
+export type ProjectMaterialControllerFindOneHeaders = {
+  authorization: string;
+};
+
 export type ProjectMaterialControllerFindOneError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectMaterialControllerFindOneVariables = {
+  headers: ProjectMaterialControllerFindOneHeaders;
   pathParams: ProjectMaterialControllerFindOnePathParams;
 };
 
@@ -240,7 +250,7 @@ export const projectMaterialControllerFindOne = (
     Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerFindOneError,
     undefined,
-    {},
+    ProjectMaterialControllerFindOneHeaders,
     {},
     ProjectMaterialControllerFindOnePathParams
   >({ url: '/project-material/{id}', method: 'get', ...variables, signal });
@@ -249,11 +259,16 @@ export type ProjectMaterialControllerUpdatePathParams = {
   id: string;
 };
 
+export type ProjectMaterialControllerUpdateHeaders = {
+  authorization: string;
+};
+
 export type ProjectMaterialControllerUpdateError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectMaterialControllerUpdateVariables = {
   body?: Schemas.UpdateProjectMaterialDto;
+  headers: ProjectMaterialControllerUpdateHeaders;
   pathParams: ProjectMaterialControllerUpdatePathParams;
 };
 
@@ -265,7 +280,7 @@ export const projectMaterialControllerUpdate = (
     Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerUpdateError,
     Schemas.UpdateProjectMaterialDto,
-    {},
+    ProjectMaterialControllerUpdateHeaders,
     {},
     ProjectMaterialControllerUpdatePathParams
   >({ url: '/project-material/{id}', method: 'patch', ...variables, signal });
@@ -274,10 +289,15 @@ export type ProjectMaterialControllerRemovePathParams = {
   id: string;
 };
 
+export type ProjectMaterialControllerRemoveHeaders = {
+  authorization: string;
+};
+
 export type ProjectMaterialControllerRemoveError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectMaterialControllerRemoveVariables = {
+  headers: ProjectMaterialControllerRemoveHeaders;
   pathParams: ProjectMaterialControllerRemovePathParams;
 };
 
@@ -289,7 +309,7 @@ export const projectMaterialControllerRemove = (
     Schemas.ProjectMaterialEntity,
     ProjectMaterialControllerRemoveError,
     undefined,
-    {},
+    ProjectMaterialControllerRemoveHeaders,
     {},
     ProjectMaterialControllerRemovePathParams
   >({ url: '/project-material/{id}', method: 'delete', ...variables, signal });
@@ -331,15 +351,10 @@ export const projectMaterialControllerFindByProjectId = (
     signal,
   });
 
-export type MaterialControllerCreateHeaders = {
-  authorization: string;
-};
-
 export type MaterialControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type MaterialControllerCreateVariables = {
   body: Schemas.CreateMaterialDto;
-  headers: MaterialControllerCreateHeaders;
 };
 
 export const materialControllerCreate = (
@@ -350,7 +365,7 @@ export const materialControllerCreate = (
     Schemas.MaterialEntity,
     MaterialControllerCreateError,
     Schemas.CreateMaterialDto,
-    MaterialControllerCreateHeaders,
+    {},
     {},
     {}
   >({ url: '/material', method: 'post', ...variables, signal });
@@ -368,6 +383,38 @@ export const materialControllerFindAll = (signal?: AbortSignal) =>
     {},
     {}
   >({ url: '/material', method: 'get', signal });
+
+export type MaterialControllerFindMaterialByCompanyIdHeaders = {
+  authorization: string;
+};
+
+export type MaterialControllerFindMaterialByCompanyIdError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type MaterialControllerFindMaterialByCompanyIdResponse =
+  Schemas.MaterialEntity[];
+
+export type MaterialControllerFindMaterialByCompanyIdVariables = {
+  headers: MaterialControllerFindMaterialByCompanyIdHeaders;
+};
+
+export const materialControllerFindMaterialByCompanyId = (
+  variables: MaterialControllerFindMaterialByCompanyIdVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    MaterialControllerFindMaterialByCompanyIdResponse,
+    MaterialControllerFindMaterialByCompanyIdError,
+    undefined,
+    MaterialControllerFindMaterialByCompanyIdHeaders,
+    {},
+    {}
+  >({
+    url: '/material/materialByCompany',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
 export type MaterialControllerFindOnePathParams = {
   id: string;
@@ -453,38 +500,6 @@ export const materialControllerRemove = (
     {},
     MaterialControllerRemovePathParams
   >({ url: '/material/{id}', method: 'delete', ...variables, signal });
-
-export type MaterialControllerFindMaterialByCompanyIdHeaders = {
-  authorization: string;
-};
-
-export type MaterialControllerFindMaterialByCompanyIdError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type MaterialControllerFindMaterialByCompanyIdResponse =
-  Schemas.MaterialEntity[];
-
-export type MaterialControllerFindMaterialByCompanyIdVariables = {
-  headers: MaterialControllerFindMaterialByCompanyIdHeaders;
-};
-
-export const materialControllerFindMaterialByCompanyId = (
-  variables: MaterialControllerFindMaterialByCompanyIdVariables,
-  signal?: AbortSignal,
-) =>
-  easyCostFetch<
-    MaterialControllerFindMaterialByCompanyIdResponse,
-    MaterialControllerFindMaterialByCompanyIdError,
-    undefined,
-    MaterialControllerFindMaterialByCompanyIdHeaders,
-    {},
-    {}
-  >({
-    url: '/material/materialByCompany',
-    method: 'get',
-    ...variables,
-    signal,
-  });
 
 export type CompanyControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
@@ -587,10 +602,15 @@ export const companyControllerRemove = (
     CompanyControllerRemovePathParams
   >({ url: '/company/{id}', method: 'delete', ...variables, signal });
 
+export type ProjectControllerCreateHeaders = {
+  authorization: string;
+};
+
 export type ProjectControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type ProjectControllerCreateVariables = {
   body: Schemas.CreateProjectDto;
+  headers: ProjectControllerCreateHeaders;
 };
 
 export const projectControllerCreate = (
@@ -598,10 +618,10 @@ export const projectControllerCreate = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    Schemas.ProjectEntity,
     ProjectControllerCreateError,
     Schemas.CreateProjectDto,
-    {},
+    ProjectControllerCreateHeaders,
     {},
     {}
   >({ url: '/project', method: 'post', ...variables, signal });
@@ -1022,6 +1042,311 @@ export const userControllerGerProducts = (
     {}
   >({ url: '/user-auth/p', method: 'get', ...variables, signal });
 
+export type AwsControllerAddFileToProjectPathParams = {
+  projectId: string;
+};
+
+export type AwsControllerAddFileToProjectHeaders = {
+  authorization: string;
+};
+
+export type AwsControllerAddFileToProjectError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AwsControllerAddFileToProjectVariables = {
+  headers: AwsControllerAddFileToProjectHeaders;
+  pathParams: AwsControllerAddFileToProjectPathParams;
+};
+
+export const awsControllerAddFileToProject = (
+  variables: AwsControllerAddFileToProjectVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    AwsControllerAddFileToProjectError,
+    undefined,
+    AwsControllerAddFileToProjectHeaders,
+    {},
+    AwsControllerAddFileToProjectPathParams
+  >({
+    url: '/api/{projectId}/upload-file',
+    method: 'post',
+    ...variables,
+    signal,
+  });
+
+export type AwsControllerFindAllByProjectIdPathParams = {
+  projectId: string;
+};
+
+export type AwsControllerFindAllByProjectIdHeaders = {
+  authorization: string;
+};
+
+export type AwsControllerFindAllByProjectIdError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AwsControllerFindAllByProjectIdResponse = Schemas.AwsEntity[];
+
+export type AwsControllerFindAllByProjectIdVariables = {
+  headers: AwsControllerFindAllByProjectIdHeaders;
+  pathParams: AwsControllerFindAllByProjectIdPathParams;
+};
+
+export const awsControllerFindAllByProjectId = (
+  variables: AwsControllerFindAllByProjectIdVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    AwsControllerFindAllByProjectIdResponse,
+    AwsControllerFindAllByProjectIdError,
+    undefined,
+    AwsControllerFindAllByProjectIdHeaders,
+    {},
+    AwsControllerFindAllByProjectIdPathParams
+  >({
+    url: '/api/{projectId}/upload-file',
+    method: 'get',
+    ...variables,
+    signal,
+  });
+
+export type AwsControllerCreateError = Fetcher.ErrorWrapper<undefined>;
+
+export type AwsControllerCreateVariables = {
+  body: Schemas.CreateAwDto;
+};
+
+export const awsControllerCreate = (
+  variables: AwsControllerCreateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    AwsControllerCreateError,
+    Schemas.CreateAwDto,
+    {},
+    {},
+    {}
+  >({ url: '/api', method: 'post', ...variables, signal });
+
+export type AwsControllerFindOnePathParams = {
+  id: string;
+};
+
+export type AwsControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
+
+export type AwsControllerFindOneVariables = {
+  pathParams: AwsControllerFindOnePathParams;
+};
+
+export const awsControllerFindOne = (
+  variables: AwsControllerFindOneVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    AwsControllerFindOneError,
+    undefined,
+    {},
+    {},
+    AwsControllerFindOnePathParams
+  >({ url: '/api/{id}', method: 'get', ...variables, signal });
+
+export type AwsControllerUpdatePathParams = {
+  id: string;
+};
+
+export type AwsControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
+
+export type AwsControllerUpdateVariables = {
+  body?: Schemas.UpdateAwDto;
+  pathParams: AwsControllerUpdatePathParams;
+};
+
+export const awsControllerUpdate = (
+  variables: AwsControllerUpdateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    AwsControllerUpdateError,
+    Schemas.UpdateAwDto,
+    {},
+    {},
+    AwsControllerUpdatePathParams
+  >({ url: '/api/{id}', method: 'patch', ...variables, signal });
+
+export type AwsControllerRemovePathParams = {
+  id: string;
+};
+
+export type AwsControllerRemoveHeaders = {
+  authorization: string;
+};
+
+export type AwsControllerRemoveError = Fetcher.ErrorWrapper<undefined>;
+
+export type AwsControllerRemoveVariables = {
+  headers: AwsControllerRemoveHeaders;
+  pathParams: AwsControllerRemovePathParams;
+};
+
+export const awsControllerRemove = (
+  variables: AwsControllerRemoveVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.AwsEntity,
+    AwsControllerRemoveError,
+    undefined,
+    AwsControllerRemoveHeaders,
+    {},
+    AwsControllerRemovePathParams
+  >({ url: '/api/{id}', method: 'delete', ...variables, signal });
+
+export type DocumentMeasuresControllerCreateHeaders = {
+  authorization: string;
+};
+
+export type DocumentMeasuresControllerCreateError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type DocumentMeasuresControllerCreateResponse =
+  Schemas.DocumentMeasureEntities[];
+
+export type DocumentMeasuresControllerCreateRequestBody = string[];
+
+export type DocumentMeasuresControllerCreateVariables = {
+  body?: DocumentMeasuresControllerCreateRequestBody;
+  headers: DocumentMeasuresControllerCreateHeaders;
+};
+
+export const documentMeasuresControllerCreate = (
+  variables: DocumentMeasuresControllerCreateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    DocumentMeasuresControllerCreateResponse,
+    DocumentMeasuresControllerCreateError,
+    DocumentMeasuresControllerCreateRequestBody,
+    DocumentMeasuresControllerCreateHeaders,
+    {},
+    {}
+  >({ url: '/document-measures', method: 'post', ...variables, signal });
+
+export type DocumentMeasuresControllerFindAllByMeasurementIdHeaders = {
+  authorization: string;
+};
+
+export type DocumentMeasuresControllerFindAllByMeasurementIdError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type DocumentMeasuresControllerFindAllByMeasurementIdResponse =
+  Schemas.UpdateDocumentMeasureDto[];
+
+export type DocumentMeasuresControllerFindAllByMeasurementIdVariables = {
+  body?: Schemas.UpdateDocumentMeasureDto;
+  headers: DocumentMeasuresControllerFindAllByMeasurementIdHeaders;
+};
+
+export const documentMeasuresControllerFindAllByMeasurementId = (
+  variables: DocumentMeasuresControllerFindAllByMeasurementIdVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    DocumentMeasuresControllerFindAllByMeasurementIdResponse,
+    DocumentMeasuresControllerFindAllByMeasurementIdError,
+    Schemas.UpdateDocumentMeasureDto,
+    DocumentMeasuresControllerFindAllByMeasurementIdHeaders,
+    {},
+    {}
+  >({
+    url: '/document-measures/getmeasurebyid',
+    method: 'post',
+    ...variables,
+    signal,
+  });
+
+export type DocumentMeasuresControllerFindOnePathParams = {
+  id: string;
+};
+
+export type DocumentMeasuresControllerFindOneError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type DocumentMeasuresControllerFindOneVariables = {
+  pathParams: DocumentMeasuresControllerFindOnePathParams;
+};
+
+export const documentMeasuresControllerFindOne = (
+  variables: DocumentMeasuresControllerFindOneVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    DocumentMeasuresControllerFindOneError,
+    undefined,
+    {},
+    {},
+    DocumentMeasuresControllerFindOnePathParams
+  >({ url: '/document-measures/{id}', method: 'get', ...variables, signal });
+
+export type DocumentMeasuresControllerUpdatePathParams = {
+  id: string;
+};
+
+export type DocumentMeasuresControllerUpdateError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type DocumentMeasuresControllerUpdateVariables = {
+  body?: Schemas.UpdateDocumentMeasureDto;
+  pathParams: DocumentMeasuresControllerUpdatePathParams;
+};
+
+export const documentMeasuresControllerUpdate = (
+  variables: DocumentMeasuresControllerUpdateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    DocumentMeasuresControllerUpdateError,
+    Schemas.UpdateDocumentMeasureDto,
+    {},
+    {},
+    DocumentMeasuresControllerUpdatePathParams
+  >({ url: '/document-measures/{id}', method: 'patch', ...variables, signal });
+
+export type DocumentMeasuresControllerRemovePathParams = {
+  id: string;
+};
+
+export type DocumentMeasuresControllerRemoveHeaders = {
+  authorization: string;
+};
+
+export type DocumentMeasuresControllerRemoveError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type DocumentMeasuresControllerRemoveVariables = {
+  headers: DocumentMeasuresControllerRemoveHeaders;
+  pathParams: DocumentMeasuresControllerRemovePathParams;
+};
+
+export const documentMeasuresControllerRemove = (
+  variables: DocumentMeasuresControllerRemoveVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.UpdateDocumentMeasureDto,
+    DocumentMeasuresControllerRemoveError,
+    undefined,
+    DocumentMeasuresControllerRemoveHeaders,
+    {},
+    DocumentMeasuresControllerRemovePathParams
+  >({ url: '/document-measures/{id}', method: 'delete', ...variables, signal });
+
 export const operationsByTag = {
   user: {
     userControllerCreate,
@@ -1042,10 +1367,10 @@ export const operationsByTag = {
   material: {
     materialControllerCreate,
     materialControllerFindAll,
+    materialControllerFindMaterialByCompanyId,
     materialControllerFindOne,
     materialControllerUpdate,
     materialControllerRemove,
-    materialControllerFindMaterialByCompanyId,
   },
   company: {
     companyControllerCreate,
@@ -1078,4 +1403,19 @@ export const operationsByTag = {
     tableCustomFieldsControllerFindCustomFieldsByProjectId,
   },
   userAuth: { userControllerCreateUser, userControllerGerProducts },
+  uploadFile: {
+    awsControllerAddFileToProject,
+    awsControllerFindAllByProjectId,
+    awsControllerCreate,
+    awsControllerFindOne,
+    awsControllerUpdate,
+    awsControllerRemove,
+  },
+  documentMeasures: {
+    documentMeasuresControllerCreate,
+    documentMeasuresControllerFindAllByMeasurementId,
+    documentMeasuresControllerFindOne,
+    documentMeasuresControllerUpdate,
+    documentMeasuresControllerRemove,
+  },
 };

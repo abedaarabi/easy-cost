@@ -1,3 +1,5 @@
+import { Logout } from "../authContext/components/AuthContext";
+
 export type EasyCostFetcherExtraProps = {
   /**
    * You can add some extra props to your generated fetchers.
@@ -52,12 +54,18 @@ export async function easyCostFetch<
         signal,
         method: method.toUpperCase(),
         body: body ? JSON.stringify(body) : undefined,
+
         headers: {
+          //  authorization: "",
           "Content-Type": "application/json",
           ...headers,
         },
       }
     );
+
+    if (response.status === 401) {
+      Logout();
+    }
     if (!response.ok) {
       let error: ErrorWrapper<TError>;
       try {

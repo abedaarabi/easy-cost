@@ -220,3 +220,65 @@ export type UserDTO = {
    */
   role: string;
 };
+
+export type CreateAwDto = {
+  id: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  fileName: string;
+  urlPath: string;
+  projectId: string;
+  size: number;
+};
+
+export type AwsEntity = {
+  size: number;
+  id: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  fileName: string;
+  urlPath: string;
+  projectId: string;
+};
+
+export type UpdateAwDto = {
+  id?: string;
+  /**
+   * @format date-time
+   */
+  createdAt?: string;
+  fileName?: string;
+  urlPath?: string;
+  projectId?: string;
+  size?: number;
+};
+
+export type DocumentMeasureEntities = {
+  uploadFileId: string;
+  measurementId: string;
+  projectId: string;
+  id: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  pageNumber: number;
+  measureValues: string;
+};
+
+export type UpdateDocumentMeasureDto = {
+  uploadFileId?: string;
+  measurementId?: string;
+  projectId?: string;
+  id?: string;
+  /**
+   * @format date-time
+   */
+  createdAt?: string;
+  pageNumber?: number;
+  measureValues?: string;
+};

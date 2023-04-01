@@ -12,6 +12,12 @@ import Typography from "@mui/material/Typography";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 import LinearProgress from "@mui/material/LinearProgress";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { operationsByTag } from "../api/easyCostComponents";
+import { useAuth } from "../authContext/components/AuthContext";
+import axios from "axios";
+import { async } from "@firebase/util";
+import { Params, useParams } from "react-router-dom";
 
 interface Prop {
   openAddObject: boolean;
@@ -22,24 +28,53 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
   const [fileName, setFileName] = React.useState("");
   const [showDialog, setShowDialog] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  //   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const onDrop = useCallback((acceptedFiles: any) => {
+  const { projectId } = useParams<Params<string>>();
+
+  const onDrop = useCallback(async (acceptedFiles: any) => {
     setIsLoading(true);
     setFileName(acceptedFiles[0].path);
     // Do something with the files
     const fileInput = acceptedFiles[0];
-    var formData = new FormData();
-    formData.append("name", fileInput.name);
-    formData.append("bucketKey", "bucketKey");
-    formData.append("file", fileInput);
     console.log(fileInput);
+
+    let formData = new FormData();
+
+    formData.append("file", fileInput);
+    formData.append("originalname", fileInput.name);
+
+    if (fileInput) {
+      try {
+        const response = await axios({
+          method: "post",
+          url: `http://localhost:3000/api/${projectId}/upload-file`,
+          data: formData,
+          headers: {
+            authorization: `Bearer ${user.accessToken}`,
+          },
+        });
+        if (response.data && response.status === 201) {
+          await queryClient.invalidateQueries(["uploadFileToS3"]);
+          setIsLoading(false);
+
+          setOpenAddObject(false);
+        }
+        console.log({ response });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
     accept: {
-      "drawing/pdf": [".pdf"],
+      "drawing/pdf": [".pdf", ".jpg", ".jpeg", ".png", ".dwf"],
+
       //   "ifc/ifc": [".ifc"],
       // "pdf/pdf": [".pdf"],
     },
@@ -49,7 +84,7 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
     <Dialog open={openAddObject}>
       <DialogTitle> Upload PDF file</DialogTitle>
 
-      <Box sx={{ width: "22rem", height: "20rem" }}>
+      <Box sx={{ width: "30rem", height: "22rem" }}>
         {isLoading && <LinearProgress />}
         <Box
           {...getRootProps()}

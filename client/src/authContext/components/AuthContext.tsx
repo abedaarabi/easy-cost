@@ -34,14 +34,11 @@ export const AuthContextProvider = ({
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log(user);
-
         const useDetails = await operationsByTag.user.userControllerFindOne({
           pathParams: { id: user.uid },
           //@ts-ignore
           headers: { authorization: `Bearer ${user.accessToken}` },
         });
-        console.log({ useDetails });
 
         setUser({
           uid: user.uid,
@@ -121,3 +118,19 @@ export const AuthContextProvider = ({
 //     throw error;
 //   }
 // }
+
+// export function getHeader() {
+//   const unsubscribe = onAuthStateChanged(auth, async (user) => {
+//     if (user) {
+//       //@ts-ignore
+//       return `Bearer ${user.accessToken}`;
+//     }
+//   });
+//   console.log({ unsubscribe });
+
+//   return unsubscribe;
+// // }
+// getHeader();
+export async function Logout() {
+  await signOut(auth);
+}

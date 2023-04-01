@@ -23,7 +23,18 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: ProjectEntity,
+    isArray: false,
+  })
+  create(
+    @Body() createProjectDto: CreateProjectDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    delete createProjectDto.createdAt;
+    delete createProjectDto.id;
+
     return this.projectService.create(createProjectDto);
   }
 
@@ -75,6 +86,7 @@ export class ProjectController {
     @Body() updateProjectDto: UpdateProjectDto,
     @Headers('authorization') authorization: string,
   ) {
+    delete updateProjectDto.createdAt;
     return this.projectService.update(id, updateProjectDto);
   }
 

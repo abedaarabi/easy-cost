@@ -17,9 +17,14 @@ import { TableCustomFieldsModule } from './table-custom-fields/table-custom-fiel
 import { LoginAuthModule } from './login-auth/login-auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { AwsModule } from './aws/aws.module';
+import { ConfigModule } from '@nestjs/config';
+import { DocumentMeasuresModule } from './document-measures/document-measures.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env.development.local', '.env.development'],
+    }),
     PrismaModule,
     UserModule,
     MaterialModule,
@@ -31,6 +36,7 @@ import { AwsModule } from './aws/aws.module';
     InvitedUserModule,
     LoginAuthModule,
     AwsModule,
+    DocumentMeasuresModule,
   ],
   controllers: [AppController],
   providers: [AppService],

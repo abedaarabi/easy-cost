@@ -39,9 +39,9 @@ function ReusableTable<TData extends RecordType>({
       state={{ isLoading }}
       data={data}
       {...props}
-      muiTableContainerProps={{
-        sx: { maxHeight: "600px" },
-      }}
+      // muiTableContainerProps={{
+      //   sx: { height: "30vh" },
+      // }}
       enableStickyHeader
       pageCount={10}
     />

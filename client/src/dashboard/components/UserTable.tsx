@@ -224,7 +224,10 @@ const UserTable = () => {
     };
 
   return (
-    <>
+    <Box>
+      <Typography variant="h6" color={"#2c2c34"} mb={1}>
+        Company Users:
+      </Typography>
       <ReusableTable
         isLoading={isLoading}
         enableClickToCopy
@@ -249,7 +252,7 @@ const UserTable = () => {
                   onClick={() => table.setEditingRow(row)}
                   color="info"
                 >
-                  <Edit />
+                  <Edit color="action" />
                 </IconButton>
               </Tooltip>
               <Tooltip arrow placement="right" title="Delete">
@@ -270,6 +273,32 @@ const UserTable = () => {
             <AddIcon />
           </Fab>
         )}
+        muiTablePaperProps={{
+          sx: {
+            borderRadius: "5px",
+
+            border: "1px  #e0e0e0 ",
+          },
+        }}
+        muiTopToolbarProps={{
+          sx: {
+            borderRadius: "5px",
+            bgcolor: "#81b29a",
+            height: 80,
+            border: "5px  #e0e0e0 ",
+          },
+        }}
+        muiBottomToolbarProps={{
+          sx: {
+            borderRadius: "5px",
+            bgcolor: "#99c1b9",
+
+            border: "5px  #e0e0e0 ",
+          },
+        }}
+        muiTableContainerProps={{
+          sx: { height: "65vh", maxHeight: "65vh" },
+        }}
       />
 
       <CreateNewAccountModal
@@ -278,7 +307,7 @@ const UserTable = () => {
         onClose={() => setCreateModalOpen(false)}
         onSubmit={handleCreateNewRow}
       />
-    </>
+    </Box>
   );
 };
 

@@ -51,7 +51,7 @@ const ProjectTable = () => {
   if (user.length < 1) return null;
   const { companyId, id: userId } = user;
 
-  const { isLoading, error, data, isFetching } = useQuery(
+  const { isLoading, isError, data, isFetching } = useQuery(
     ["userByCompanyId"],
     () =>
       operationsByTag.project.projectControllerProjectsByCompanyId({
@@ -81,6 +81,8 @@ const ProjectTable = () => {
 
         body: {
           companyId: value.companyId,
+          createdAt: value.createdAt,
+
           id: value.id,
           projectName: value.projectName,
           userId: value.userId,
@@ -94,11 +96,18 @@ const ProjectTable = () => {
       },
     }
   );
-  const createMutation = useMutation(projectsByCompany, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userByCompanyId"]);
-    },
-  });
+  const createMutation = useMutation(
+    (values: ProjectEntity) =>
+      operationsByTag.project.projectControllerCreate({
+        body: { ...values },
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["userByCompanyId"]);
+      },
+    }
+  );
 
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
@@ -169,7 +178,7 @@ const ProjectTable = () => {
       id: column.id,
       createdAt: new Date(column.createdAt).toLocaleDateString(),
     };
-  });
+  }) as CreateProjectDto[];
 
   const handleDeleteRow = (row: MRT_Row<CreateProjectDto>) => {
     if (
@@ -181,8 +190,13 @@ const ProjectTable = () => {
     //send api delete request here, then refetch or update local table data for re-render Delete
   };
 
-  const handleCreateNewRow = (values: CreateProjectDto) => {
-    createMutation.mutate({ ...values, companyId, userId });
+  const handleCreateNewRow = (values: ProjectEntity) => {
+    createMutation.mutate({
+      ...values,
+      companyId,
+      userId,
+      isActive: true,
+    });
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
 
@@ -197,8 +211,18 @@ const ProjectTable = () => {
       exitEditingMode();
     };
 
+  if (isLoading) {
+    return <h3>Loading</h3>;
+  }
+  if (isError) {
+    return <h3>Error</h3>;
+  }
+
   return (
-    <>
+    <Box>
+      <Typography variant="h6" color={"#2c2c34"} mb={1}>
+        All Projects:
+      </Typography>
       <ReusableTable
         // isLoading={{ isLoading: false }}
         enableStickyFooter
@@ -212,7 +236,7 @@ const ProjectTable = () => {
           <Box sx={{ display: "flex", gap: "0.5rem" }}>
             <Tooltip arrow placement="left" title="Edit">
               <IconButton onClick={() => table.setEditingRow(row)} color="info">
-                <Edit />
+                <Edit color="action" />
               </IconButton>
             </Tooltip>
             <Tooltip arrow placement="right" title="Delete">
@@ -243,7 +267,7 @@ const ProjectTable = () => {
         }}
         renderTopToolbarCustomActions={() => (
           <Fab
-            color="info"
+            color="success"
             onClick={() => setCreateModalOpen(true)}
             aria-label="add"
             size="small"
@@ -251,6 +275,32 @@ const ProjectTable = () => {
             <AddIcon />
           </Fab>
         )}
+        muiTablePaperProps={{
+          sx: {
+            borderRadius: "5px",
+
+            border: "1px  #e0e0e0 ",
+          },
+        }}
+        muiTopToolbarProps={{
+          sx: {
+            borderRadius: "5px",
+            bgcolor: "#81b29a",
+            height: 80,
+            border: "5px  #e0e0e0 ",
+          },
+        }}
+        muiBottomToolbarProps={{
+          sx: {
+            borderRadius: "5px",
+            bgcolor: "#99c1b9",
+
+            border: "5px  #e0e0e0 ",
+          },
+        }}
+        muiTableContainerProps={{
+          sx: { height: "65vh", maxHeight: "65vh" },
+        }}
       />
 
       <CreateNewAccountModal
@@ -259,7 +309,7 @@ const ProjectTable = () => {
         onClose={() => setCreateModalOpen(false)}
         onSubmit={handleCreateNewRow}
       />
-    </>
+    </Box>
   );
 };
 

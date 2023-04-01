@@ -31,7 +31,13 @@ export class ProjectMaterialController {
     description: 'The record has been successfully created.',
     type: ProjectMaterialEntity,
   })
-  create(@Body() createProjectMaterialDto: CreateProjectMaterialDto) {
+  create(
+    @Body() createProjectMaterialDto: CreateProjectMaterialDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    delete createProjectMaterialDto.createdAt;
+    console.log({ createProjectMaterialDto });
+
     return this.projectMaterialService.create(createProjectMaterialDto);
   }
 
@@ -45,7 +51,10 @@ export class ProjectMaterialController {
     description: 'The record has been successfully created.',
     type: ProjectMaterialEntity,
   })
-  findOne(@Param('id') id: string) {
+  findOne(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.projectMaterialService.findOne(id);
   }
 
@@ -71,6 +80,7 @@ export class ProjectMaterialController {
   update(
     @Param('id') id: string,
     @Body() updateProjectMaterialDto: UpdateProjectMaterialDto,
+    @Headers('authorization') authorization: string,
   ) {
     console.log(updateProjectMaterialDto, id);
 
@@ -82,7 +92,10 @@ export class ProjectMaterialController {
     description: 'The record has been successfully created.',
     type: ProjectMaterialEntity,
   })
-  remove(@Param('id') id: string) {
+  remove(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.projectMaterialService.remove(id);
   }
 }
