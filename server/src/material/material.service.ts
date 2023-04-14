@@ -26,9 +26,18 @@ export class MaterialService {
         data: { ...validateResult, companyId, userId },
       });
     } catch (error) {
-      console.log(error);
+      return error;
+    }
+  }
 
-      throw new Error(error);
+  createBulk(createMaterialDto: CreateMaterialDto[]) {
+    console.log(createMaterialDto);
+    try {
+      return this.prisma.material.createMany({
+        data: createMaterialDto,
+      });
+    } catch (error) {
+      return error;
     }
   }
 

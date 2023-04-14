@@ -21,7 +21,11 @@ import {
 import { Params, useNavigate, useParams } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Invalidinvite from "./Invalidinvite";
-import { createNewUser } from "./singupHelper";
+// import { createNewUser } from "./singupHelper";
+import { operationsByTag } from "../api/easyCostComponents";
+import { useAuth } from "../authContext/components/AuthContext";
+import { CreateUserDto } from "../api/easyCostSchemas";
+import { signUp } from "../config/firebase";
 
 function Copyright(props: any) {
   return (
@@ -48,34 +52,74 @@ export default function SignUp() {
   const { tokenId } = useParams<Params<string>>();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
+  const { user, setLoginMsg } = useAuth();
   var decoded = jwt_decode(tokenId as string) as any;
   // console.log(decoded, "#####");
 
   if (!decoded) {
     return <Invalidinvite />;
   }
+  console.log({ decoded });
 
-  const createMutation = useMutation(createNewUser, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userByCompanyId"]);
-    },
-  });
+  const createMutation = useMutation(
+    (values: CreateUserDto) =>
+      operationsByTag.user.userControllerCreate({
+        body: {
+          companyId: values.companyId,
+          name: values.name,
+          email: values.email,
+          id: values.id,
+          userType: values.userType,
+        },
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        // headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
+    {
+      onSuccess: (response) => {
+        // queryClient.invalidateQueries(["userByCompanyId"]);
+        console.log({ response });
+
+        navigate("/login");
+      },
+      onError: (err) => console.log(err),
+    }
+  );
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
 
     const formInfo = {
       name: data.get("fullName"),
       password: data.get("password"),
+    } as { name: string; password: string };
+
+    const userDetails: any = await signUp(decoded.email, formInfo.password);
+    console.log(userDetails.error);
+
+    if (userDetails.error) {
+      setLoginMsg({
+        code: 400,
+
+        msg: `Code Error: ${userDetails.error}`,
+      });
+    }
+
+    const info: CreateUserDto = {
+      email: decoded.email,
+      id: userDetails.uid,
+      userType: decoded.userType,
+      companyId: decoded.companyId,
+      name: formInfo.name,
     };
+    console.log(info);
 
-    createMutation.mutate({ ...formInfo, ...decoded });
+    createMutation.mutate(info);
 
-    console.log(createMutation);
+    // console.log(createMutation);
 
-    createMutation.isSuccess && navigate("/project");
+    // createMutation.isSuccess && navigate("/project");
   };
 
   return (

@@ -8,7 +8,6 @@ export type CreateUserDto = {
   email: string;
   userType: string;
   companyId: string;
-  userId: string;
   id: string;
 };
 
@@ -18,7 +17,6 @@ export type UserEntity = {
   companyId: string;
   id: string;
   name: string;
-  userId: string;
 };
 
 export type UpdateUserDto = {
@@ -26,7 +24,6 @@ export type UpdateUserDto = {
   email?: string;
   userType?: string;
   companyId?: string;
-  userId?: string;
   id?: string;
 };
 
@@ -63,6 +60,22 @@ export type UpdateProjectMaterialDto = {
   quantity?: number;
 };
 
+export type MaterialEntity = {
+  price: Decimal;
+  hourPerQuantity: Decimal;
+  id: string;
+  materialName: string;
+  unit: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  pricePerHour: Decimal;
+  userId: string;
+  co2e: Decimal;
+  companyId: string;
+};
+
 export type CreateMaterialDto = {
   id: string;
   materialName: string;
@@ -76,22 +89,6 @@ export type CreateMaterialDto = {
   companyId: string;
   hourPerQuantity: number;
   price: number;
-};
-
-export type MaterialEntity = {
-  price: number;
-  hourPerQuantity: number;
-  id: string;
-  materialName: string;
-  unit: string;
-  /**
-   * @format date-time
-   */
-  createdAt: string;
-  pricePerHour: Decimal;
-  userId: string;
-  co2e: number;
-  companyId: string;
 };
 
 export type UpdateMaterialDto = {
@@ -257,7 +254,7 @@ export type UpdateAwDto = {
   size?: number;
 };
 
-export type DocumentMeasureEntities = {
+export type CreateDocumentMeasureDto = {
   uploadFileId: string;
   measurementId: string;
   projectId: string;
@@ -281,4 +278,28 @@ export type UpdateDocumentMeasureDto = {
   createdAt?: string;
   pageNumber?: number;
   measureValues?: string;
+};
+
+export type CreateMarkupDto = {
+  id: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  pageNumber: number;
+  markupsString: string;
+  projectId: string;
+  uploadFileId: string;
+};
+
+export type UpdateMarkupDto = {
+  id?: string;
+  /**
+   * @format date-time
+   */
+  createdAt?: string;
+  pageNumber?: number;
+  markupsString?: string;
+  projectId?: string;
+  uploadFileId?: string;
 };

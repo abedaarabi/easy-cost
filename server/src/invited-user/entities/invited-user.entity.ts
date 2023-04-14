@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { InvitedUser } from 'node_modules/@prisma/client';
 import { MinLength } from 'class-validator';
 export class InvitedUserEntity implements InvitedUser {
+  @ApiProperty()
   role: string;
+  @ApiProperty()
   id: string;
 
   createdAt: Date;

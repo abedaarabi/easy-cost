@@ -18,7 +18,7 @@ export class AuthMiddleware implements NestMiddleware {
     private readonly firebaseService: FirebaseAuthService,
     private prisma: PrismaService,
   ) {}
-  
+
   public async use(req: RequestModel, _: Response, next: NextFunction) {
     const { authorization } = req.headers;
     // console.log(req.headers, 'authorization');

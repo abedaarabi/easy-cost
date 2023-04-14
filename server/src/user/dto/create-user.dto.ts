@@ -3,12 +3,12 @@ import { UserType } from '@prisma/client';
 import { IsString, MinLength, IsEmail } from 'class-validator';
 
 export class CreateUserDto {
-  @IsString()
-  @MinLength(3)
+  // @IsString()
+  // @MinLength(3)
   @ApiProperty()
   name: string;
   @ApiProperty()
-  @IsEmail()
+  // @IsEmail()
   email: string;
   // @ApiProperty()
   // avatar: string;
@@ -16,8 +16,8 @@ export class CreateUserDto {
   userType: UserType;
   @ApiProperty()
   companyId: string;
-  @ApiProperty()
-  userId?: string;
+  // @ApiProperty()
+  // userId?: string;
   @ApiProperty()
   id: string;
 }

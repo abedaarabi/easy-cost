@@ -5,3 +5,8 @@
 .Mui-selected -root:hover {
   color: #8b4f2e;
 }
+.lmv-markup-gui-toolbar-content {
+  padding: 5px;
+  background-color: rgb(241, 211, 171);
+  color: white;
+}

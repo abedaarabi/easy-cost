@@ -2,6 +2,7 @@
 // import React from "react";
 // import Card from "@mui/material/Card";
 // import { Box } from "@mui/material";
+import "./viewer.css";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUserToken } from "./helper";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
@@ -15,7 +16,10 @@ import { async } from "@firebase/util";
 import { operationsByTag } from "../api/easyCostComponents";
 import { useAuth } from "../authContext/components/AuthContext";
 import { Params, useParams } from "react-router-dom";
-import { UpdateDocumentMeasureDto } from "../api/easyCostSchemas";
+import {
+  UpdateDocumentMeasureDto,
+  UpdateMarkupDto,
+} from "../api/easyCostSchemas";
 import { AxiosError } from "axios";
 
 export const Viewer = ({
@@ -58,90 +62,128 @@ export const Viewer = ({
     }
   );
 
-  const [isGeometryLoaded, setIsGeometryLoaded] = React.useState(false);
+  //markups
 
+  const {
+    data: markupsData,
+    mutate: markupsDataIsMutate,
+    isSuccess: markupsDataIsSuccess,
+    isLoading: markupsIsLoading,
+  } = useMutation(
+    (values: UpdateMarkupDto) =>
+      operationsByTag.markups.markupsControllerFindAll({
+        headers: { authorization: `Bearer ${user.accessToken}` },
+        body: values,
+      }),
+
+    {
+      onSuccess: (response: UpdateMarkupDto) => {},
+      onError: (error: AxiosError) => {
+        console.log(error.message);
+        console.log(error.status);
+      },
+      cacheTime: 0,
+    }
+  );
+  const [isGeometryLoaded, setIsGeometryLoaded] = React.useState(false);
+  const [refetchMarkups, setRefetchMarkups] = React.useState(false);
+  const [isMarkups, setIsMarkups] = React.useState(false);
+
+  interface CustomViewer extends Autodesk.Viewing.GuiViewer3D {
+    markupsCore: any;
+  }
   let viewer = React.useRef<Autodesk.Viewing.GuiViewer3D | undefined>();
 
-  React.useEffect(() => {
-    function initializeViewer() {
-      Autodesk.Viewing.Initializer(
-        {
-          env: "Local",
-          useADP: false,
-        },
+  let markupsExtension = React.useRef<any | undefined>();
+  //@ts-ignore
 
-        function () {
-          viewer.current = new Autodesk.Viewing.GuiViewer3D(
-            document.getElementById("viewer") as HTMLElement
-          );
-          if (!path.id || !viewer?.current) {
-            return;
-          }
+  console.log(Autodesk.Extensions.Markup);
+  //@ts-ignore
+  function initializeViewer() {
+    Autodesk.Viewing.Initializer(
+      {
+        env: "Local",
+        useADP: false,
+      },
 
-          viewer.current.addEventListener(
-            Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
-
-            (x: Autodesk.Viewing.GuiViewer3D) => {
-              //@ts-ignore
-              if (x.type === "geometryLoaded") {
-                //@ts-ignore
-                forwardViewer.current = x.target;
-
-                const pageNum =
-                  //@ts-ignore
-                  x.model.myData.loadOptions.bubbleNode.data.page;
-
-                if (pageNum ? pageNum : 1) {
-                  mutate({
-                    projectId: projectId,
-                    pageNumber: pageNum,
-                    uploadFileId: path.id,
-                  });
-                }
-
-                setPageNumber(pageNum);
-                setIsGeometryLoaded(true);
-              }
-            }
-          );
-
-          viewer?.current?.setTheme("light-theme");
-          viewer.current.loadExtension("Autodesk.PDF").then((x) => {
-            viewer?.current?.loadExtension("Autodesk.Viewing.MarkupsCore");
-            viewer?.current?.loadExtension("Autodesk.Viewing.MarkupsGui");
-            viewer?.current?.loadExtension("Autodesk.Vault.Markups");
-
-            viewer?.current?.loadExtension("Autodesk.DocumentBrowser");
-            // viewer?.current?.loadExtension("Autodesk.AEC.LevelsExtension");
-            // viewer?.current?.loadExtension("Autodesk.AEC.Minimap2DExtension");
-
-            viewer?.current?.loadModel(path.urlPath, {});
-          });
-
-          viewer?.current?.start(path.urlPath);
+      function () {
+        viewer.current = new Autodesk.Viewing.GuiViewer3D(
+          document.getElementById("viewer") as HTMLElement
+        );
+        if (!path.id || !viewer?.current) {
+          return;
         }
-      );
+
+        viewer.current.addEventListener(
+          Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
+
+          (x: Autodesk.Viewing.GuiViewer3D) => {
+            //@ts-ignore
+            if (x.type === "geometryLoaded") {
+              //@ts-ignore
+
+              //@ts-ignore
+              forwardViewer.current = x.target;
+
+              const pageNum =
+                //@ts-ignore
+                x.model.myData.loadOptions.bubbleNode.data.page;
+
+              setPageNumber(pageNum);
+              setIsGeometryLoaded(true);
+            }
+          }
+        );
+
+        // viewer?.current?.loadExtension("Autodesk.AEC.LevelsExtension");
+        // viewer?.current?.loadExtension("Autodesk.AEC.Minimap2DExtension");
+
+        viewer?.current?.loadModel(path.urlPath, {}, function onSuccess() {
+          viewer?.current?.loadExtension("Autodesk.Viewing.MarkupsCore");
+          viewer?.current?.loadExtension("Autodesk.Viewing.MarkupsGui");
+          viewer?.current?.loadExtension("Autodesk.Vault.Print");
+          viewer?.current?.setTheme("light-theme");
+          viewer?.current?.loadExtension("Autodesk.PDF");
+          // viewer?.current?.loadExtension("Autodesk.Vault.Markups");
+          viewer?.current?.loadExtension("Autodesk.DocumentBrowser");
+        });
+
+        viewer?.current?.start(path.urlPath);
+      }
+    );
+  }
+  React.useEffect(() => {
+    initializeViewer();
+    setIsMarkups(false);
+  }, [path?.id]);
+
+  React.useEffect(() => {
+    if (pageNumber ? pageNumber : 1) {
+      mutate({
+        projectId: projectId,
+        pageNumber: pageNumber,
+        uploadFileId: path.id,
+      });
+
+      markupsDataIsMutate({
+        projectId: projectId,
+        pageNumber: pageNumber,
+        uploadFileId: path.id,
+      });
     }
 
-    initializeViewer();
-  }, [path?.urlPath]);
+    setIsMarkups(false);
+    pageNumber !== 1 && initializeViewer();
+  }, [pageNumber, path.id]);
 
   React.useEffect(() => {
     viewer?.current?.addEventListener(
       Autodesk.Viewing.TOOL_CHANGE_EVENT,
 
       (x) => {
-        if (!viewer?.current?.getExtension("Autodesk.Measure")) return;
-
-        const mss = viewer?.current
-          ?.getExtension("Autodesk.Measure")
-          //@ts-ignore
-          ?.measureTool?.getMeasurementList();
-        console.log({ mss });
-
         if (
-          (mss.length === 0 || data?.length! > mss.length) &&
           x.active &&
+          x.toolName === "snapper" &&
           isGeometryLoaded &&
           viewer?.current?.getExtension("Autodesk.Measure")
         ) {
@@ -161,7 +203,62 @@ export const Viewer = ({
       },
       { once: true }
     );
-  }, [isGeometryLoaded, isSuccess]);
+  }, [isSuccess]);
+
+  viewer?.current?.loadExtension("Autodesk.Viewing.MarkupsCore").then((ext) =>
+    //@ts-ignore
+
+    ext.addEventListener(
+      //@ts-ignore
+      Autodesk.Viewing.Extensions.Markups.Core.EVENT_EDITMODE_LEAVE,
+      console.log
+    )
+  );
+
+  viewer?.current?.addEventListener(
+    //@ts-ignore
+
+    Autodesk.Viewing.MeasureCommon.Events.MEASUREMENT_MODE_ENTER,
+    console.log
+  );
+  //@ts-ignore
+
+  React.useEffect(() => {
+    viewer?.current?.addEventListener(
+      Autodesk.Viewing.TOOL_CHANGE_EVENT,
+      async (x) => {
+        const extension = (await viewer?.current?.loadExtension(
+          "Autodesk.Viewing.MarkupsCore"
+        )) as any;
+        markupsDataIsMutate({
+          projectId: projectId,
+          pageNumber: pageNumber,
+          uploadFileId: path.id,
+        });
+        if (x.active && x.toolName === "markups.core" && markupsData?.id) {
+          // console.log(extension.viewer.getState());
+
+          // extension.viewer.restoreState(extension.viewer.getState());
+          // extension.show();
+          // getAllMarkups(viewer.current);
+          // await extension.clear();
+          await extension?.leaveEditMode();
+          //@ts-ignore
+          await extension.loadMarkups(
+            `${markupsData?.markupsString}`,
+            "layer_1"
+          );
+          await extension.enterEditMode("layer_1");
+          // await extension.show();
+        } else if (!x.active && x.toolName === "markups.core") {
+          setIsMarkups(true);
+          setPageNumber(0);
+          // reloadMarkups();
+        }
+      }
+      // { once: true }
+    );
+  }, [markupsDataIsSuccess]);
 
   React.useEffect(() => {
     if (!viewer?.current) return;
@@ -171,6 +268,7 @@ export const Viewer = ({
       (x) => {
         if (isGeometryLoaded) {
           var ext = viewer?.current?.getExtension("Autodesk.Measure");
+
           if (!ext) return;
           //@ts-ignore
           ext.sharedMeasureConfig.units = "mm";
@@ -188,7 +286,7 @@ export const Viewer = ({
           sx={{
             position: "absolute",
             width: "100%",
-            height: "79vh",
+            height: "100%",
             overflow: "hidden",
             borderRadius: "5px",
             border: "4px solid #81b29a",
@@ -200,7 +298,8 @@ export const Viewer = ({
           sx={{
             position: "absolute",
             width: "100%",
-            height: "79vh",
+            height: "100%",
+
             borderRadius: "5px",
             border: "4px solid #81b29a",
           }}
@@ -320,4 +419,58 @@ function loadMeasuresFromDb(data: UpdateDocumentMeasureDto[]) {
     return;
   }
   return data?.map((measure) => JSON.parse(measure.measureValues!));
+}
+
+async function getAllMarkups(viewer?: any | undefined) {
+  const extension = await viewer.loadExtension("Autodesk.Viewing.MarkupsCore");
+  const extension0 = await viewer.loadExtension("Autodesk.Viewing.MarkupsGui");
+  return;
+  //@ts-ignore
+  // var markupsStringData = extension.generateData();
+  // localStorage.setItem("markups", markupsStringData);
+  // Erase all markups onscreen, then load markups back onto the view
+  //@ts-ignore
+
+  // extension.clear();
+
+  //@ts-ignore
+
+  // extension?.enterViewMode(); // Very important!!
+  //@ts-ignore
+  // extension.loadMarkups(localStorage.getItem("markups"));
+  // console.log(localStorage.getItem("markups"));
+
+  //@ts-ignore
+
+  // extension.enterViewMode(); // Very important!!
+  //@ts-ignore
+
+  // await markupsCore.enterEditMode();
+
+  // await markupsCore.loadMarkups(x, "layer1");
+  console.log("abdo");
+
+  await extension.leaveEditMode();
+  await extension.loadMarkups(localStorage.getItem("markups"), "layer_1");
+  await extension.enterEditMode("layer_1");
+
+  // extension?.enterEditMode();
+  //@ts-ignore
+  // extension.loadMarkups(myMarkupString2);
+}
+
+async function saveMarkupsToDatabase(viewer: any) {
+  const markupsExtension = await viewer.loadExtension(
+    "Autodesk.Viewing.MarkupsCore"
+  );
+
+  const markupsData = await markupsExtension.generateData();
+  console.log({ markupsData });
+
+  //Save to database
+
+  // await localStorage.setItem("markups", markupsStringData);
+  // console.log(localStorage.getItem("markups"));
+
+  // var markupsStringData = await extension.generateData();
 }

@@ -21,13 +21,18 @@ import MaterialReactTable, {
   MaterialReactTableProps,
   MRT_Column,
 } from "material-react-table";
+import { SiAutodesk } from "react-icons/si";
+import { ImPencil2 } from "react-icons/im";
+
 import {
   Badge,
   Button,
   darken,
   Fab,
+  FormControlLabel,
   IconButton,
   Paper,
+  Switch,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -37,10 +42,12 @@ import { ContentCopy, Delete, Edit } from "@mui/icons-material";
 import { operationsByTag } from "../../api/easyCostComponents";
 import {
   CreateDocumentMeasureDto,
+  CreateMarkupDto,
   CreateProjectMaterialDto,
   MaterialEntity,
   ProjectMaterialEntity,
   UpdateDocumentMeasureDto,
+  UpdateMarkupDto,
   UpdateProjectMaterialDto,
   UpdateTableCustomFieldDto,
 } from "../../api/easyCostSchemas";
@@ -59,7 +66,7 @@ import { Stack } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import FolderModel from "../../folderModel/FolderModel";
 import { Retryer } from "react-query/types/core/retryer";
-
+import MultipleStopIcon from "@mui/icons-material/MultipleStop";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -75,7 +82,7 @@ const ProjectMaterialTable = () => {
     urlPath: "",
     id: "",
   });
-  const [pageNumber, setPageNumber] = React.useState<number | undefined>();
+  const [pageNumber, setPageNumber] = React.useState<number>();
   const [mIds, setMid] = React.useState<{ mId: string }>();
 
   const forwardViewer = React.useRef<
@@ -83,10 +90,22 @@ const ProjectMaterialTable = () => {
   >();
 
   const { projectId } = useParams<Params<string>>();
-  const { user } = useAuth();
+  const { user, setLoginMsg } = useAuth();
   const queryClient = useQueryClient();
   if (user.length < 1 || !projectId) return null;
   const { companyId, id: userId } = user;
+  //checked
+
+  const [isCheckedState, setIsCheckedState] = React.useState({
+    viewer: true,
+    table: true,
+  });
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCheckedState({
+      ...isCheckedState,
+      [event.target.name]: event.target.checked,
+    });
+  };
 
   //Model
   const [open, setOpen] = React.useState(false);
@@ -169,8 +188,26 @@ const ProjectMaterialTable = () => {
         headers: { authorization: `Bearer ${user.accessToken}` },
       }),
     {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        console.log({ response });
         queryClient.invalidateQueries(["materialByProject"]);
+
+        setLoginMsg({
+          code: 200,
+          msg: `Material Successfully Added to Database.`,
+        });
+      },
+
+      onError: (error: AxiosError) => {
+        console.log({ error });
+
+        setLoginMsg({
+          code: error.response?.status,
+
+          msg: `Code Error:  ${
+            error.response?.status
+          }. ${error.response?.statusText.toLocaleLowerCase()}`,
+        });
       },
     }
   );
@@ -181,14 +218,57 @@ const ProjectMaterialTable = () => {
         headers: { authorization: `Bearer ${user.accessToken}` },
       }),
     {
-      onSuccess: (response) => {},
+      onSuccess: (response) => {
+        console.log({ response });
+
+        setLoginMsg({
+          code: 200,
+          msg: `Measures Successfully Added to Database.`,
+        });
+      },
 
       onError: (error: AxiosError) => {
         console.log({ error });
 
-        if (error) {
-          console.log(error);
-        }
+        setLoginMsg({
+          code: error.response?.status,
+
+          msg: `Code Error:  ${
+            error.response?.status
+          }. ${error.response?.statusText.toLocaleLowerCase()}`,
+        });
+      },
+    }
+  );
+
+  // Markups
+
+  const createMarkups = useMutation(
+    (values: CreateMarkupDto) =>
+      operationsByTag.markups.markupsControllerCreate({
+        body: values,
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
+    {
+      onSuccess: (response) => {
+        console.log({ response });
+
+        setLoginMsg({
+          code: 200,
+          msg: `Measures Successfully Added to Database.`,
+        });
+      },
+
+      onError: (error: AxiosError) => {
+        console.log({ error });
+
+        setLoginMsg({
+          code: error.response?.status,
+
+          msg: `Code Error:  ${
+            error.response?.status
+          }. ${error.response?.statusText.toLocaleLowerCase()}`,
+        });
       },
     }
   );
@@ -246,156 +326,215 @@ const ProjectMaterialTable = () => {
 
   return (
     <>
-      <Box sx={{}}>
+      <Box
+        sx={{
+          borderRadius: "5px",
+          bgcolor: "#e9ecef",
+          mb: 1,
+
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          flexDirection: { xs: "column", sm: "column", md: "row" },
+        }}
+      >
         <Typography
-          m={1}
           variant="overline"
-          sx={{ textDecoration: "underline" }}
+          sx={{ fontWeight: "bold", ml: 2, color: "#353535" }}
         >
-          {projectById?.projectName}
+          | {projectById?.projectName} |
         </Typography>
+        <FormControlLabel
+          value="Table"
+          control={
+            <Switch
+              color="primary"
+              size="small"
+              name="table"
+              checked={isCheckedState.table}
+              onChange={handleChange}
+            />
+          }
+          label={<Typography variant="overline">Table</Typography>}
+          labelPlacement="start"
+        />
+        <FormControlLabel
+          value="Viewer"
+          control={
+            <Switch
+              color="primary"
+              size="small"
+              onChange={handleChange}
+              name="viewer"
+              checked={isCheckedState.viewer}
+            />
+          }
+          label={<Typography variant="overline">Viewer</Typography>}
+          labelPlacement="start"
+        />
+
+        <IconButton
+          sx={{
+            ml: 2,
+          }}
+          aria-label="fingerprint"
+          onClick={() => setFolderModel(true)}
+        >
+          <FolderOpenIcon color="primary" sx={{ color: "#9BC53D" }} />
+        </IconButton>
+        {path?.id && (
+          <>
+            <IconButton
+              onClick={() => {
+                const MsToDb = getMeasure(forwardViewer?.current);
+                console.log({ MsToDb });
+
+                if (MsToDb.length === 0) {
+                  alert("open measure tab");
+                  return;
+                }
+
+                const normalizeMeasureValues = MsToDb?.map((i: any) => {
+                  return {
+                    measureValues: JSON.stringify(i),
+                    measurementId: generateMeasureId(i),
+                    projectId: projectById.id,
+                    uploadFileId: path?.id,
+                    pageNumber: pageNumber ? pageNumber : 1,
+                  };
+                });
+
+                createMeasures.mutate(normalizeMeasureValues);
+              }}
+              aria-label="UpLoad Measures"
+            >
+              <SquareFootIcon fontSize="inherit" sx={{ color: "#FFBD00" }} />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                if (!forwardViewer?.current) return;
+
+                const markups = forwardViewer?.current?.getExtension(
+                  "Autodesk.Viewing.MarkupsCore"
+                );
+                console.log(markups);
+                //@ts-ignore
+
+                // if (!markups.svgLayersMap.layer_1) {
+                //   alert("Please open the markups first!");
+                //   return;
+                // }
+                const markupsStringData = getAllMarkups(forwardViewer?.current);
+
+                const markupsInfo: CreateMarkupDto = {
+                  projectId: projectId,
+                  uploadFileId: path?.id,
+                  pageNumber: pageNumber ? pageNumber : 1,
+                  markupsString: markupsStringData,
+                  id: "",
+                  createdAt: "",
+                };
+                createMarkups.mutate(markupsInfo);
+              }}
+            >
+              {/* <MultipleStopIcon fontSize="inherit" sx={{ color: "#489FB5" }} /> */}
+              <ImPencil2 size={"18px"} color="#FF0054" />
+            </IconButton>
+          </>
+        )}
       </Box>
       <Stack
-        sx={{}}
+        sx={{ mb: 2, height: "83vh", width: "100%" }}
         direction={{ xs: "column", sm: "column", md: "row" }}
         spacing={{ xs: 1, sm: 2, md: 1 }}
       >
-        <Box sx={{ flex: 5, overflow: "auto" }}>
+        <Box sx={{ flex: isCheckedState.table ? 5 : 0, overflow: "auto" }}>
           <>
-            <ReusableTable
-              enableColumnDragging
-              muiTableHeadCellProps={{
-                align: "center",
-              }}
-              muiTableBodyCellProps={{
-                color: "white",
-                align: "center",
-              }}
-              isLoading={isFetching}
-              enableStickyFooter
-              initialState={{
-                columnVisibility: { id: false },
-                density: "compact",
-              }}
-              columns={colTest}
-              data={dataTable}
-              onEditingRowSave={handleSaveRowEdits}
-              enableEditing
-              renderRowActions={({ row, table }) => (
-                <Box sx={{ display: "flex", gap: "0.5rem" }}>
-                  <Tooltip arrow placement="left" title="Edit">
+            {isCheckedState.table && (
+              <ReusableTable
+                enableColumnDragging
+                muiTableHeadCellProps={{
+                  align: "center",
+                }}
+                muiTableBodyCellProps={{
+                  color: "white",
+                  align: "center",
+                }}
+                isLoading={isFetching}
+                enableStickyFooter
+                initialState={{
+                  columnVisibility: { id: false },
+                  density: "compact",
+                }}
+                columns={colTest}
+                data={dataTable}
+                onEditingRowSave={handleSaveRowEdits}
+                enableEditing
+                renderRowActions={({ row, table }) => (
+                  <Box sx={{ display: "flex", gap: "0.5rem" }}>
+                    <Tooltip arrow placement="left" title="Edit">
+                      <IconButton
+                        onClick={() => {
+                          table.setEditingRow(row);
+                        }}
+                        color="info"
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip arrow placement="right" title="Delete">
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteRow(row)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+                renderTopToolbarCustomActions={() => (
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                     <IconButton
-                      onClick={() => {
-                        table.setEditingRow(row);
-                      }}
-                      color="info"
+                      onClick={() => setCreateModalOpen(true)}
+                      aria-label="add"
+                      size="medium"
+                      color="success"
                     >
-                      <Edit />
+                      <AddIcon />
                     </IconButton>
-                  </Tooltip>
-                  <Tooltip arrow placement="right" title="Delete">
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteRow(row)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
-              renderTopToolbarCustomActions={() => (
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <Box
-                    sx={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      display: "flex",
-                      bgcolor: "#edede9",
-                      borderLeft: "#ffc300 solid 3px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <IconButton
-                      aria-label="fingerprint"
-                      color="primary"
-                      onClick={() => setFolderModel(true)}
-                    >
-                      <FolderOpenIcon fontSize="medium" />
+
+                    <IconButton color="inherit" aria-label="add" size="medium">
+                      <SendIcon fontSize="medium" color="action" />
                     </IconButton>
                   </Box>
-
-                  <IconButton
-                    onClick={() => setCreateModalOpen(true)}
-                    aria-label="add"
-                    size="medium"
-                    color="success"
-                  >
-                    <AddIcon />
-                  </IconButton>
-
-                  <IconButton
-                    color="inherit"
-                    onClick={() => {
-                      alert(projectId);
-                    }}
-                    aria-label="add"
-                    size="medium"
-                  >
-                    <SendIcon fontSize="medium" color="action" />
-                  </IconButton>
-                  {path?.id && (
-                    <IconButton
-                      onClick={() => {
-                        const MsToDb = getMeasure(forwardViewer?.current);
-                        if (MsToDb.length === 0) {
-                          alert("open measure tab");
-                          return;
-                        }
-
-                        const normalizeMeasureValues = MsToDb?.map((i: any) => {
-                          return {
-                            measureValues: JSON.stringify(i),
-                            measurementId: generateMeasureId(i),
-                            projectId: projectById.id,
-                            uploadFileId: path?.id,
-                            pageNumber: pageNumber ? pageNumber : 1,
-                          };
-                        });
-
-                        createMeasures.mutate(normalizeMeasureValues);
-                      }}
-                      aria-label="UpLoad Measures"
-                    >
-                      <SquareFootIcon fontSize="medium" color="error" />
-                    </IconButton>
-                  )}
-                </Box>
-              )}
-              muiTablePaperProps={{
-                sx: {
-                  borderRadius: "5px",
-                  border: "1px  #e0e0e0 ",
-                },
-              }}
-              muiTopToolbarProps={{
-                sx: {
-                  borderRadius: "5px",
-                  bgcolor: "#81b29a",
-                  height: 80,
-                  border: "5px  #e0e0e0 ",
-                },
-              }}
-              muiBottomToolbarProps={{
-                sx: {
-                  borderRadius: "5px",
-                  bgcolor: "#99c1b9",
-                  border: "5px  #e0e0e0 ",
-                },
-              }}
-              muiTableContainerProps={{
-                sx: { height: "65vh", maxHeight: "65vh" },
-              }}
-            />
+                )}
+                muiTablePaperProps={{
+                  sx: {
+                    borderRadius: "5px",
+                    border: "1px  #e0e0e0 ",
+                    height: "100%",
+                  },
+                }}
+                muiTopToolbarProps={{
+                  sx: {
+                    borderRadius: "5px",
+                    bgcolor: "#654C4F",
+                    height: 40,
+                    border: "5px  #e0e0e0 ",
+                  },
+                }}
+                muiBottomToolbarProps={{
+                  sx: {
+                    borderRadius: "5px",
+                    bgcolor: "#B26E63",
+                    border: "5px  #e0e0e0 ",
+                  },
+                }}
+                muiTableContainerProps={{
+                  sx: { height: "85%" },
+                }}
+              />
+            )}
           </>
           <CreateNewAccountModal
             columns={colTest}
@@ -411,22 +550,31 @@ const ProjectMaterialTable = () => {
             open={open}
           />
         </Box>
-        <Item sx={{ flex: 5, overflow: "auto" }}>
-          <Box
+        {isCheckedState.viewer && (
+          <Item
             sx={{
-              height: "25rem",
-
-              position: "relative",
+              flex: isCheckedState.viewer ? 5 : 0,
+              overflow: "auto",
+              width: "100%",
+              margin: 0,
             }}
           >
-            <Viewer
-              path={path}
-              forwardViewer={forwardViewer}
-              setPageNumber={setPageNumber}
-              pageNumber={pageNumber}
-            />
-          </Box>
-        </Item>
+            <Box
+              sx={{
+                height: "100%",
+                position: "relative",
+                margin: 0,
+              }}
+            >
+              <Viewer
+                path={path}
+                forwardViewer={forwardViewer}
+                setPageNumber={setPageNumber}
+                pageNumber={pageNumber}
+              />
+            </Box>
+          </Item>
+        )}
       </Stack>
 
       {folderModel && (
@@ -639,4 +787,14 @@ function generateMeasureId(data: InputObj) {
     .slice(0, 2)
     .map((pick) => `${pick.intersection.x},${pick.intersection.y}`);
   return intersections.join(",");
+}
+
+function getAllMarkups(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
+  if (!viewer) {
+    return;
+  }
+  const extension = viewer?.getExtension("Autodesk.Viewing.MarkupsCore");
+  //@ts-ignore
+  const markupsStringData = extension?.generateData();
+  return markupsStringData;
 }

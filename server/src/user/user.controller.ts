@@ -19,12 +19,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-import { PrismaClientExceptionFilter } from 'src/prisma-client-exception.filter';
 import { UserEntity } from './entities/user.entity';
 import { User } from '@prisma/client';
 import { RequestModel } from 'src/middleware/auth.middleware';
 import { RolesGuard } from 'src/middleware/auth.guard';
 import { Roles } from 'src/middleware/role.decorator';
+import { PrismaClientExceptionFilter } from 'src/prisma-client-exception/prisma-client-exception.filter';
 
 enum Role {
   Admin = 'CompanyAdmin',
@@ -32,13 +32,13 @@ enum Role {
 
 @Controller('user')
 @ApiTags('User')
-@UsePipes(
-  new ValidationPipe({
-    whitelist: true,
-    transform: true,
-  }),
-)
-@UseGuards(RolesGuard)
+// @UsePipes(
+//   new ValidationPipe({
+//     whitelist: true,
+//     transform: true,
+//   }),
+// )
+// @UseGuards(RolesGuard)
 @UseFilters(PrismaClientExceptionFilter)
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -46,13 +46,12 @@ export class UserController {
   @Post()
   @ApiOkResponse({
     description: 'The record has been successfully created.',
-    type: UserEntity,
+    type: CreateUserDto,
+    isArray: false,
   })
-  @ApiCreatedResponse({ type: UserEntity })
-  create(
-    @Body() createUserDto: CreateUserDto,
-    @Headers('authorization') authorization: string,
-  ): Promise<User> {
+  create(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto);
+
     return this.userService.create(createUserDto);
   }
 
@@ -64,7 +63,7 @@ export class UserController {
   // }
 
   @Get('userByCompany/')
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @ApiOkResponse({
     description: 'The record has been successfully created.',
     type: UserEntity,
@@ -75,6 +74,8 @@ export class UserController {
     @Req() req: RequestModel,
     @Headers('authorization') authorization: string,
   ): Promise<User[]> {
+    console.log(req.user, 'req');
+
     return this.userService.findUserByCompanyId(req.user.companyId);
   }
 

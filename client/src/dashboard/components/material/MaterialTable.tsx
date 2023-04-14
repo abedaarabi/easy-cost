@@ -1,18 +1,17 @@
 import React, { FC } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { useAuth } from "../../authContext/components/AuthContext";
+import { useAuth } from "../../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
-
+import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import {
   createMaterial,
   deleteMaterialById,
   getMaterialByCompany,
   updateMaterial,
-} from "../helper/db.fetchMaterial";
+} from "../../helper/db.fetchMaterial";
 import ReusableTable, {
   ColumnFromData,
-} from "../../reusableTable/ReusableTable";
+} from "../../../reusableTable/ReusableTable";
 import Box from "@mui/material/Box";
 
 import MaterialReactTable, {
@@ -40,17 +39,19 @@ import {
 import Button from "@mui/material/Button";
 import { CellTower, ContentCopy, Delete, Edit } from "@mui/icons-material";
 
-import { operationsByTag } from "../../api/easyCostComponents";
+import { operationsByTag } from "../../../api/easyCostComponents";
 import {
   CreateMaterialDto,
   MaterialEntity,
   UpdateMaterialDto,
-} from "../../api/easyCostSchemas";
+} from "../../../api/easyCostSchemas";
 import { AxiosError, AxiosResponse } from "axios";
+import { DropzoneXlsx } from "./DropzoneXlsx";
 
 const MaterialTable = () => {
   const queryClient = useQueryClient();
   const { user, setLoading, loading, setLoginMsg } = useAuth();
+  const [openAddXlsx, setOpenAddXlsx] = React.useState(false);
 
   const { companyId, id: userId } = user;
 
@@ -72,7 +73,7 @@ const MaterialTable = () => {
 
     {
       onSuccess: (response) => {
-        response && queryClient.invalidateQueries(["materialByCompanyId_test"]);
+        response && queryClient.invalidateQueries(["materialByCompanyId"]);
         setLoginMsg({
           code: 200,
           msg: `${response.materialName} Successfully deleted from Database.`,
@@ -132,7 +133,7 @@ const MaterialTable = () => {
       operationsByTag.material.materialControllerCreate({
         body: { ...value },
 
-        // headers: { authorization: `Bearer ${user.accessToken}` },
+        headers: { authorization: `Bearer ${user.accessToken}` },
       }),
     {
       onSuccess: (response) => {
@@ -150,17 +151,13 @@ const MaterialTable = () => {
       onError: (error: AxiosError) => {
         console.log({ error });
 
-        if (error) {
-          console.log(error);
+        setLoginMsg({
+          code: error.response?.status,
 
-          setLoginMsg({
-            code: error.response?.status,
-
-            msg: `Code Error:  ${
-              error.response?.status
-            }. ${error.response?.statusText.toLocaleLowerCase()}`,
-          });
-        }
+          msg: `Code Error:  ${
+            error.response?.status
+          }. ${error.response?.statusText.toLocaleLowerCase()}`,
+        });
       },
     }
   );
@@ -332,14 +329,28 @@ const MaterialTable = () => {
           </Box>
         )}
         renderTopToolbarCustomActions={() => (
-          <Fab
-            color="success"
-            onClick={() => setCreateModalOpen(true)}
-            aria-label="add"
-            size="small"
-          >
-            <AddIcon />
-          </Fab>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Fab
+              color="success"
+              onClick={() => setCreateModalOpen(true)}
+              aria-label="add"
+              size="small"
+            >
+              <AddIcon />
+            </Fab>
+
+            <Fab
+              aria-label="fingerprint"
+              color="primary"
+              size="small"
+              onClick={() => {
+                setOpenAddXlsx(true);
+                console.log("");
+              }}
+            >
+              <DriveFolderUploadIcon />
+            </Fab>
+          </Box>
         )}
         muiTablePaperProps={{
           sx: {
@@ -375,6 +386,13 @@ const MaterialTable = () => {
         onClose={() => setCreateModalOpen(false)}
         onSubmit={handleCreateNewRow}
       />
+
+      {openAddXlsx && (
+        <DropzoneXlsx
+          openAddObject={openAddXlsx}
+          setOpenAddObject={setOpenAddXlsx}
+        />
+      )}
     </Box>
   );
 };

@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Headers,
+  Req,
 } from '@nestjs/common';
 import { InvitedUserService } from './invited-user.service';
 import { CreateInvitedUserDto } from './dto/create-invited-user.dto';
 import { UpdateInvitedUserDto } from './dto/update-invited-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { RequestModel } from 'src/middleware/auth.middleware';
 
 @Controller('invited-user')
 @ApiTags('invited-user')
@@ -18,8 +21,19 @@ export class InvitedUserController {
   constructor(private readonly invitedUserService: InvitedUserService) {}
 
   @Post()
-  create(@Body() createInvitedUserDto: CreateInvitedUserDto) {
-    return this.invitedUserService.create(createInvitedUserDto);
+  create(
+    @Body() createInvitedUserDto: CreateInvitedUserDto,
+    @Headers('authorization') authorization: string,
+    @Req() req: RequestModel,
+  ) {
+    const { companyId, uid: userId } = req.user;
+    console.log({ createInvitedUserDto, companyId });
+
+    return this.invitedUserService.create(
+      createInvitedUserDto,
+      companyId,
+      userId,
+    );
   }
 
   @Get()
@@ -28,7 +42,10 @@ export class InvitedUserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
     return this.invitedUserService.findOne(id);
   }
 

@@ -43,7 +43,7 @@ function ReusableTable<TData extends RecordType>({
       //   sx: { height: "30vh" },
       // }}
       enableStickyHeader
-      pageCount={10}
+      pageCount={20}
     />
   );
 }

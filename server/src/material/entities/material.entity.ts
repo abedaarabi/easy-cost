@@ -4,9 +4,9 @@ import { Material } from 'node_modules/@prisma/client';
 // Prisma defined the type when we create the db User table
 export class MaterialEntity implements Material {
   @ApiProperty()
-  price: number;
+  price: Decimal;
   @ApiProperty()
-  hourPerQuantity: number;
+  hourPerQuantity: Decimal;
 
   @ApiProperty()
   id: string;
@@ -21,7 +21,7 @@ export class MaterialEntity implements Material {
   @ApiProperty()
   userId: string;
   @ApiProperty()
-  co2e: number;
+  co2e: Decimal;
   @ApiProperty()
   companyId: string;
 }

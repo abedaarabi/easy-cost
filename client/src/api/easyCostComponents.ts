@@ -25,15 +25,10 @@ export const appControllerSendEmail = (signal?: AbortSignal) =>
     signal,
   });
 
-export type UserControllerCreateHeaders = {
-  authorization: string;
-};
-
 export type UserControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type UserControllerCreateVariables = {
   body: Schemas.CreateUserDto;
-  headers: UserControllerCreateHeaders;
 };
 
 export const userControllerCreate = (
@@ -41,10 +36,10 @@ export const userControllerCreate = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    Schemas.UserEntity,
+    Schemas.CreateUserDto,
     UserControllerCreateError,
     Schemas.CreateUserDto,
-    UserControllerCreateHeaders,
+    {},
     {},
     {}
   >({ url: '/user', method: 'post', ...variables, signal });
@@ -351,10 +346,43 @@ export const projectMaterialControllerFindByProjectId = (
     signal,
   });
 
+export type MaterialControllerCreateBulkHeaders = {
+  authorization: string;
+};
+
+export type MaterialControllerCreateBulkError = Fetcher.ErrorWrapper<undefined>;
+
+export type MaterialControllerCreateBulkResponse = Schemas.MaterialEntity[];
+
+export type MaterialControllerCreateBulkRequestBody = string[];
+
+export type MaterialControllerCreateBulkVariables = {
+  body?: MaterialControllerCreateBulkRequestBody;
+  headers: MaterialControllerCreateBulkHeaders;
+};
+
+export const materialControllerCreateBulk = (
+  variables: MaterialControllerCreateBulkVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    MaterialControllerCreateBulkResponse,
+    MaterialControllerCreateBulkError,
+    MaterialControllerCreateBulkRequestBody,
+    MaterialControllerCreateBulkHeaders,
+    {},
+    {}
+  >({ url: '/material/bulk', method: 'post', ...variables, signal });
+
+export type MaterialControllerCreateHeaders = {
+  authorization: string;
+};
+
 export type MaterialControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type MaterialControllerCreateVariables = {
   body: Schemas.CreateMaterialDto;
+  headers: MaterialControllerCreateHeaders;
 };
 
 export const materialControllerCreate = (
@@ -365,7 +393,7 @@ export const materialControllerCreate = (
     Schemas.MaterialEntity,
     MaterialControllerCreateError,
     Schemas.CreateMaterialDto,
-    {},
+    MaterialControllerCreateHeaders,
     {},
     {}
   >({ url: '/material', method: 'post', ...variables, signal });
@@ -752,10 +780,15 @@ export const projectControllerRemove = (
     ProjectControllerRemovePathParams
   >({ url: '/project/{id}', method: 'delete', ...variables, signal });
 
+export type InvitedUserControllerCreateHeaders = {
+  authorization: string;
+};
+
 export type InvitedUserControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type InvitedUserControllerCreateVariables = {
   body: Schemas.CreateInvitedUserDto;
+  headers: InvitedUserControllerCreateHeaders;
 };
 
 export const invitedUserControllerCreate = (
@@ -766,7 +799,7 @@ export const invitedUserControllerCreate = (
     undefined,
     InvitedUserControllerCreateError,
     Schemas.CreateInvitedUserDto,
-    {},
+    InvitedUserControllerCreateHeaders,
     {},
     {}
   >({ url: '/invited-user', method: 'post', ...variables, signal });
@@ -787,9 +820,14 @@ export type InvitedUserControllerFindOnePathParams = {
   id: string;
 };
 
+export type InvitedUserControllerFindOneHeaders = {
+  authorization: string;
+};
+
 export type InvitedUserControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
 
 export type InvitedUserControllerFindOneVariables = {
+  headers: InvitedUserControllerFindOneHeaders;
   pathParams: InvitedUserControllerFindOnePathParams;
 };
 
@@ -801,7 +839,7 @@ export const invitedUserControllerFindOne = (
     undefined,
     InvitedUserControllerFindOneError,
     undefined,
-    {},
+    InvitedUserControllerFindOneHeaders,
     {},
     InvitedUserControllerFindOnePathParams
   >({ url: '/invited-user/{id}', method: 'get', ...variables, signal });
@@ -1214,7 +1252,7 @@ export type DocumentMeasuresControllerCreateError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type DocumentMeasuresControllerCreateResponse =
-  Schemas.DocumentMeasureEntities[];
+  Schemas.CreateDocumentMeasureDto[];
 
 export type DocumentMeasuresControllerCreateRequestBody = string[];
 
@@ -1347,6 +1385,124 @@ export const documentMeasuresControllerRemove = (
     DocumentMeasuresControllerRemovePathParams
   >({ url: '/document-measures/{id}', method: 'delete', ...variables, signal });
 
+export type MarkupsControllerCreateHeaders = {
+  authorization: string;
+};
+
+export type MarkupsControllerCreateError = Fetcher.ErrorWrapper<undefined>;
+
+export type MarkupsControllerCreateVariables = {
+  body: Schemas.CreateMarkupDto;
+  headers: MarkupsControllerCreateHeaders;
+};
+
+export const markupsControllerCreate = (
+  variables: MarkupsControllerCreateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.CreateMarkupDto,
+    MarkupsControllerCreateError,
+    Schemas.CreateMarkupDto,
+    MarkupsControllerCreateHeaders,
+    {},
+    {}
+  >({ url: '/markups', method: 'post', ...variables, signal });
+
+export type MarkupsControllerFindAllHeaders = {
+  authorization: string;
+};
+
+export type MarkupsControllerFindAllError = Fetcher.ErrorWrapper<undefined>;
+
+export type MarkupsControllerFindAllVariables = {
+  body?: Schemas.UpdateMarkupDto;
+  headers: MarkupsControllerFindAllHeaders;
+};
+
+export const markupsControllerFindAll = (
+  variables: MarkupsControllerFindAllVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.UpdateMarkupDto,
+    MarkupsControllerFindAllError,
+    Schemas.UpdateMarkupDto,
+    MarkupsControllerFindAllHeaders,
+    {},
+    {}
+  >({ url: '/markups/markupsbyid', method: 'post', ...variables, signal });
+
+export type MarkupsControllerFindOnePathParams = {
+  id: string;
+};
+
+export type MarkupsControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
+
+export type MarkupsControllerFindOneVariables = {
+  pathParams: MarkupsControllerFindOnePathParams;
+};
+
+export const markupsControllerFindOne = (
+  variables: MarkupsControllerFindOneVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    MarkupsControllerFindOneError,
+    undefined,
+    {},
+    {},
+    MarkupsControllerFindOnePathParams
+  >({ url: '/markups/{id}', method: 'get', ...variables, signal });
+
+export type MarkupsControllerUpdatePathParams = {
+  id: string;
+};
+
+export type MarkupsControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
+
+export type MarkupsControllerUpdateVariables = {
+  body?: Schemas.UpdateMarkupDto;
+  pathParams: MarkupsControllerUpdatePathParams;
+};
+
+export const markupsControllerUpdate = (
+  variables: MarkupsControllerUpdateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    MarkupsControllerUpdateError,
+    Schemas.UpdateMarkupDto,
+    {},
+    {},
+    MarkupsControllerUpdatePathParams
+  >({ url: '/markups/{id}', method: 'patch', ...variables, signal });
+
+export type MarkupsControllerRemovePathParams = {
+  id: string;
+};
+
+export type MarkupsControllerRemoveError = Fetcher.ErrorWrapper<undefined>;
+
+export type MarkupsControllerRemoveVariables = {
+  pathParams: MarkupsControllerRemovePathParams;
+};
+
+export const markupsControllerRemove = (
+  variables: MarkupsControllerRemoveVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    MarkupsControllerRemoveError,
+    undefined,
+    {},
+    {},
+    MarkupsControllerRemovePathParams
+  >({ url: '/markups/{id}', method: 'delete', ...variables, signal });
+
 export const operationsByTag = {
   user: {
     userControllerCreate,
@@ -1365,6 +1521,7 @@ export const operationsByTag = {
     projectMaterialControllerFindByProjectId,
   },
   material: {
+    materialControllerCreateBulk,
     materialControllerCreate,
     materialControllerFindAll,
     materialControllerFindMaterialByCompanyId,
@@ -1417,5 +1574,12 @@ export const operationsByTag = {
     documentMeasuresControllerFindOne,
     documentMeasuresControllerUpdate,
     documentMeasuresControllerRemove,
+  },
+  markups: {
+    markupsControllerCreate,
+    markupsControllerFindAll,
+    markupsControllerFindOne,
+    markupsControllerUpdate,
+    markupsControllerRemove,
   },
 };

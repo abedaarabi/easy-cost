@@ -33,6 +33,7 @@ export const AuthContextProvider = ({
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log(user);
       if (user) {
         const useDetails = await operationsByTag.user.userControllerFindOne({
           pathParams: { id: user.uid },
@@ -57,6 +58,7 @@ export const AuthContextProvider = ({
 
   async function login(email: string, password: string) {
     const loginResult = await signInWithEmailAndPassword(auth, email, password);
+    console.log({ loginResult });
 
     return loginResult;
   }

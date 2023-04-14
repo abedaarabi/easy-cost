@@ -16,20 +16,33 @@ const options = {
 export class InvitedUserService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createInvitedUserDto: CreateInvitedUserDto) {
-    const token = jwt.sign(createInvitedUserDto, secret, options);
+  async create(
+    createInvitedUserDto: CreateInvitedUserDto,
+    companyId: string,
+    userId: string,
+  ) {
+    const token = jwt.sign(
+      { ...createInvitedUserDto, companyId },
+      secret,
+      options,
+    );
     // console.log({ ...createInvitedUserDto, token });
     // return { ...createInvitedUserDto, token };
     // const decode = jwt.verify(token, secret) as any;
 
     await this.prisma.invitedUser.create({
-      data: { ...createInvitedUserDto, token },
+      data: {
+        token,
+        companyId,
+        userId,
+        email: createInvitedUserDto.email,
+        role: createInvitedUserDto.userType,
+      },
     });
 
     const companyInfo = await this.prisma.company.findUnique({
-      where: { id: createInvitedUserDto.companyId },
+      where: { id: companyId },
     });
-    console.log({ companyInfo });
 
     const html = `
 <!DOCTYPE html>

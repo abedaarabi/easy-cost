@@ -18,7 +18,9 @@ export class UserService {
   create(createUserDto: CreateUserDto) {
     try {
       // const user = { ...createUserDto, userType: 'company' };
-      return this.prisma.user.create({ data: createUserDto });
+      return this.prisma.user.create({
+        data: createUserDto,
+      });
     } catch (error) {
       throw new Error(error);
     }
@@ -28,9 +30,9 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  async findUserByCompanyId(companyId: string) {
+  findUserByCompanyId(companyId: string) {
     try {
-      const list = await this.prisma.user.findMany({
+      const list = this.prisma.user.findMany({
         where: {
           companyId,
         },

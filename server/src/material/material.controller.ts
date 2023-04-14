@@ -8,6 +8,8 @@ import {
   Delete,
   Req,
   Headers,
+  UseFilters,
+  ConflictException,
 } from '@nestjs/common';
 import { MaterialService } from './material.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
@@ -16,6 +18,7 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Material } from '@prisma/client';
 import { MaterialEntity } from './entities/material.entity';
 import { RequestModel } from 'src/middleware/auth.middleware';
+import { PrismaClientExceptionFilter } from 'src/prisma-client-exception/prisma-client-exception.filter';
 
 function delay(ms: number) {
   return new Promise<void>((resolve) => {
@@ -24,11 +27,33 @@ function delay(ms: number) {
     }, ms);
   });
 }
+@UseFilters(PrismaClientExceptionFilter)
 @Controller('material')
 @ApiTags('Material')
 export class MaterialController {
   constructor(private readonly materialService: MaterialService) {}
+  @Post('bulk')
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: MaterialEntity,
+    isArray: true,
+  })
+  createBulk(
+    @Body() createMaterialDto: CreateMaterialDto[],
+    @Headers('authorization') authorization: string,
 
+    @Req() req: RequestModel,
+  ) {
+    const { companyId, uid: userId } = req.user;
+
+    try {
+      return this.materialService.createBulk(createMaterialDto);
+    } catch (error) {
+      console.log(error);
+
+      throw new Error(error);
+    }
+  }
   @Post()
   @ApiOkResponse({
     description: 'The record has been successfully created.',
@@ -37,14 +62,19 @@ export class MaterialController {
   })
   create(
     @Body() createMaterialDto: CreateMaterialDto,
-    // @Headers('authorization') authorization: string,
+    @Headers('authorization') authorization: string,
 
     @Req() req: RequestModel,
   ) {
     const { companyId, uid: userId } = req.user;
-    console.log({ companyId, uid: userId, createMaterialDto });
 
-    return this.materialService.create(createMaterialDto, companyId, userId);
+    try {
+      return this.materialService.create(createMaterialDto, companyId, userId);
+    } catch (error) {
+      console.log(error);
+
+      throw new ConflictException(error);
+    }
   }
 
   @Get('materialByCompany')
@@ -54,11 +84,10 @@ export class MaterialController {
     type: MaterialEntity,
     isArray: true,
   })
-  async findMaterialByCompanyId(
+  findMaterialByCompanyId(
     @Req() req: RequestModel,
     @Headers('authorization') authorization: string,
   ): Promise<Material[]> {
-    // await delay(2000);
     return this.materialService.findMaterialByCompanyId(req.user.companyId);
   }
 

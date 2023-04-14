@@ -19,6 +19,7 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 import { AwsModule } from './aws/aws.module';
 import { ConfigModule } from '@nestjs/config';
 import { DocumentMeasuresModule } from './document-measures/document-measures.module';
+import { MarkupsModule } from './markups/markups.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { DocumentMeasuresModule } from './document-measures/document-measures.mo
     LoginAuthModule,
     AwsModule,
     DocumentMeasuresModule,
+    MarkupsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -45,7 +47,11 @@ export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude({ path: '/api/:id/upload-file', method: RequestMethod.ALL })
+      .exclude(
+        { path: '/api/:id/upload-file', method: RequestMethod.ALL },
+
+        { path: '/user', method: RequestMethod.POST },
+      )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

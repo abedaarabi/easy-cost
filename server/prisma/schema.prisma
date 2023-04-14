@@ -62,16 +62,16 @@ model InvitedUser {
 
 model Material {
   id              String   @id @unique @default(uuid())
-  materialName    String
+  materialName    String   @unique
   unit            String
-  price           Int
+  price           Decimal  @db.Decimal(9, 2)
   createdAt       DateTime @default(now())
-  hourPerQuantity Int
+  hourPerQuantity Decimal  @db.Decimal(9, 2)
 
   User           User?             @relation(fields: [userId], references: [id])
   userId         String?
   ProjecMaterial ProjectMaterial[]
-  co2e           Int
+  co2e           Decimal           @db.Decimal(9, 2)
   Company        Company           @relation(fields: [companyId], references: [id])
   companyId      String
 
@@ -103,9 +103,11 @@ model ProjectMaterial {
   projectId  String
 
   createdAt DateTime @default(now())
-  quantity  Decimal
+  quantity  Decimal  @db.Decimal(9, 2)
 
   // TableCustomFieldsValues TableCustomFieldsValues[]
+
+  @@unique([materialId, projectId])
 }
 
 model TableCustomFields {
@@ -127,8 +129,9 @@ model UploadFile {
   urlPath          String
   Project          Project?           @relation(fields: [projectId], references: [id])
   projectId        String?
-  size             Float              @default(0)
+  size             Int
   DocumentMeasures DocumentMeasures[]
+  markups          markups[]
 
   @@unique([fileName, projectId])
 }
@@ -145,6 +148,20 @@ model DocumentMeasures {
   uploadFileId  String?
 
   @@unique([pageNumber, measurementId, projectId])
+}
+
+model markups {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  pageNumber    Int
+  // markupsString Bytes
+  markupsString String   @db.Text
+
+  projectId    String
+  UploadFile   UploadFile? @relation(fields: [uploadFileId], references: [id])
+  uploadFileId String?
+
+  @@unique([pageNumber, uploadFileId, projectId])
 }
 
 // model TableCustomFieldsValues {

@@ -27,7 +27,7 @@ export class DocumentMeasuresController {
   @Post()
   @ApiOkResponse({
     description: 'The record has been successfully created.',
-    type: DocumentMeasureEntities,
+    type: CreateDocumentMeasureDto,
     isArray: true,
   })
   create(
@@ -64,11 +64,6 @@ export class DocumentMeasuresController {
     @Headers('authorization') authorization: string,
   ): Promise<UpdateDocumentMeasureDto[]> {
     const { pageNumber, uploadFileId, projectId } = allParams;
-    console.log({
-      pageNumber,
-      uploadFileId,
-      projectId,
-    });
 
     return await this.documentMeasuresService.findAllByMeasurementId(
       pageNumber,

@@ -9,6 +9,7 @@ import {
   Req,
   Headers,
   UseFilters,
+  ConflictException,
 } from '@nestjs/common';
 import { ProjectMaterialService } from './project-material.service';
 import { CreateProjectMaterialDto } from './dto/create-project-material.dto';
@@ -16,7 +17,7 @@ import { UpdateProjectMaterialDto } from './dto/update-project-material.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ProjectMaterialEntity } from './entities/project-material.entity';
 import { RequestModel } from 'src/middleware/auth.middleware';
-import { PrismaClientExceptionFilter } from 'src/prisma-client-exception.filter';
+import { PrismaClientExceptionFilter } from 'src/prisma-client-exception/prisma-client-exception.filter';
 
 @Controller('project-material')
 @UseFilters(PrismaClientExceptionFilter)

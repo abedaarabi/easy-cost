@@ -246,7 +246,7 @@ export default function MiniDrawer() {
 
             <Divider />
           </Drawer>
-          <Box sx={{ m: "auto", mt: 12, width: "85%" }}>
+          <Box sx={{ m: "auto", mt: 10, width: "85%" }}>
             <Outlet />
           </Box>
         </>

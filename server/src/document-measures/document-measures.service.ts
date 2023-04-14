@@ -48,7 +48,6 @@ export class DocumentMeasuresService {
           uploadFileId: uploadFileId,
         },
       });
-      console.log({ result });
       return result;
     } catch (error) {
       throw new Error(error);

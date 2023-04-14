@@ -3,8 +3,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { PrismaClientExceptionFilter } from './prisma-client-exception.filter';
 import * as admin from 'firebase-admin';
+import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

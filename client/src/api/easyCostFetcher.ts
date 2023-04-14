@@ -79,8 +79,6 @@ export async function easyCostFetch<
               : "Unexpected error",
         };
       }
-
-      throw error;
     }
 
     if (response.headers.get("content-type")?.includes("json")) {

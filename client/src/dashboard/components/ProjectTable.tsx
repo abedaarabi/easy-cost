@@ -43,10 +43,11 @@ import {
   ProjectEntity,
   UpdateProjectDto,
 } from "../../api/easyCostSchemas";
+import { AxiosError } from "axios";
 
 const ProjectTable = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, setLoginMsg } = useAuth();
   const queryClient = useQueryClient();
   if (user.length < 1) return null;
   const { companyId, id: userId } = user;
@@ -91,8 +92,24 @@ const ProjectTable = () => {
         },
       }),
     {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries(["userByCompanyId"]);
+        response && queryClient.invalidateQueries(["materialByCompanyId_test"]);
+        setLoginMsg({
+          code: 200,
+          msg: `Successfully ${response.projectName} Info Saved to Database.`,
+        });
+      },
+      onError: (error: AxiosError) => {
+        if (error) {
+          setLoginMsg({
+            code: error.response?.status,
+
+            msg: `Code Error:  ${
+              error.response?.status
+            }. ${error.response?.statusText.toLocaleLowerCase()}`,
+          });
+        }
       },
     }
   );
@@ -102,9 +119,26 @@ const ProjectTable = () => {
         body: { ...values },
         headers: { authorization: `Bearer ${user.accessToken}` },
       }),
+
     {
-      onSuccess: () => {
+      onSuccess: (response) => {
         queryClient.invalidateQueries(["userByCompanyId"]);
+        response && queryClient.invalidateQueries(["materialByCompanyId_test"]);
+        setLoginMsg({
+          code: 200,
+          msg: `Successfully ${response.projectName} added to Database.`,
+        });
+      },
+      onError: (error: AxiosError) => {
+        if (error) {
+          setLoginMsg({
+            code: error.response?.status,
+
+            msg: `Code Error:  ${
+              error.response?.status
+            }. ${error.response?.statusText.toLocaleLowerCase()}`,
+          });
+        }
       },
     }
   );

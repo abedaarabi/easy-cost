@@ -23,7 +23,7 @@ import {
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Tune } from "@mui/icons-material";
 import MiniDrawer from "./dashboard/page/Db";
-import MaterialTable from "./dashboard/components/MaterialTable";
+import MaterialTable from "./dashboard/components/material/MaterialTable";
 import Main from "./dashboard/page/Main";
 import UserTable from "./dashboard/components/UserTable";
 
@@ -104,10 +104,10 @@ function App() {
 
   React.useEffect(() => {
     const time = setTimeout(() => {
-      setLoginMsg("");
+      setLoginMsg(null);
     }, 2000);
     return () => clearTimeout(time);
-  }, []);
+  }, [loginMsg]);
 
   return (
     <QueryClientProvider client={queryClient}>

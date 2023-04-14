@@ -52,6 +52,8 @@ import {
   UpdateUserDto,
   UserEntity,
   CreateUserDto,
+  UpdateInvitedUserDto,
+  CreateInvitedUserDto,
 } from "../../api/easyCostSchemas";
 import { useNavigate } from "react-router-dom";
 
@@ -101,16 +103,27 @@ const UserTable = () => {
     }
   );
 
-  const createMutation = useMutation(createUserToken, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userByCompanyId"]);
-    },
-    onError: (error: AxiosError) => {
-      console.log(error);
+  const createMutation = useMutation(
+    (values: CreateInvitedUserDto) =>
+      operationsByTag.invitedUser.invitedUserControllerCreate({
+        body: {
+          ...values,
+        },
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      }),
+    {
+      onSuccess: (response) => {
+        console.log({ response });
 
-      return error.message;
-    },
-  });
+        queryClient.invalidateQueries(["userByCompanyId"]);
+        setLoginMsg({ code: 200, msg: "Invitation sent" });
+      },
+      onError: (error: AxiosError) => {
+        console.log(error);
+        setLoginMsg({ code: 400, msg: "Error: Invitation Sent Failed " });
+      },
+    }
+  );
 
   // const createMutation = useMutation(
   //   operationsByTag.user.userControllerCreate,
@@ -197,19 +210,17 @@ const UserTable = () => {
     //send api delete request here, then refetch or update local table data for re-render Delete
   };
 
-  const handleCreateNewRow = (values: Omit<CreateUserDto, "id">) => {
+  const handleCreateNewRow = (values: CreateInvitedUserDto) => {
     createMutation.mutate({
       ...values,
-      companyId,
-      id: user.id,
     });
-    console.log(createMutation);
+    // console.log(createMutation);
 
-    if (createMutation.isSuccess) {
-      setLoginMsg({ code: 200, msg: "Invitation sent" });
-    } else if (createMutation.isError) {
-      setLoginMsg({ code: 400, msg: "Error: Invitation Sent Failed " });
-    }
+    // if (createMutation.isSuccess) {
+    //   setLoginMsg({ code: 200, msg: "Invitation sent" });
+    // } else if (createMutation.isError) {
+    //   setLoginMsg({ code: 400, msg: "Error: Invitation Sent Failed " });
+    // }
 
     //send/receive api updates here, then refetch or update local table data for re-render Update
   };
@@ -263,16 +274,20 @@ const UserTable = () => {
             </Box>
           );
         }}
-        renderTopToolbarCustomActions={() => (
-          <Fab
-            color="info"
-            onClick={() => setCreateModalOpen(true)}
-            aria-label="add"
-            size="small"
-          >
-            <AddIcon />
-          </Fab>
-        )}
+        renderTopToolbarCustomActions={() => {
+          if (user.userType === "CompanyAdmin") {
+            return (
+              <Fab
+                color="info"
+                onClick={() => setCreateModalOpen(true)}
+                aria-label="add"
+                size="small"
+              >
+                <AddIcon />
+              </Fab>
+            );
+          }
+        }}
         muiTablePaperProps={{
           sx: {
             borderRadius: "5px",
