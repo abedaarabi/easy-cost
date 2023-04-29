@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateDocumentMeasureDto {
   @ApiProperty()
-  uploadFileId: string;
+  filesVersionId: string;
   @ApiProperty()
   measurementId: string;
   @ApiProperty()

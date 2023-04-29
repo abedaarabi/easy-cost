@@ -12,5 +12,5 @@ export class CreateMarkupDto {
   @ApiProperty()
   projectId: string;
   @ApiProperty()
-  uploadFileId: string;
+  filesVersionId: string;
 }

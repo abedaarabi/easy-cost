@@ -34,6 +34,8 @@ export class DocumentMeasuresController {
     @Body() createDocumentMeasureDto: CreateDocumentMeasureDto[],
     @Headers('authorization') authorization: string,
   ) {
+    console.log({ createDocumentMeasureDto });
+
     return this.documentMeasuresService.create(createDocumentMeasureDto);
   }
 
@@ -63,11 +65,11 @@ export class DocumentMeasuresController {
     @Body() allParams: UpdateDocumentMeasureDto,
     @Headers('authorization') authorization: string,
   ): Promise<UpdateDocumentMeasureDto[]> {
-    const { pageNumber, uploadFileId, projectId } = allParams;
+    const { pageNumber, filesVersionId, projectId } = allParams;
 
     return await this.documentMeasuresService.findAllByMeasurementId(
       pageNumber,
-      uploadFileId,
+      filesVersionId,
       projectId,
     );
   }

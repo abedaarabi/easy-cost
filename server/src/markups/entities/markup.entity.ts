@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { markups } from '@prisma/client';
+import { Markups } from '@prisma/client';
 
-export class MarkupEntities implements markups {
+export class MarkupEntities implements Markups {
+  @ApiProperty()
+  filesVersionId: string;
   @ApiProperty()
   id: string;
   @ApiProperty()
@@ -12,6 +14,4 @@ export class MarkupEntities implements markups {
   markupsString: string;
   @ApiProperty()
   projectId: string;
-  @ApiProperty()
-  uploadFileId: string;
 }

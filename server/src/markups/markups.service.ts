@@ -13,7 +13,7 @@ export class MarkupsService {
 
     try {
       if (
-        !createMarkupDto.uploadFileId ||
+        !createMarkupDto.filesVersionId ||
         !createMarkupDto.markupsString ||
         !createMarkupDto.pageNumber
       ) {
@@ -21,12 +21,12 @@ export class MarkupsService {
 
         return 'Select markups';
       }
-      if (createMarkupDto.uploadFileId) {
+      if (createMarkupDto.filesVersionId) {
         await this.prisma.markups.deleteMany({
           where: {
             pageNumber: createMarkupDto.pageNumber,
             projectId: createMarkupDto.projectId,
-            uploadFileId: createMarkupDto.uploadFileId,
+            filesVersionId: createMarkupDto.filesVersionId,
           },
         });
       }
@@ -43,7 +43,7 @@ export class MarkupsService {
         where: {
           pageNumber: createMarkupDto.pageNumber,
           projectId: createMarkupDto.projectId,
-          uploadFileId: createMarkupDto.uploadFileId,
+          filesVersionId: createMarkupDto.filesVersionId,
         },
       });
       console.log({ result });

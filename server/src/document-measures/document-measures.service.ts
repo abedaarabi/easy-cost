@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDocumentMeasureDto } from './dto/create-document-measure.dto';
 import { UpdateDocumentMeasureDto } from './dto/update-document-measure.dto';
+import { log } from 'console';
 
 @Injectable()
 export class DocumentMeasuresService {
@@ -18,7 +19,7 @@ export class DocumentMeasuresService {
       } else {
         await this.prisma.documentMeasures.deleteMany({
           where: {
-            uploadFileId: createDocumentMeasureDto.at(0).uploadFileId,
+            filesVersionId: createDocumentMeasureDto.at(0).filesVersionId,
             pageNumber: createDocumentMeasureDto.at(0).pageNumber,
           },
         });
@@ -40,12 +41,14 @@ export class DocumentMeasuresService {
   ) {
     // const { uploadFileId, pageNumber, projectId } = docDetails;
     try {
+      console.log({ uploadFileId, pageNumber, projectId });
+
       // const result = await this.prisma.documentMeasures.findMany();
       const result = await this.prisma.documentMeasures.findMany({
         where: {
           pageNumber: pageNumber,
           projectId: projectId,
-          uploadFileId: uploadFileId,
+          filesVersionId: uploadFileId,
         },
       });
       return result;

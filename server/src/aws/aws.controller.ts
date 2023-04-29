@@ -46,7 +46,18 @@ export class AwsController {
 
     return awsResult;
   }
-
+  @Get(':id/document-id')
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: AwsEntity,
+    isArray: false,
+  })
+  findOne(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string,
+  ) {
+    return this.awsService.findOne(id);
+  }
   @Post()
   create(@Body() createAwDto: CreateAwDto) {
     return this.awsService.create(createAwDto);
@@ -65,14 +76,18 @@ export class AwsController {
     return this.awsService.findAllByProjectId(projectId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.awsService.findOne(+id);
-  }
-
+  @ApiOkResponse({
+    description: 'The record has been successfully created.',
+    type: AwsEntity,
+    isArray: false,
+  })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAwDto: UpdateAwDto) {
-    return this.awsService.update(+id, updateAwDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateAwDto: UpdateAwDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    return this.awsService.update(id, updateAwDto);
   }
   @ApiOkResponse({
     description: 'The record has been successfully created.',
@@ -85,5 +100,10 @@ export class AwsController {
     @Headers('authorization') authorization: string,
   ) {
     return this.awsService.remove(id);
+  }
+
+  @Get('aws-test')
+  test() {
+    return this.awsService.getObjectVersion();
   }
 }

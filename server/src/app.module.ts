@@ -20,6 +20,7 @@ import { AwsModule } from './aws/aws.module';
 import { ConfigModule } from '@nestjs/config';
 import { DocumentMeasuresModule } from './document-measures/document-measures.module';
 import { MarkupsModule } from './markups/markups.module';
+import { FileVersionsModule } from './file-versions/file-versions.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { MarkupsModule } from './markups/markups.module';
     AwsModule,
     DocumentMeasuresModule,
     MarkupsModule,
+    FileVersionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -51,6 +53,7 @@ export class AppModule implements NestModule {
         { path: '/api/:id/upload-file', method: RequestMethod.ALL },
 
         { path: '/user', method: RequestMethod.POST },
+        { path: '/api/aws-test', method: RequestMethod.ALL },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }

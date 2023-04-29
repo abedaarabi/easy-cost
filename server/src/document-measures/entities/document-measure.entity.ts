@@ -3,7 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class DocumentMeasureEntities implements DocumentMeasures {
   @ApiProperty()
-  uploadFileId: string;
+  filesVersionId: string;
+
   @ApiProperty()
   measurementId: string;
   @ApiProperty()

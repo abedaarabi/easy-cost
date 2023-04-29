@@ -30,6 +30,7 @@
     "@nestjs/swagger": "^6.1.2",
     "@prisma/client": "^4.6.1",
     "@sendgrid/mail": "^7.7.0",
+    "aws-sdk": "^2.1363.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "firebase-admin": "^11.5.0",
