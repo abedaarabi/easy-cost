@@ -50,7 +50,6 @@ export class AwsService {
         Key: objectKey,
       });
       const response = await this.s3.send(command);
-      console.log(response);
 
       // Extract the version ID and version number of the object from the response headers
       const versionId = response.VersionId;
@@ -81,10 +80,11 @@ export class AwsService {
     projectId: string,
   ): Promise<string> {
     const bucket = this.configService.get<string>('S3_BUCKET');
-    console.log(bucket);
+    const fileName = `${projectId}=projectId=${key.replace(/\s/g, '')}`;
+    const fileSize = file.size / (1024 * 1024);
     const { versionNumber, versionId } = await this.getCurrentVersion(
       bucket,
-      key,
+      fileName,
     );
     const newVersionNumber = versionNumber
       ? parseInt(versionNumber, 10) + 1
@@ -97,7 +97,7 @@ export class AwsService {
     const input: PutObjectCommandInput = {
       Body: file.buffer,
       Bucket: bucket,
-      Key: key.replace(/\s/g, ''),
+      Key: fileName,
       ContentType: file.mimetype,
       ACL: 'public-read',
 
@@ -105,8 +105,6 @@ export class AwsService {
     };
 
     try {
-      const fileName = key.replace(/\s/g, '');
-      const fileSize = file.size / (1024 * 1024);
       const response: PutObjectCommandOutput = await this.s3.send(
         new PutObjectCommand(input),
       );
@@ -114,13 +112,11 @@ export class AwsService {
       if (response.$metadata.httpStatusCode === 200) {
         const { versionNumber, versionId } = await this.getCurrentVersion(
           bucket,
-          key,
+          fileName,
         );
-        const responseUrl = `https://${bucket}.s3.${
-          this.region
-        }.amazonaws.com/${key.replace(/\s/g, '')}?versionid=${versionId}`;
+        const responseUrl = `https://${bucket}.s3.${this.region}.amazonaws.com/${fileName}?versionid=${versionId}`;
 
-        const existingFile = await this.prisma.uploadFile.findUnique({
+        const existingFile = await this.prisma.uploadFile.findFirst({
           where: { fileName: fileName },
         });
 
@@ -139,7 +135,6 @@ export class AwsService {
               uploadFileId: existingFile.id,
             },
           });
-          console.log({ newVersion });
         } else {
           const newFile = await this.prisma.uploadFile.create({
             data: { fileName, projectId },
@@ -158,8 +153,6 @@ export class AwsService {
               uploadFileId: newFile.id,
             },
           });
-
-          console.log({ newVersion, newFile });
         }
 
         return responseUrl;
@@ -172,14 +165,32 @@ export class AwsService {
   }
 
   findAllByProjectId(projectId: string) {
-    return this.prisma.uploadFile.findMany({ where: { projectId: projectId } });
+    return this.prisma.uploadFile.findMany({
+      where: { projectId: projectId },
+      include: {
+        filesVersion: {
+          select: {
+            currentVersion: true,
+            scale: true,
+            urlPath: true,
+            versionId: true,
+            versionNumber: true,
+            id: true,
+            createdAt: true,
+            size: true,
+          },
+        },
+      },
+    });
   }
 
   create(createAwDto: CreateAwDto) {
     return 'This action adds a new aw';
   }
   findOne(id: string) {
-    return this.prisma.uploadFile.findUnique({ where: { id } });
+    return this.prisma.uploadFile.findUnique({
+      where: { id },
+    });
   }
 
   update(id: string, updateAwDto: UpdateAwDto) {
@@ -196,7 +207,6 @@ export class AwsService {
       const { id, fileName: key } = await this.prisma.uploadFile.findUnique({
         where: { id: objId },
       });
-      console.log({ key, bucket });
 
       const s3DeleteResponse = await this.s3.send(
         new DeleteObjectCommand({ Bucket: bucket, Key: key }),

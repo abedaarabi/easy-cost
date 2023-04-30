@@ -11,12 +11,6 @@ datasource db {
   url      = "mysql://root:P@ssw0rd@127.0.0.1:3306/prisma"
 }
 
-// datasource db {
-//   provider     = "mysql"
-//   url          = "mysql://ghm9agvvypuawwb6a4yh:pscale_pw_fYAiRcJjm0Qk241gRFRzfwIbc21b0uMZD9Sy3ojmv3a@aws.connect.psdb.cloud/cost?sslaccept=strict"
-//   relationMode = "prisma"
-// }
-
 enum UserType {
   CompanyUser
   Client
@@ -132,7 +126,7 @@ model TableCustomFields {
 model UploadFile {
   id           String         @id @default(uuid())
   createdAt    DateTime       @default(now())
-  fileName     String         @unique()
+  fileName     String
   Project      Project?       @relation(fields: [projectId], references: [id])
   projectId    String?
   filesVersion FilesVersion[]
