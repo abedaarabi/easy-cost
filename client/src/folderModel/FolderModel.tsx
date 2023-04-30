@@ -12,9 +12,11 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Box } from "@mui/system";
 import HouseSidingIcon from "@mui/icons-material/HouseSiding";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import {
+  CircularProgress,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -32,6 +34,10 @@ import { useAuth } from "../authContext/components/AuthContext";
 import { Params, useParams } from "react-router-dom";
 import { StyledTreeItem } from "./StyledList";
 import { async } from "@firebase/util";
+import { TreeView } from "@mui/lab";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { FilesVersionRoot } from "./types";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(1),
@@ -87,15 +93,26 @@ export default function FolderModel({
 
   const { projectId } = useParams<Params<string>>();
 
-  const { isLoading, isError, data, isFetching } = useQuery(
-    ["uploadFileToS3"],
+  const {
+    isLoading,
+    isError,
+    data,
+    isFetching,
+  }: {
+    data: FilesVersionRoot[] | undefined;
+    isLoading: boolean;
+    isError: boolean;
+    isFetching: boolean;
+  } = useQuery({
+    queryKey: ["uploadFileToS3"],
 
-    () =>
+    queryFn: () =>
       operationsByTag.uploadFile.awsControllerFindAllByProjectId({
         pathParams: { projectId: projectId! },
         headers: { authorization: `Bearer ${user.accessToken}` },
-      })
-  );
+      }),
+  });
+  console.log(data);
 
   const deleteMutationObject = useMutation(
     (id: string) =>
@@ -121,7 +138,10 @@ export default function FolderModel({
   };
 
   const totalFileSize = React.useMemo(() => {
-    return data?.reduce((acc, val) => acc + val.size, 0);
+    return data
+      ?.map((i) => i.filesVersion.reduce((acc, val) => acc + val.size, 0))
+      .reduce((acc, val) => acc + val, 0)
+      .toFixed(2);
   }, [isLoading, isFetching]);
 
   if (isLoading) {
@@ -174,7 +194,7 @@ export default function FolderModel({
               </IconButton>
 
               <Typography variant="body2" ml={2}>
-                {totalFileSize && totalFileSize?.toFixed(2)} MB
+                {totalFileSize && totalFileSize} MB
               </Typography>
             </Box>
             <Typography
@@ -206,51 +226,79 @@ export default function FolderModel({
             maxHeight: "25rem",
           }}
         >
-          {data.map((item) => (
+          {data?.map((item) => (
             <Box key={item.id} display={"flex"} alignItems={"center"}>
-              <Box
-                sx={{ width: "30rem" }}
-                onClick={() => {
-                  console.log(item);
-
-                  getFilePath(item);
-                  handleClose();
-                }}
-              >
-                <StyledTreeItem
-                  labelText={item.fileName}
-                  labelInfo={String(item.size) + " " + "MB"}
-                  labelIcon={
-                    imageFormat.find((i) => item.fileName.endsWith(i))
-                      ? WallpaperIcon
-                      : item.fileName.endsWith(".dwf")
-                      ? HouseSidingIcon
-                      : PictureAsPdfIcon
-                  }
-                  bgColor={
-                    imageFormat.find((i) => item.fileName.endsWith(i))
-                      ? "#2a9d8f"
-                      : item.fileName.endsWith(".dwf")
-                      ? "#0096c7"
-                      : "#e63946"
-                  }
-                  iconColor={
-                    imageFormat.find((i) => item.fileName.endsWith(i))
-                      ? "#2a9d8f"
-                      : item.fileName.endsWith(".dwf")
-                      ? "#0096c7"
-                      : "#e63946"
-                  }
-                  nodeId={""}
-                />
-              </Box>
-              <Box ml={1}>
-                <IconButton
-                  size="small"
-                  onClick={() => deleteS3Bucket(item.id)}
+              <Box sx={{ width: "30rem" }}>
+                <TreeView
+                  defaultCollapseIcon={<ArrowDropDownIcon />}
+                  defaultExpandIcon={<ArrowRightIcon />}
                 >
-                  <DeleteOutlineIcon />
-                </IconButton>
+                  <StyledTreeItem
+                    sx={{ mt: 1 }}
+                    labelText={item.fileName.split("=projectId=")[1]}
+                    // labelInfo={String(item.size) + " " + "MB"}
+                    labelIcon={
+                      imageFormat.find((i) => item.fileName.endsWith(i))
+                        ? WallpaperIcon
+                        : item.fileName.endsWith(".dwf")
+                        ? HouseSidingIcon
+                        : PictureAsPdfIcon
+                    }
+                    // bgColor={
+                    //   // imageFormat.find((i) => item.fileName.endsWith(i))
+                    //   // ? "#2a9d8f"
+                    //   // : item.fileName.endsWith(".dwf")
+                    //   // ? "#0096c7"
+                    //   // : "#e63946"
+                    // }
+                    iconColor={
+                      imageFormat.find((i) => item.fileName.endsWith(i))
+                        ? "#2a9d8f"
+                        : item.fileName.endsWith(".dwf")
+                        ? "#0096c7"
+                        : "#e63946"
+                    }
+                    nodeId={item.id}
+                  >
+                    {item.filesVersion
+                      .sort(
+                        (a, b) =>
+                          Number(new Date(a.createdAt)) -
+                          Number(new Date(b.createdAt))
+                      )
+                      ?.map((file) => (
+                        <Box
+                          ml={1}
+                          key={file.id}
+                          display={"flex"}
+                          alignItems={"center"}
+                          width={"28rem"}
+                        >
+                          <StyledTreeItem
+                            sx={{ width: "25rem" }}
+                            nodeId={file.id}
+                            version
+                            labelText={convertToDanishTime(file.createdAt)}
+                            labelIcon={MoreTimeIcon}
+                            labelInfo={`V ${file.versionNumber}`}
+                            // color="#1a73e8"
+                            // bgColor="#e8f0fe"
+                            onClick={() => {
+                              const { fileName } = item;
+                              getFilePath({ ...file, fileName });
+                              handleClose();
+                            }}
+                          />
+                          <IconButton
+                            size="small"
+                            onClick={() => deleteS3Bucket(item.id)}
+                          >
+                            <DeleteOutlineIcon />
+                          </IconButton>
+                        </Box>
+                      ))}
+                  </StyledTreeItem>
+                </TreeView>
               </Box>
             </Box>
           ))}
@@ -302,3 +350,10 @@ const imageFormat = [
 //   </ListItemIcon>
 //   <ListItemText primary={item.fileName} />
 // </ListItemButton>
+
+function convertToDanishTime(utcTime: string): string {
+  const localTime = new Date(utcTime);
+  localTime.setHours(localTime.getHours());
+
+  return localTime.toLocaleString("da-DK");
+}

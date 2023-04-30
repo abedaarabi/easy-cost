@@ -1150,6 +1150,34 @@ export const awsControllerFindAllByProjectId = (
     signal,
   });
 
+export type AwsControllerFindOnePathParams = {
+  id: string;
+};
+
+export type AwsControllerFindOneHeaders = {
+  authorization: string;
+};
+
+export type AwsControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
+
+export type AwsControllerFindOneVariables = {
+  headers: AwsControllerFindOneHeaders;
+  pathParams: AwsControllerFindOnePathParams;
+};
+
+export const awsControllerFindOne = (
+  variables: AwsControllerFindOneVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.AwsEntity,
+    AwsControllerFindOneError,
+    undefined,
+    AwsControllerFindOneHeaders,
+    {},
+    AwsControllerFindOnePathParams
+  >({ url: '/api/{id}/document-id', method: 'get', ...variables, signal });
+
 export type AwsControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
 export type AwsControllerCreateVariables = {
@@ -1169,37 +1197,19 @@ export const awsControllerCreate = (
     {}
   >({ url: '/api', method: 'post', ...variables, signal });
 
-export type AwsControllerFindOnePathParams = {
-  id: string;
-};
-
-export type AwsControllerFindOneError = Fetcher.ErrorWrapper<undefined>;
-
-export type AwsControllerFindOneVariables = {
-  pathParams: AwsControllerFindOnePathParams;
-};
-
-export const awsControllerFindOne = (
-  variables: AwsControllerFindOneVariables,
-  signal?: AbortSignal,
-) =>
-  easyCostFetch<
-    undefined,
-    AwsControllerFindOneError,
-    undefined,
-    {},
-    {},
-    AwsControllerFindOnePathParams
-  >({ url: '/api/{id}', method: 'get', ...variables, signal });
-
 export type AwsControllerUpdatePathParams = {
   id: string;
+};
+
+export type AwsControllerUpdateHeaders = {
+  authorization: string;
 };
 
 export type AwsControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
 
 export type AwsControllerUpdateVariables = {
   body?: Schemas.UpdateAwDto;
+  headers: AwsControllerUpdateHeaders;
   pathParams: AwsControllerUpdatePathParams;
 };
 
@@ -1208,10 +1218,10 @@ export const awsControllerUpdate = (
   signal?: AbortSignal,
 ) =>
   easyCostFetch<
-    undefined,
+    Schemas.AwsEntity,
     AwsControllerUpdateError,
     Schemas.UpdateAwDto,
-    {},
+    AwsControllerUpdateHeaders,
     {},
     AwsControllerUpdatePathParams
   >({ url: '/api/{id}', method: 'patch', ...variables, signal });
@@ -1243,6 +1253,15 @@ export const awsControllerRemove = (
     {},
     AwsControllerRemovePathParams
   >({ url: '/api/{id}', method: 'delete', ...variables, signal });
+
+export type AwsControllerTestError = Fetcher.ErrorWrapper<undefined>;
+
+export const awsControllerTest = (signal?: AbortSignal) =>
+  easyCostFetch<undefined, AwsControllerTestError, undefined, {}, {}, {}>({
+    url: '/api/aws-test',
+    method: 'get',
+    signal,
+  });
 
 export type DocumentMeasuresControllerCreateHeaders = {
   authorization: string;
@@ -1503,6 +1522,138 @@ export const markupsControllerRemove = (
     MarkupsControllerRemovePathParams
   >({ url: '/markups/{id}', method: 'delete', ...variables, signal });
 
+export type FileVersionsControllerCreateError = Fetcher.ErrorWrapper<undefined>;
+
+export type FileVersionsControllerCreateVariables = {
+  body: Schemas.CreateFileVersionDto;
+};
+
+export const fileVersionsControllerCreate = (
+  variables: FileVersionsControllerCreateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    FileVersionsControllerCreateError,
+    Schemas.CreateFileVersionDto,
+    {},
+    {},
+    {}
+  >({ url: '/file-versions', method: 'post', ...variables, signal });
+
+export type FileVersionsControllerFindAllPathParams = {
+  id: string;
+};
+
+export type FileVersionsControllerFindAllHeaders = {
+  authorization: string;
+};
+
+export type FileVersionsControllerFindAllError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type FileVersionsControllerFindAllResponse =
+  Schemas.CreateFileVersionDto[];
+
+export type FileVersionsControllerFindAllVariables = {
+  headers: FileVersionsControllerFindAllHeaders;
+  pathParams: FileVersionsControllerFindAllPathParams;
+};
+
+export const fileVersionsControllerFindAll = (
+  variables: FileVersionsControllerFindAllVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    FileVersionsControllerFindAllResponse,
+    FileVersionsControllerFindAllError,
+    undefined,
+    FileVersionsControllerFindAllHeaders,
+    {},
+    FileVersionsControllerFindAllPathParams
+  >({ url: '/file-versions/{id}', method: 'get', ...variables, signal });
+
+export type FileVersionsControllerUpdatePathParams = {
+  id: string;
+};
+
+export type FileVersionsControllerUpdateHeaders = {
+  authorization: string;
+};
+
+export type FileVersionsControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
+
+export type FileVersionsControllerUpdateVariables = {
+  body?: Schemas.UpdateFileVersionDto;
+  headers: FileVersionsControllerUpdateHeaders;
+  pathParams: FileVersionsControllerUpdatePathParams;
+};
+
+export const fileVersionsControllerUpdate = (
+  variables: FileVersionsControllerUpdateVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.CreateFileVersionDto,
+    FileVersionsControllerUpdateError,
+    Schemas.UpdateFileVersionDto,
+    FileVersionsControllerUpdateHeaders,
+    {},
+    FileVersionsControllerUpdatePathParams
+  >({ url: '/file-versions/{id}', method: 'patch', ...variables, signal });
+
+export type FileVersionsControllerRemovePathParams = {
+  id: string;
+};
+
+export type FileVersionsControllerRemoveError = Fetcher.ErrorWrapper<undefined>;
+
+export type FileVersionsControllerRemoveVariables = {
+  pathParams: FileVersionsControllerRemovePathParams;
+};
+
+export const fileVersionsControllerRemove = (
+  variables: FileVersionsControllerRemoveVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    undefined,
+    FileVersionsControllerRemoveError,
+    undefined,
+    {},
+    {},
+    FileVersionsControllerRemovePathParams
+  >({ url: '/file-versions/{id}', method: 'delete', ...variables, signal });
+
+export type FileVersionsControllerFindOnePathParams = {
+  id: string;
+};
+
+export type FileVersionsControllerFindOneHeaders = {
+  authorization: string;
+};
+
+export type FileVersionsControllerFindOneError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type FileVersionsControllerFindOneVariables = {
+  headers: FileVersionsControllerFindOneHeaders;
+  pathParams: FileVersionsControllerFindOnePathParams;
+};
+
+export const fileVersionsControllerFindOne = (
+  variables: FileVersionsControllerFindOneVariables,
+  signal?: AbortSignal,
+) =>
+  easyCostFetch<
+    Schemas.CreateFileVersionDto,
+    FileVersionsControllerFindOneError,
+    undefined,
+    FileVersionsControllerFindOneHeaders,
+    {},
+    FileVersionsControllerFindOnePathParams
+  >({ url: '/file-versions/{id}/single', method: 'get', ...variables, signal });
+
 export const operationsByTag = {
   user: {
     userControllerCreate,
@@ -1563,10 +1714,11 @@ export const operationsByTag = {
   uploadFile: {
     awsControllerAddFileToProject,
     awsControllerFindAllByProjectId,
-    awsControllerCreate,
     awsControllerFindOne,
+    awsControllerCreate,
     awsControllerUpdate,
     awsControllerRemove,
+    awsControllerTest,
   },
   documentMeasures: {
     documentMeasuresControllerCreate,
@@ -1581,5 +1733,12 @@ export const operationsByTag = {
     markupsControllerFindOne,
     markupsControllerUpdate,
     markupsControllerRemove,
+  },
+  fileVersions: {
+    fileVersionsControllerCreate,
+    fileVersionsControllerFindAll,
+    fileVersionsControllerUpdate,
+    fileVersionsControllerRemove,
+    fileVersionsControllerFindOne,
   },
 };

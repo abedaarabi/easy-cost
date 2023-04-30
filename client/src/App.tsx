@@ -105,7 +105,7 @@ function App() {
   React.useEffect(() => {
     const time = setTimeout(() => {
       setLoginMsg(null);
-    }, 2000);
+    }, 3000);
     return () => clearTimeout(time);
   }, [loginMsg]);
 

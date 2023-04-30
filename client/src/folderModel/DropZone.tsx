@@ -15,7 +15,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { operationsByTag } from "../api/easyCostComponents";
 import { useAuth } from "../authContext/components/AuthContext";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { async } from "@firebase/util";
 import { Params, useParams } from "react-router-dom";
 
@@ -29,7 +29,8 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
   const [showDialog, setShowDialog] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   //   const queryClient = useQueryClient();
-  const { user } = useAuth();
+
+  const { user, setLoginMsg } = useAuth();
   const queryClient = useQueryClient();
 
   const { projectId } = useParams<Params<string>>();
@@ -39,7 +40,6 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
     setFileName(acceptedFiles[0].path);
     // Do something with the files
     const fileInput = acceptedFiles[0];
-    console.log(fileInput);
 
     let formData = new FormData();
 
@@ -57,14 +57,27 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
           },
         });
         if (response.data && response.status === 201) {
-          await queryClient.invalidateQueries(["uploadFileToS3"]);
-          setIsLoading(false);
+          console.log({ response });
 
+          queryClient.invalidateQueries({ queryKey: ["uploadFileToS3"] });
+
+          setIsLoading(false);
+          setLoginMsg({
+            code: 200,
+            msg: `File Successfully Added to Database.`,
+          });
           setOpenAddObject(false);
         }
         console.log({ response });
-      } catch (error) {
-        console.log(error);
+      } catch (error: AxiosError | any) {
+        setLoginMsg({
+          code: error.response?.status,
+
+          msg: `Code Error:  ${
+            error.response?.status
+          }. ${error.response?.statusText.toLocaleLowerCase()} File already exist`,
+        });
+        setOpenAddObject(false);
       }
     }
   }, []);

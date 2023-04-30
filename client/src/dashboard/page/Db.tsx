@@ -137,21 +137,19 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography
-            component="h1"
-            variant="h6"
+            variant="overline"
             color="inherit"
             noWrap
-            sx={{ flexGrow: 1 }}
+            sx={{ flexGrow: 1, fontSize: "18px" }}
           >
-            Easy Cost
+            axioz 360
           </Typography>
 
           <Box sx={{ display: "flex" }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mr: 2 }}>
               <Typography
-                component="p"
-                variant="inherit"
-                color="inherit"
+                variant="overline"
+                color="#ffff"
                 noWrap
                 sx={{ flexGrow: 1 }}
               >
@@ -166,11 +164,11 @@ export default function MiniDrawer() {
                 <Avatar></Avatar>
               </StyledBadge>
             </Box>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            {/* <IconButton color="inherit"> */}
+            {/* <Badge badgeContent={4} color="secondary"> */}
+            {/* <NotificationsIcon /> */}
+            {/* </Badge> */}
+            {/* </IconButton> */}
             <IconButton
               color="inherit"
               onClick={() => {

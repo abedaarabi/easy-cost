@@ -31,6 +31,7 @@ type StyledTreeItemProps = TreeItemProps & {
   labelIcon: React.ElementType<SvgIconProps>;
   labelInfo?: string;
   labelText: string;
+  version?: boolean;
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -45,10 +46,10 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
       fontWeight: theme.typography.fontWeightRegular,
     },
     "&:hover": {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: theme.palette.action,
     },
     "&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused": {
-      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
+      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action})`,
       color: "var(--tree-view-color)",
     },
     [`& .${treeItemClasses.label}`]: {
@@ -66,6 +67,7 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
 
 export function StyledTreeItem(props: StyledTreeItemProps) {
   const {
+    version,
     bgColor,
     color,
     iconColor,
@@ -81,12 +83,12 @@ export function StyledTreeItem(props: StyledTreeItemProps) {
         <Box sx={{ display: "flex", alignItems: "center", p: 0.5, pr: 0 }}>
           <Box component={LabelIcon} color={iconColor} sx={{ mr: 1 }} />
           <Typography
-            variant="body2"
-            sx={{ fontWeight: "inherit", flexGrow: 1 }}
+            variant={version ? "overline" : "caption"}
+            sx={{ flexGrow: 1 }}
           >
             {labelText}
           </Typography>
-          <Typography variant="caption" color="#463f3a">
+          <Typography variant="overline" color="#463f3a">
             {labelInfo}
           </Typography>
         </Box>

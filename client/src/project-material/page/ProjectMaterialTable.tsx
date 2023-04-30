@@ -47,6 +47,7 @@ import {
   MaterialEntity,
   ProjectMaterialEntity,
   UpdateDocumentMeasureDto,
+  UpdateFileVersionDto,
   UpdateMarkupDto,
   UpdateProjectMaterialDto,
   UpdateTableCustomFieldDto,
@@ -78,11 +79,22 @@ const Item = styled(Paper)(({ theme }) => ({
 const ProjectMaterialTable = () => {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [folderModel, setFolderModel] = React.useState(false);
-  const [path, setPath] = React.useState<{ urlPath: string; id: string }>({
+  const [path, setPath] = React.useState<{
+    urlPath: string;
+    id: string;
+    unit: string;
+    size: number;
+  }>({
     urlPath: "",
     id: "",
+    unit: "",
+    size: 0,
   });
   const [pageNumber, setPageNumber] = React.useState<number>();
+  const [versionNumber, setVersionNumber] =
+    React.useState<
+      Partial<UpdateFileVersionDto & { fileName: string | undefined }>
+    >();
   const [mIds, setMid] = React.useState<{ mId: string }>();
 
   const forwardViewer = React.useRef<
@@ -211,35 +223,6 @@ const ProjectMaterialTable = () => {
       },
     }
   );
-  const createMeasures = useMutation(
-    (values: CreateDocumentMeasureDto) =>
-      operationsByTag.documentMeasures.documentMeasuresControllerCreate({
-        body: values,
-        headers: { authorization: `Bearer ${user.accessToken}` },
-      }),
-    {
-      onSuccess: (response) => {
-        console.log({ response });
-
-        setLoginMsg({
-          code: 200,
-          msg: `Measures Successfully Added to Database.`,
-        });
-      },
-
-      onError: (error: AxiosError) => {
-        console.log({ error });
-
-        setLoginMsg({
-          code: error.response?.status,
-
-          msg: `Code Error:  ${
-            error.response?.status
-          }. ${error.response?.statusText.toLocaleLowerCase()}`,
-        });
-      },
-    }
-  );
 
   // Markups
 
@@ -321,7 +304,15 @@ const ProjectMaterialTable = () => {
     };
 
   function getFilePath(filePath: any) {
-    setPath({ urlPath: filePath.urlPath, id: filePath.id });
+    console.log({ filePath });
+    setVersionNumber(filePath);
+    setPath({
+      urlPath: filePath.urlPath,
+      id: filePath.id,
+      size: filePath.size,
+
+      unit: filePath.unit,
+    });
   }
 
   return (
@@ -333,115 +324,71 @@ const ProjectMaterialTable = () => {
           mb: 1,
 
           display: "flex",
+          px: 2,
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "space-between",
           flexDirection: { xs: "column", sm: "column", md: "row" },
         }}
       >
-        <Typography
-          variant="overline"
-          sx={{ fontWeight: "bold", ml: 2, color: "#353535" }}
-        >
-          | {projectById?.projectName} |
-        </Typography>
-        <FormControlLabel
-          value="Table"
-          control={
-            <Switch
-              color="primary"
-              size="small"
-              name="table"
-              checked={isCheckedState.table}
-              onChange={handleChange}
-            />
-          }
-          label={<Typography variant="overline">Table</Typography>}
-          labelPlacement="start"
-        />
-        <FormControlLabel
-          value="Viewer"
-          control={
-            <Switch
-              color="primary"
-              size="small"
-              onChange={handleChange}
-              name="viewer"
-              checked={isCheckedState.viewer}
-            />
-          }
-          label={<Typography variant="overline">Viewer</Typography>}
-          labelPlacement="start"
-        />
+        <Box>
+          <Typography
+            variant="overline"
+            sx={{ fontWeight: "bold", ml: 2, color: "#353535" }}
+          >
+            | {projectById?.projectName} |
+          </Typography>
+          <FormControlLabel
+            value="Table"
+            control={
+              <Switch
+                color="primary"
+                size="small"
+                name="table"
+                checked={isCheckedState.table}
+                onChange={handleChange}
+              />
+            }
+            label={<Typography variant="overline">Table</Typography>}
+            labelPlacement="start"
+          />
+          <FormControlLabel
+            value="Viewer"
+            control={
+              <Switch
+                color="primary"
+                size="small"
+                onChange={handleChange}
+                name="viewer"
+                checked={isCheckedState.viewer}
+              />
+            }
+            label={<Typography variant="overline">Viewer</Typography>}
+            labelPlacement="start"
+          />
 
-        <IconButton
-          sx={{
-            ml: 2,
-          }}
-          aria-label="fingerprint"
-          onClick={() => setFolderModel(true)}
-        >
-          <FolderOpenIcon color="primary" sx={{ color: "#9BC53D" }} />
-        </IconButton>
-        {path?.id && (
-          <>
-            <IconButton
-              onClick={() => {
-                const MsToDb = getMeasure(forwardViewer?.current);
-                console.log({ MsToDb });
-
-                if (MsToDb.length === 0) {
-                  alert("open measure tab");
-                  return;
-                }
-
-                const normalizeMeasureValues = MsToDb?.map((i: any) => {
-                  return {
-                    measureValues: JSON.stringify(i),
-                    measurementId: generateMeasureId(i),
-                    projectId: projectById.id,
-                    uploadFileId: path?.id,
-                    pageNumber: pageNumber ? pageNumber : 1,
-                  };
-                });
-
-                createMeasures.mutate(normalizeMeasureValues);
-              }}
-              aria-label="UpLoad Measures"
+          <IconButton
+            sx={{
+              ml: 2,
+            }}
+            aria-label="fingerprint"
+            onClick={() => setFolderModel(true)}
+          >
+            <FolderOpenIcon color="primary" sx={{ color: "#9BC53D" }} />
+          </IconButton>
+        </Box>
+        <Box>
+          {versionNumber && (
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#1E2019", textDecoration: "underline" }}
             >
-              <SquareFootIcon fontSize="inherit" sx={{ color: "#FFBD00" }} />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                if (!forwardViewer?.current) return;
-
-                const markups = forwardViewer?.current?.getExtension(
-                  "Autodesk.Viewing.MarkupsCore"
-                );
-                console.log(markups);
-                //@ts-ignore
-
-                // if (!markups.svgLayersMap.layer_1) {
-                //   alert("Please open the markups first!");
-                //   return;
-                // }
-                const markupsStringData = getAllMarkups(forwardViewer?.current);
-
-                const markupsInfo: CreateMarkupDto = {
-                  projectId: projectId,
-                  uploadFileId: path?.id,
-                  pageNumber: pageNumber ? pageNumber : 1,
-                  markupsString: markupsStringData,
-                  id: "",
-                  createdAt: "",
-                };
-                createMarkups.mutate(markupsInfo);
-              }}
-            >
-              {/* <MultipleStopIcon fontSize="inherit" sx={{ color: "#489FB5" }} /> */}
-              <ImPencil2 size={"18px"} color="#FF0054" />
-            </IconButton>
-          </>
-        )}
+              {versionNumber?.fileName?.split("=projectId=")[1] +
+                " " +
+                "v:" +
+                versionNumber.versionNumber}
+            </Typography>
+          )}
+        </Box>
       </Box>
       <Stack
         sx={{ mb: 2, height: "83vh", width: "100%" }}
@@ -568,6 +515,7 @@ const ProjectMaterialTable = () => {
             >
               <Viewer
                 path={path}
+                key={path.id}
                 forwardViewer={forwardViewer}
                 setPageNumber={setPageNumber}
                 pageNumber={pageNumber}
@@ -735,21 +683,48 @@ function getTotalFooter(
   }, 0);
 }
 
-function getMeasure(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
+function getAllMarkups(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
+  if (!viewer) {
+    return;
+  }
+  const extension = viewer?.getExtension("Autodesk.Viewing.MarkupsCore");
+  //@ts-ignore
+  // const markupsStringData = extension?.generateData();
+  //@ts-ignore
+  extension?.enterEditMode("layer_1");
+  // return markupsStringData;
+}
+
+function getUnitAndScale(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
   console.log({ viewer });
 
   if (!viewer) {
     return;
   }
 
-  const allMs = viewer
+  const unit = viewer
     .getExtension("Autodesk.Measure")
     //@ts-ignore
 
-    .measureTool.getMeasurementList();
+    //  .calibrationTool.getCalibrationFactor();
+    .calibrationTool.getCurrentUnits();
 
-  return allMs;
+  const scale = viewer
+    .getExtension("Autodesk.Measure")
+    //@ts-ignore
+
+    .calibrationTool.getCalibrationFactor();
+
+  // viewer.getExtension("Autodesk.Measure");
+  //@ts-ignore
+
+  // .calibrationTool.setCalibrationFactor(alibrationFactor);
+  console.log({ unit, scale });
+
+  //stackoverflow.com/questions/73970804/saving-pdf-calibration-in-autodesk-forge-viewer
+  return { unit, scale };
 }
+
 function deleteAllMeasurements(
   viewer: Autodesk.Viewing.GuiViewer3D | undefined
 ) {
@@ -763,38 +738,4 @@ function deleteAllMeasurements(
     //@ts-ignore
 
     .measureTool.deleteAllMeasurements();
-}
-
-// define interface for pick object
-interface Pick {
-  intersection: {
-    x: number;
-    y: number;
-    z: number;
-  };
-}
-
-// define interface for input object
-interface InputObj {
-  picks: Pick[];
-}
-
-// input data
-
-function generateMeasureId(data: InputObj) {
-  const { picks } = data;
-  const intersections = picks
-    .slice(0, 2)
-    .map((pick) => `${pick.intersection.x},${pick.intersection.y}`);
-  return intersections.join(",");
-}
-
-function getAllMarkups(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
-  if (!viewer) {
-    return;
-  }
-  const extension = viewer?.getExtension("Autodesk.Viewing.MarkupsCore");
-  //@ts-ignore
-  const markupsStringData = extension?.generateData();
-  return markupsStringData;
 }

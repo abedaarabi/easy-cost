@@ -218,44 +218,26 @@ export type UserDTO = {
   role: string;
 };
 
-export type CreateAwDto = {
+export type AwsEntity = {
   id: string;
-  /**
-   * @format date-time
-   */
-  createdAt: string;
   fileName: string;
-  urlPath: string;
   projectId: string;
-  size: number;
 };
 
-export type AwsEntity = {
-  size: number;
+export type CreateAwDto = {
   id: string;
-  /**
-   * @format date-time
-   */
-  createdAt: string;
   fileName: string;
-  urlPath: string;
   projectId: string;
 };
 
 export type UpdateAwDto = {
   id?: string;
-  /**
-   * @format date-time
-   */
-  createdAt?: string;
   fileName?: string;
-  urlPath?: string;
   projectId?: string;
-  size?: number;
 };
 
 export type CreateDocumentMeasureDto = {
-  uploadFileId: string;
+  filesVersionId: string;
   measurementId: string;
   projectId: string;
   id: string;
@@ -268,7 +250,7 @@ export type CreateDocumentMeasureDto = {
 };
 
 export type UpdateDocumentMeasureDto = {
-  uploadFileId?: string;
+  filesVersionId?: string;
   measurementId?: string;
   projectId?: string;
   id?: string;
@@ -289,7 +271,7 @@ export type CreateMarkupDto = {
   pageNumber: number;
   markupsString: string;
   projectId: string;
-  uploadFileId: string;
+  filesVersionId: string;
 };
 
 export type UpdateMarkupDto = {
@@ -301,5 +283,39 @@ export type UpdateMarkupDto = {
   pageNumber?: number;
   markupsString?: string;
   projectId?: string;
+  filesVersionId?: string;
+};
+
+export type CreateFileVersionDto = {
+  currentVersion: boolean;
+  id: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  projectId: string;
+  size: number;
+  scale: number;
+  unit: string;
+  versionId: string;
+  versionNumber: number;
+  urlPath: string;
+  uploadFileId: string;
+};
+
+export type UpdateFileVersionDto = {
+  currentVersion?: boolean;
+  id?: string;
+  /**
+   * @format date-time
+   */
+  createdAt?: string;
+  projectId?: string;
+  size?: number;
+  scale?: number;
+  unit?: string;
+  versionId?: string;
+  versionNumber?: number;
+  urlPath?: string;
   uploadFileId?: string;
 };
