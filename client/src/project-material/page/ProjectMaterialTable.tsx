@@ -84,11 +84,13 @@ const ProjectMaterialTable = () => {
     id: string;
     unit: string;
     size: number;
+    scale: number;
   }>({
     urlPath: "",
     id: "",
     unit: "",
     size: 0,
+    scale: 0,
   });
   const [pageNumber, setPageNumber] = React.useState<number>();
   const [versionNumber, setVersionNumber] =
@@ -310,7 +312,7 @@ const ProjectMaterialTable = () => {
       urlPath: filePath.urlPath,
       id: filePath.id,
       size: filePath.size,
-
+      scale: filePath.scale,
       unit: filePath.unit,
     });
   }
@@ -375,6 +377,18 @@ const ProjectMaterialTable = () => {
           >
             <FolderOpenIcon color="primary" sx={{ color: "#9BC53D" }} />
           </IconButton>
+        </Box>
+        <Box>
+          {versionNumber?.scale == 0.01 && (
+            <Typography
+              variant="overline"
+              color={"white"}
+              sx={{ fontWeight: "bold", bgcolor: "red", p: 1, borderRadius: 2 }}
+            >
+              {" "}
+              File Version is not Calibrated
+            </Typography>
+          )}
         </Box>
         <Box>
           {versionNumber && (

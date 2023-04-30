@@ -27,6 +27,7 @@ import {
   UpdateMarkupDto,
 } from "../api/easyCostSchemas";
 import { AxiosError } from "axios";
+import { useSearchParams } from "react-router-dom";
 
 export const Viewer = ({
   path,
@@ -41,6 +42,9 @@ export const Viewer = ({
 }) => {
   const { projectId } = useParams<Params<string>>();
   const { user, setLoginMsg } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const param = searchParams.get("page");
+  console.log(param, "searchParams");
 
   if (!projectId) {
     return null;
@@ -421,8 +425,9 @@ export const Viewer = ({
       };
       updateCalibration.mutate({ id: path.id, values });
 
-      setPageNumber(0);
-      setIsMarkups(true);
+      window.location.reload();
+      // setPageNumber(0);
+      // setIsMarkups(!isMarkups);
     };
 
     viewer?.current?.addEventListener(
@@ -515,11 +520,13 @@ export const Viewer = ({
         };
         createMarkups.mutate(markupsInfo); //insert into db
 
-        // ext.target.markups = [];
-        // ext.target.svg.outerHTML = null;
-        // console.log(ext.target);
+        // 👇️ delete each query param
+        searchParams.delete("page");
 
-        setIsMarkups(true);
+        // 👇️ update state after
+        setSearchParams(searchParams);
+
+        setIsMarkups(!isMarkups);
         setPageNumber(0);
       }
     };

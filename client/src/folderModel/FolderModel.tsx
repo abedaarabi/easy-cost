@@ -284,6 +284,8 @@ export default function FolderModel({
                             // color="#1a73e8"
                             // bgColor="#e8f0fe"
                             onClick={() => {
+                              console.log({ file });
+
                               const { fileName } = item;
                               getFilePath({ ...file, fileName });
                               handleClose();
