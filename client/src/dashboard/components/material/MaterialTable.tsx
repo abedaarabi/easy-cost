@@ -53,10 +53,7 @@ const MaterialTable = () => {
   const queryClient = useQueryClient();
   const { user, setLoading, loading, setLoginMsg } = useAuth();
   const [openAddXlsx, setOpenAddXlsx] = React.useState(false);
-  const downloadFile = useDownloadFile({
-    fileUrl: "https://easy-cost.s3.eu-north-1.amazonaws.com/materials02.xlsx",
-    fileName: "material-template.xlsx",
-  });
+  const downloadFile = useDownloadFile();
 
   const { companyId, id: userId } = user;
 
@@ -359,7 +356,13 @@ const MaterialTable = () => {
               aria-label="fingerprint"
               color="success"
               size="small"
-              onClick={downloadFile}
+              onClick={() =>
+                downloadFile({
+                  fileUrl:
+                    "https://easy-cost.s3.eu-north-1.amazonaws.com/materials02.xlsx",
+                  fileName: "material-template.xlsx",
+                })
+              }
             >
               <DownloadingIcon />
             </Fab>

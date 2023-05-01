@@ -15,6 +15,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import {
   CircularProgress,
   ListItemButton,
@@ -38,6 +39,7 @@ import { TreeView } from "@mui/lab";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { FilesVersionRoot } from "./types";
+import useDownloadFile from "../hooks/DownloadFileHook";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(1),
@@ -88,6 +90,8 @@ export default function FolderModel({
   setOpenModel: (param: boolean) => void;
   getFilePath: (param: any) => void;
 }) {
+  const downloadFile = useDownloadFile();
+
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -292,10 +296,26 @@ export default function FolderModel({
                             }}
                           />
                           <IconButton
+                            sx={{ mx: 0.5 }}
                             size="small"
                             onClick={() => deleteS3Bucket(item.id)}
                           >
                             <DeleteOutlineIcon />
+                          </IconButton>
+                          <IconButton
+                            sx={{ mx: 0.5 }}
+                            size="small"
+                            color="success"
+                            onClick={() => {
+                              downloadFile({
+                                fileName: `v${file.versionNumber} git - ${
+                                  item.fileName.split("=projectId=")[1]
+                                }`,
+                                fileUrl: file.urlPath,
+                              });
+                            }}
+                          >
+                            <CloudDownloadIcon />
                           </IconButton>
                         </Box>
                       ))}
