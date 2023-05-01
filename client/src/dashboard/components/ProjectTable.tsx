@@ -254,8 +254,13 @@ const ProjectTable = () => {
 
   return (
     <Box>
-      <Typography variant="h6" color={"#2c2c34"} mb={1}>
-        All Projects:
+      <Typography
+        variant="overline"
+        color={"#25291C"}
+        mb={1}
+        sx={{ fontSize: "18px" }}
+      >
+        Projects:
       </Typography>
       <ReusableTable
         // isLoading={{ isLoading: false }}

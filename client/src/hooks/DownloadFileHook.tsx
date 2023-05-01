@@ -1,7 +1,5 @@
 import { useCallback } from "react";
 
-interface DownloadFileHookProps {}
-
 const useDownloadFile = () => {
   const downloadFile = useCallback(
     ({ fileUrl, fileName }: { fileUrl: string; fileName: string }) => {

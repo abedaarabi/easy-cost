@@ -303,8 +303,13 @@ const MaterialTable = () => {
 
   return (
     <Box>
-      <Typography variant="h6" color={"#2c2c34"} mb={1}>
-        All Materials:
+      <Typography
+        variant="overline"
+        color={"#25291C"}
+        mb={1}
+        sx={{ fontSize: "18px" }}
+      >
+        Materials:
       </Typography>
       <ReusableTable
         enableStickyFooter

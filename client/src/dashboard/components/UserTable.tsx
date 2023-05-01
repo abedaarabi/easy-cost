@@ -236,7 +236,12 @@ const UserTable = () => {
 
   return (
     <Box>
-      <Typography variant="h6" color={"#2c2c34"} mb={1}>
+      <Typography
+        variant="overline"
+        color={"#25291C"}
+        mb={1}
+        sx={{ fontSize: "18px" }}
+      >
         Company Users:
       </Typography>
       <ReusableTable

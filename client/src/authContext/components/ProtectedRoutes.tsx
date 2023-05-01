@@ -5,7 +5,6 @@ import { useAuth } from "./AuthContext";
 export function ProtectedRoutes({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log({ user });
 
   React.useEffect(() => {
     !user && navigate("/login");

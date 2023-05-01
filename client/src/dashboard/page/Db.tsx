@@ -101,7 +101,7 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   const location = useLocation();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { user } = useAuth();
@@ -256,10 +256,11 @@ export default function MiniDrawer() {
 const drawerLinks = [
   {
     id: 1,
-    text: "Dashboard",
-    icon: <DnsIcon color="info" />,
+    text: "Project",
+    icon: <WorkOutlineIcon color="info" />,
     link: "/",
   },
+
   {
     id: 2,
     text: "Material",
@@ -272,12 +273,12 @@ const drawerLinks = [
     icon: <PermIdentityIcon color="info" />,
     link: "/user",
   },
-  {
-    id: 4,
-    text: "Project",
-    icon: <WorkOutlineIcon color="info" />,
-    link: "/project",
-  },
+  // {
+  //   id: 4,
+  //   text: "Dashboard",
+  //   icon: <DnsIcon color="info" />,
+  //   link: "/",
+  // },
   // {
   //   id: 5,
   //   text: "Customer",

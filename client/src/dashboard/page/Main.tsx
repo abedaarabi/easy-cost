@@ -19,7 +19,8 @@ const Main = () => {
         gap: 10,
       }}
     >
-      <Card sx={{ maxWidth: 345 }}>
+      <h1>Coming Soon...</h1>
+      {/* <Card sx={{ maxWidth: 345 }}>
         <CardMedia
           component="img"
           height="140"
@@ -39,7 +40,7 @@ const Main = () => {
           <Button size="small">Share</Button>
           <Button size="small">Learn More</Button>
         </CardActions>
-      </Card>
+      </Card> */}
       {/* <Card sx={{ maxWidth: 345 }}>
         <CardMedia
           component="img"
@@ -82,9 +83,9 @@ const Main = () => {
           <Button size="small">Learn More</Button>
         </CardActions>
       </Card> */}
-      <Box>
+      {/* <Box>
         <Chart />
-      </Box>
+      </Box> */}
     </Box>
   );
 };

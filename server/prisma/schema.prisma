@@ -63,7 +63,7 @@ model InvitedUser {
 
 model Material {
   id              String   @id @unique @default(uuid())
-  materialName    String   @unique
+  materialName    String
   unit            String
   price           Decimal  @db.Decimal(9, 2)
   createdAt       DateTime @default(now())
@@ -76,7 +76,7 @@ model Material {
   Company        Company           @relation(fields: [companyId], references: [id])
   companyId      String
 
-  @@unique([materialName, userId])
+  @@unique([materialName, userId, companyId])
 }
 
 model Project {

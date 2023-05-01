@@ -59,11 +59,11 @@ const router = createBrowserRouter([
       </ProtectedRoutes>
     ),
     children: [
-      {
-        path: "/",
-        element: <Main />,
-        errorElement: <ErrorPage />,
-      },
+      // {
+      //   path: "/",
+      //   element: <Main />,
+      //   errorElement: <ErrorPage />,
+      // },
       {
         path: "/material",
         element: <MaterialTable />,
@@ -75,7 +75,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: "/project",
+        path: "/",
         element: <ProjectTable />,
         errorElement: <ErrorPage />,
         // children: [
