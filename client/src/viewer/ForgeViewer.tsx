@@ -521,10 +521,10 @@ export const Viewer = ({
         createMarkups.mutate(markupsInfo); //insert into db
 
         // 👇️ delete each query param
-        searchParams.delete("page");
+        // searchParams.delete("page");
 
         // 👇️ update state after
-        setSearchParams(searchParams);
+        // setSearchParams(searchParams);
 
         setIsMarkups(!isMarkups);
         setPageNumber(0);

@@ -47,11 +47,16 @@ import {
 } from "../../../api/easyCostSchemas";
 import { AxiosError, AxiosResponse } from "axios";
 import { DropzoneXlsx } from "./DropzoneXlsx";
-
+import useDownloadFile from "../../../hooks/DownloadFileHook";
+import DownloadingIcon from "@mui/icons-material/Downloading";
 const MaterialTable = () => {
   const queryClient = useQueryClient();
   const { user, setLoading, loading, setLoginMsg } = useAuth();
   const [openAddXlsx, setOpenAddXlsx] = React.useState(false);
+  const downloadFile = useDownloadFile({
+    fileUrl: "https://easy-cost.s3.eu-north-1.amazonaws.com/materials02.xlsx",
+    fileName: "material-template.xlsx",
+  });
 
   const { companyId, id: userId } = user;
 
@@ -274,7 +279,7 @@ const MaterialTable = () => {
   };
 
   const handleSaveRowEdits: MaterialReactTableProps<
-    typeof dataTable[0]
+    (typeof dataTable)[0]
   >["onEditingRowSave"] = async ({ exitEditingMode, row, values }) => {
     //send/receive api updates here, then refetch or update local table data for re-render Update
 
@@ -331,7 +336,7 @@ const MaterialTable = () => {
         renderTopToolbarCustomActions={() => (
           <Box sx={{ display: "flex", gap: 2 }}>
             <Fab
-              color="success"
+              color="info"
               onClick={() => setCreateModalOpen(true)}
               aria-label="add"
               size="small"
@@ -341,7 +346,7 @@ const MaterialTable = () => {
 
             <Fab
               aria-label="fingerprint"
-              color="primary"
+              color="default"
               size="small"
               onClick={() => {
                 setOpenAddXlsx(true);
@@ -349,6 +354,14 @@ const MaterialTable = () => {
               }}
             >
               <DriveFolderUploadIcon />
+            </Fab>
+            <Fab
+              aria-label="fingerprint"
+              color="success"
+              size="small"
+              onClick={downloadFile}
+            >
+              <DownloadingIcon />
             </Fab>
           </Box>
         )}
