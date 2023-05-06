@@ -53,7 +53,7 @@ export class InvitedUserService {
   </head>
   <body style="background-color: tomato">
   <div style="background-color: lightblue; padding: 20px;">
-    <h1 style="color: blue; text-align: center;">Hello, World!</h1>
+    <h1 style="color: blue; text-align: center;">Welcome to AXIOZ 360</h1>
     <p style="color: white;">This is a sample email sent from SendGrid.</p>
     <p>your invited to project ${companyInfo.name}.</p>
     <p><a href="http://localhost:5173/token/${token}/sing-up">Accept Invitation</a></p>
