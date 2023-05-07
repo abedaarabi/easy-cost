@@ -17,6 +17,7 @@ import MaterialReactTable, {
   MaterialReactTableProps,
 } from "material-react-table";
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -145,6 +146,27 @@ const ProjectTable = () => {
 
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: "-50px",
+          marginLeft: "-50px",
+          width: "100px",
+          height: "100px",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+  if (isError) {
+    return <h3>Error...</h3>;
+  }
+
   if (!data) return null;
 
   const projectColumn = [
@@ -244,13 +266,6 @@ const ProjectTable = () => {
       });
       exitEditingMode();
     };
-
-  if (isLoading) {
-    return <h3>Loading</h3>;
-  }
-  if (isError) {
-    return <h3>Error</h3>;
-  }
 
   return (
     <Box>

@@ -27,6 +27,7 @@ import { ImPencil2 } from "react-icons/im";
 import {
   Badge,
   Button,
+  CircularProgress,
   darken,
   Fab,
   FormControlLabel,
@@ -139,11 +140,13 @@ const ProjectMaterialTable = () => {
         headers: { authorization: `Bearer ${user.accessToken}` },
       }) as unknown as Promise<ProjecTMaterialTest[]> | undefined
   );
-  const { data: projectById } = useQuery(["projectById"], () =>
-    operationsByTag.project.projectControllerFindOne({
-      pathParams: { id: projectId },
-      headers: { authorization: `Bearer ${user.accessToken}` },
-    })
+  const { data: projectById, isLoading: projectIdIsLoading } = useQuery(
+    ["projectById"],
+    () =>
+      operationsByTag.project.projectControllerFindOne({
+        pathParams: { id: projectId },
+        headers: { authorization: `Bearer ${user.accessToken}` },
+      })
   );
 
   const {
@@ -258,7 +261,27 @@ const ProjectMaterialTable = () => {
     }
   );
 
-  if (!data || !materials || !projectById) return null;
+  if (isLoading || projectIdIsLoading || materialIsLoading) {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: "-50px",
+          marginLeft: "-50px",
+          width: "100px",
+          height: "100px",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!data || !materials || !projectById) {
+    return null;
+  }
 
   const colTest = name(data, setMid, materials);
 

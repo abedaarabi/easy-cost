@@ -29,6 +29,7 @@ import MaterialReactTable, {
   MaterialReactTableProps,
 } from "material-react-table";
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -135,6 +136,23 @@ const UserTable = () => {
   // );
 
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: "-50px",
+          marginLeft: "-50px",
+          width: "100px",
+          height: "100px",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   if (!data) return null;
 

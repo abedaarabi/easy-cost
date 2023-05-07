@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../authContext/components/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
+import { CircularProgress } from "@mui/material";
+
 import {
   createMaterial,
   deleteMaterialById,
@@ -166,6 +168,27 @@ const MaterialTable = () => {
 
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: "-50px",
+          marginLeft: "-50px",
+          width: "100px",
+          height: "100px",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+  if (isError) {
+    return <h1>Error...</h1>;
+  }
+
   if (!data) return null;
 
   const colTest = [
@@ -293,13 +316,6 @@ const MaterialTable = () => {
     });
     exitEditingMode();
   };
-
-  if (isLoading) {
-    return <h1>Loading</h1>;
-  }
-  if (isError) {
-    return <h1>Loading</h1>;
-  }
 
   return (
     <Box>
