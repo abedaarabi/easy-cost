@@ -56,7 +56,7 @@ export class InvitedUserService {
     <h1 style="color: blue; text-align: center;">Welcome to AXIOZ 360</h1>
     <p style="color: white;">This is a sample email sent from SendGrid.</p>
     <p>your invited to project ${companyInfo.name}.</p>
-    <p><a href="http://localhost:5173/token/${token}/sing-up">Accept Invitation</a></p>
+    <p><a href="https://easy-cost-client-production.up.railway.app/token/${token}/sing-up">Accept Invitation</a></p>
   </div>
   </body>
 </html>
