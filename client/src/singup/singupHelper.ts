@@ -10,7 +10,7 @@ import axios from "axios";
 //     // console.log({ userDetails });
 
 //     const { data, status } = await axios.post(
-//       "http://localhost:3000/user",
+//       "/user",
 
 //   data:userInfo,
 

@@ -12,7 +12,7 @@ export async function projectMaterial(
     console.log({ value });
 
     const { data, status } = await axios.post(
-      "http://localhost:3000/project-material",
+      "/project-material",
       {
         projectId: value.projectId,
         materialId: value.materialId,

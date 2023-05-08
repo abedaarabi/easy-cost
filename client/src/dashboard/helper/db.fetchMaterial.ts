@@ -6,7 +6,7 @@ export async function getMaterialByCompany(
 ): Promise<Material[]> {
   try {
     const { data, status } = await axios.get(
-      "http://localhost:3000/material/materialByCompany/" + companyId,
+      "/material/materialByCompany/" + companyId,
       {
         headers: {
           Accept: "application/json",
@@ -25,14 +25,11 @@ export async function getMaterialByCompany(
 
 export async function deleteMaterialById(materialId?: string): Promise<any> {
   try {
-    const { data, status } = await axios.delete(
-      "http://localhost:3000/material/" + materialId,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+    const { data, status } = await axios.delete("/material/" + materialId, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
     return data;
   } catch (error) {
@@ -47,7 +44,7 @@ export async function updateMaterial(
 ): Promise<Omit<Material, "companyId" | "userId">> {
   try {
     const { data, status } = await axios.patch(
-      "http://localhost:3000/material/" + material.id,
+      "/material/" + material.id,
 
       {
         price: +material.price,
@@ -80,7 +77,7 @@ export async function createMaterial(material: Material): Promise<Material> {
     console.log(material, "post");
 
     const { data, status } = await axios.post(
-      "http://localhost:3000/material",
+      "/material",
 
       {
         // companyId: material.companyId,

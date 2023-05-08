@@ -15,7 +15,7 @@ interface GetUsersResponse {
 
 export async function getUserToken(email: any) {
   try {
-    const { data } = await axios.get("http://localhost:3000/token", {
+    const { data } = await axios.get("/token", {
       headers: {
         Accept: "application/json",
       },

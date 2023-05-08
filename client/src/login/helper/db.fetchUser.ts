@@ -17,14 +17,11 @@ interface GetUsersResponse {
 
 export async function getUserByEmail(email: string) {
   try {
-    const { data, status } = await axios.get(
-      "http://localhost:3000/user/email/" + email,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+    const { data, status } = await axios.get("/user/email/" + email, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
     return data;
   } catch (error) {

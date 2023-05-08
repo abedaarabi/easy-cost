@@ -50,7 +50,7 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
       try {
         const response = await axios({
           method: "post",
-          url: `http://localhost:3000/api/${projectId}/upload-file`,
+          url: `/api/${projectId}/upload-file`,
           data: formData,
           headers: {
             authorization: `Bearer ${user.accessToken}`,

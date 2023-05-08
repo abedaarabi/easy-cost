@@ -61,7 +61,7 @@ export function DropzoneXlsx({ openAddObject, setOpenAddObject }: Prop) {
           setIsLoading(true);
           const response = await axios({
             method: "post",
-            url: `http://localhost:3000/material/bulk`,
+            url: `/material/bulk`,
             data: removeDuplicatesByProperty(resultData),
             headers: {
               authorization: `Bearer ${user.accessToken}`,

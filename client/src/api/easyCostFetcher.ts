@@ -9,7 +9,7 @@ export type EasyCostFetcherExtraProps = {
    **/
 };
 
-const baseUrl = "http://localhost:3000"; // TODO add your baseUrl
+const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:3000"; // TODO add your baseUrl
 
 export type ErrorWrapper<TError> =
   | TError

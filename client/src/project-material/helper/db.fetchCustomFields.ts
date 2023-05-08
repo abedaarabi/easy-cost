@@ -10,7 +10,7 @@ export async function createTableCustomField(
 ): Promise<CreateTableCustomFieldDto> {
   try {
     const { data, status } = await axios.post(
-      "http://localhost:3000/table-custom-fields",
+      "/table-custom-fields",
       {
         projectId: value.projectId,
         columnName: value.columnName,

@@ -103,7 +103,7 @@ export const AuthContextProvider = ({
 
 // export async function postHeader(companyId?: string): Promise<any[]> {
 //   try {
-//     const { data, status } = await axios.get("http://localhost:3000/user/", {
+//     const { data, status } = await axios.get("/user/", {
 //       headers: {
 //         authorization: `Bearer ${localStorage.getItem("access_token")}`,
 

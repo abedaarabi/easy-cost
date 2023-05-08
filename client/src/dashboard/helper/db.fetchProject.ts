@@ -7,7 +7,7 @@ export async function projectsByCompany(
 ): Promise<CreateProjectDto[]> {
   try {
     const { data, status } = await axios.post(
-      "http://localhost:3000/project",
+      "/project",
       {
         companyId: value.companyId,
         projectName: value.projectName,

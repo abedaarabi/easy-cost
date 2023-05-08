@@ -8,7 +8,7 @@ import { ColumnTypeUser } from "../types";
 // // ): Promise<ColumnTypeUser[]> {
 // //   try {
 // //     const { data, status } = await axios.get(
-// //       "http://localhost:3000/user/userByCompany/" + companyId,
+// //       "/user/userByCompany/" + companyId,
 // //       {
 // //         headers: {
 // //           authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -33,7 +33,7 @@ import { ColumnTypeUser } from "../types";
 // ): Promise<ColumnTypeUser> {
 //   try {
 //     const { data, status } = await axios.patch(
-//       "http://localhost:3000/user/" + user.id,
+//       "/user/" + user.id,
 
 //       {
 //         email: user.email,
@@ -66,7 +66,7 @@ export async function createUserToken(
     // const userDetails: any = await signUp(material.email);
 
     const { data, status } = await axios.post(
-      "http://localhost:3000/invited-user",
+      "/invited-user",
 
       {
         userId: userInfo.id,
