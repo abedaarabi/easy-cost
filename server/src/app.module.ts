@@ -4,6 +4,8 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -21,6 +23,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DocumentMeasuresModule } from './document-measures/document-measures.module';
 import { MarkupsModule } from './markups/markups.module';
 import { FileVersionsModule } from './file-versions/file-versions.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -41,6 +44,9 @@ import { FileVersionsModule } from './file-versions/file-versions.module';
     DocumentMeasuresModule,
     MarkupsModule,
     FileVersionsModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../client'),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -53,6 +59,7 @@ export class AppModule implements NestModule {
         { path: '/api/:id/upload-file', method: RequestMethod.ALL },
 
         { path: '/user', method: RequestMethod.POST },
+        { path: '/', method: RequestMethod.GET },
         { path: '/api/aws-test', method: RequestMethod.ALL },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });

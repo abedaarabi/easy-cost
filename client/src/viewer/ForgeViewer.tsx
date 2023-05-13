@@ -425,7 +425,7 @@ export const Viewer = ({
       };
       updateCalibration.mutate({ id: path.id, values });
 
-      window.location.reload();
+      // window.location.reload();
       // setPageNumber(0);
       // setIsMarkups(!isMarkups);
     };
