@@ -285,6 +285,14 @@ export const Viewer = ({
   }
 
   React.useEffect(() => {
+    initializeViewer2();
+    setIsMarkups(false);
+  }, [path?.urlPath]);
+
+  React.useEffect(() => {
+    if (!viewer.current) {
+      return;
+    }
     const handleMeasurementFinished = (e: any) => {
       console.log(e, "Measure Leave");
       const MsToDb = getMeasure(e.target);
@@ -340,11 +348,6 @@ export const Viewer = ({
       throw new Error("Failed to initialize viewer");
     }
   }
-
-  React.useEffect(() => {
-    initializeViewer2();
-    setIsMarkups(false);
-  }, [path?.urlPath]);
 
   React.useEffect(() => {
     mutate({
