@@ -296,7 +296,7 @@ export const Viewer = ({
 
   React.useEffect(() => {
     const handleCalibrationFinished = (e: any) => {
-      console.log(e);
+      console.log(e, "Measure Leave");
       const MsToDb = getMeasure(e.target);
 
       if (MsToDb.length === 0) {
@@ -313,7 +313,7 @@ export const Viewer = ({
           pageNumber: pageNumber ? pageNumber : 1,
         };
       });
-
+      console.log("Measure leave mutae", normalizeMeasureValues);
       createMeasures.mutate(normalizeMeasureValues);
     };
 
