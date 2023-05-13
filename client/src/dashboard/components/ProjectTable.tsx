@@ -190,7 +190,6 @@ const ProjectTable = () => {
       header: "Active",
       size: 100,
       Cell: ({ cell, row, table, column }) => {
-        // console.log({ cell, row, table, column });
         const status = cell.row.original.isActive;
 
         return (
@@ -303,7 +302,6 @@ const ProjectTable = () => {
                 <IconButton
                   color="error"
                   onClick={() => {
-                    console.log(row.getValue("id"));
                     // navigate();
                   }}
                 >

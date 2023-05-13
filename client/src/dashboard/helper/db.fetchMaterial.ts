@@ -74,7 +74,6 @@ export async function updateMaterial(
 
 export async function createMaterial(material: Material): Promise<Material> {
   try {
-    console.log(material, "post");
 
     const { data, status } = await axios.post(
       "/material",

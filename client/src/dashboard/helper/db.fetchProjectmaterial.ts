@@ -9,8 +9,6 @@ export async function projectMaterial(
   value: CreateProjectMaterialDto
 ): Promise<CreateProjectMaterialDto> {
   try {
-    console.log({ value });
-
     const { data, status } = await axios.post(
       "/project-material",
       {

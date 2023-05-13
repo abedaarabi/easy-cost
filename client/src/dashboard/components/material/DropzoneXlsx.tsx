@@ -46,7 +46,6 @@ export function DropzoneXlsx({ openAddObject, setOpenAddObject }: Prop) {
       const wsname = readedData.SheetNames[0];
       const ws = readedData.Sheets[wsname];
       const dataParse = XLSX.utils.sheet_to_json(ws, {}); /* Update state */
-      console.log(dataParse);
 
       const resultData = dataParse.map((row: any) => {
         return {

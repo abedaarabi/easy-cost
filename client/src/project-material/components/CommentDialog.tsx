@@ -30,7 +30,6 @@ export default function CommentDialog({
       alert("Can not dd empty text ");
       return;
     }
-    console.log({ projectId, projectMaterialId, commentsTextFields, userId });
     handleCloseCommentDialog();
     setCommentsTextsFields("");
   }

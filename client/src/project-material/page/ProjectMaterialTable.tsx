@@ -179,8 +179,7 @@ const ProjectMaterialTable = () => {
         queryClient.invalidateQueries(["materialByProject"]);
       },
       onError: (error: AxiosError) => {
-        console.log(error.message);
-        console.log(error.status);
+
       },
     }
   );
@@ -206,7 +205,6 @@ const ProjectMaterialTable = () => {
       }),
     {
       onSuccess: (response) => {
-        console.log({ response });
         queryClient.invalidateQueries(["materialByProject"]);
 
         setLoginMsg({
@@ -239,8 +237,6 @@ const ProjectMaterialTable = () => {
       }),
     {
       onSuccess: (response) => {
-        console.log({ response });
-
         setLoginMsg({
           code: 200,
           msg: `Measures Successfully Added to Database.`,
@@ -329,7 +325,6 @@ const ProjectMaterialTable = () => {
     };
 
   function getFilePath(filePath: any) {
-    console.log({ filePath });
     setVersionNumber(filePath);
     setPath({
       urlPath: filePath.urlPath,
@@ -733,7 +728,6 @@ function getAllMarkups(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
 }
 
 function getUnitAndScale(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
-  console.log({ viewer });
 
   if (!viewer) {
     return;
@@ -756,7 +750,6 @@ function getUnitAndScale(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
   //@ts-ignore
 
   // .calibrationTool.setCalibrationFactor(alibrationFactor);
-  console.log({ unit, scale });
 
   //stackoverflow.com/questions/73970804/saving-pdf-calibration-in-autodesk-forge-viewer
   return { unit, scale };
@@ -765,7 +758,6 @@ function getUnitAndScale(viewer: Autodesk.Viewing.GuiViewer3D | undefined) {
 function deleteAllMeasurements(
   viewer: Autodesk.Viewing.GuiViewer3D | undefined
 ) {
-  console.log({ viewer });
 
   if (!viewer) {
     return;

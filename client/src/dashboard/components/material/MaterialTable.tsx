@@ -108,8 +108,6 @@ const MaterialTable = () => {
 
     {
       onSuccess: (response) => {
-        console.log({ response });
-
         queryClient.invalidateQueries({
           queryKey: ["materialByCompanyId_test"],
         });
@@ -141,8 +139,6 @@ const MaterialTable = () => {
       }),
     {
       onSuccess: (response) => {
-        console.log({ response });
-
         queryClient.invalidateQueries({
           queryKey: ["materialByCompanyId_test"],
         });
@@ -153,8 +149,6 @@ const MaterialTable = () => {
       },
 
       onError: (error: AxiosError) => {
-        console.log({ error });
-
         setLoginMsg({
           code: error.response?.status,
 
@@ -368,7 +362,6 @@ const MaterialTable = () => {
               size="small"
               onClick={() => {
                 setOpenAddXlsx(true);
-                console.log("");
               }}
             >
               <DriveFolderUploadIcon />

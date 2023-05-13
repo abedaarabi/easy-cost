@@ -59,7 +59,6 @@ export default function SignUp() {
   if (!decoded) {
     return <Invalidinvite />;
   }
-  console.log({ decoded });
 
   const createMutation = useMutation(
     (values: CreateUserDto) =>
@@ -96,7 +95,6 @@ export default function SignUp() {
     } as { name: string; password: string };
 
     const userDetails: any = await signUp(decoded.email, formInfo.password);
-    console.log(userDetails.error);
 
     if (userDetails.error) {
       setLoginMsg({

@@ -60,7 +60,6 @@ export function CustomFields({
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    console.log(formInput);
 
     createMutation.mutate({
       projectId: projectId,

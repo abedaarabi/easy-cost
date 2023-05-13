@@ -44,7 +44,6 @@ export const Viewer = ({
   const { user, setLoginMsg } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const param = searchParams.get("page");
-  console.log(param, "searchParams");
 
   if (!projectId) {
     return null;
@@ -67,8 +66,6 @@ export const Viewer = ({
       }),
     { enabled: false }
   );
-  console.log({ filesInfo, isSuccess: isSuccessFilesInfo, path });
-  console.log(path.id);
 
   //Measures
   const { data, mutate, isSuccess } = useMutation(
@@ -96,8 +93,6 @@ export const Viewer = ({
       }),
     {
       onSuccess: (response) => {
-        console.log({ response });
-
         setLoginMsg({
           code: 200,
           msg: `Measures Successfully Added to Database.`,
@@ -105,8 +100,6 @@ export const Viewer = ({
       },
 
       onError: (error: AxiosError) => {
-        console.log({ error });
-
         setLoginMsg({
           code: error.response?.status,
 
@@ -134,10 +127,7 @@ export const Viewer = ({
 
     {
       onSuccess: (response: UpdateMarkupDto) => {},
-      onError: (error: AxiosError) => {
-        console.log(error.message);
-        console.log(error.status);
-      },
+      onError: (error: AxiosError) => {},
       cacheTime: 0,
     }
   );
@@ -162,8 +152,6 @@ export const Viewer = ({
       },
 
       onError: (error: AxiosError) => {
-        console.log({ error });
-
         setLoginMsg({
           code: error.response?.status,
 
@@ -194,7 +182,6 @@ export const Viewer = ({
       },
 
       onError: (error: AxiosError) => {
-        console.log({ error });
 
         setLoginMsg({
           code: error.response?.status,
@@ -376,8 +363,6 @@ export const Viewer = ({
 
   React.useEffect(() => {
     const handleCalibrationFinished = async (e: any) => {
-      console.log(e);
-
       if (viewer?.current) {
         const measureExt = await viewer?.current.getExtension(
           "Autodesk.Measure"
@@ -421,7 +406,6 @@ export const Viewer = ({
 
   React.useEffect(() => {
     const handleCalibrationFinished = (e: any) => {
-      console.log(e);
       const values: UpdateFileVersionDto = {
         scale: e.scaleFactor,
         unit: e.units,
@@ -738,7 +722,6 @@ async function saveMarkupsToDatabase(viewer: any) {
   );
 
   const markupsData = await markupsExtension.generateData();
-  console.log({ markupsData });
 
   //Save to database
 
@@ -781,11 +764,11 @@ function generateMeasureId(data: InputObj) {
   return intersections.join(",");
 }
 
-async function activateMarkups(viewer: any, markups: any) {
-  const ext = await viewer.loadExtension("Autodesk.Viewing.MarkupsCore");
+// async function activateMarkups(viewer: any, markups: any) {
+//   const ext = await viewer.loadExtension("Autodesk.Viewing.MarkupsCore");
 
-  console.log(markups, ext);
-  ext.show();
-  ext.loadMarkups(markups, "layer_1");
-  ext.enterEditMode("layer_1");
-}
+//   console.log(markups, ext);
+//   ext.show();
+//   ext.loadMarkups(markups, "layer_1");
+//   ext.enterEditMode("layer_1");
+// }

@@ -57,7 +57,6 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
           },
         });
         if (response.data && response.status === 201) {
-          console.log({ response });
 
           queryClient.invalidateQueries({ queryKey: ["uploadFileToS3"] });
 
@@ -68,7 +67,6 @@ export function Dropzone({ openAddObject, setOpenAddObject }: Prop) {
           });
           setOpenAddObject(false);
         }
-        console.log({ response });
       } catch (error: AxiosError | any) {
         setLoginMsg({
           code: error.response?.status,

@@ -12,7 +12,6 @@ function handleResponse(
   setLoginMsg: React.Dispatch<React.SetStateAction<LoginMsg>>
 ) {
   queryClient.invalidateQueries(["materialByCompanyId"]);
-  console.log({ response });
 
   setLoginMsg({
     code: 200,

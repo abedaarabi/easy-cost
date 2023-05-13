@@ -20,12 +20,9 @@ export function MySelect({
       label="materialId"
       value={selectedValue}
       renderValue={(value) => {
-        console.log({ value }, "it's retrieving the old id ");
-
         return findById(materials, value)!.materialName;
       }}
       onChange={(e) => {
-        console.log("changed", e.target);
         setSelectedValue(e.target.value);
         onChange(e.target.value);
       }}

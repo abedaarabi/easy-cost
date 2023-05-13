@@ -33,7 +33,7 @@ export const AuthContextProvider = ({
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log(user);
+
       if (user) {
         const useDetails = await operationsByTag.user.userControllerFindOne({
           pathParams: { id: user.uid },

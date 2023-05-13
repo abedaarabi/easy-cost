@@ -59,7 +59,6 @@ const ProjectMaterialUser = () => {
         pathParams: { projectId },
       }) as unknown as Promise<ProjecTMaterialTest[]>
   );
-  console.log({ projectId, data });
 
   if (!data) return null;
   const projectName = data[0]?.project?.projectName;

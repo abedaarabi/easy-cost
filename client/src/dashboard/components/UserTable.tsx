@@ -114,8 +114,6 @@ const UserTable = () => {
       }),
     {
       onSuccess: (response) => {
-        console.log({ response });
-
         queryClient.invalidateQueries(["userByCompanyId"]);
         setLoginMsg({ code: 200, msg: "Invitation sent" });
       },
@@ -220,7 +218,6 @@ const UserTable = () => {
 
   const handleDeleteRow = (row: MRT_Row<UpdateUserDto>) => {
     if (!row.original.id) return;
-    console.log(row.original.id);
     if (!confirm(`Are you sure you want to delete ${row.getValue("id")}`)) {
       return;
     }
@@ -246,7 +243,6 @@ const UserTable = () => {
   const handleSaveRowEdits: MaterialReactTableProps<UpdateUserDto>["onEditingRowSave"] =
     async ({ exitEditingMode, row, values }) => {
       //send/receive api updates here, then refetch or update local table data for re-render Update
-      console.log({ values });
 
       updateMutation.mutate({ id: values.id, value: { ...values, companyId } });
       exitEditingMode();
