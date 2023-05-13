@@ -295,7 +295,7 @@ export const Viewer = ({
   }
 
   React.useEffect(() => {
-    const handleCalibrationFinished = (e: any) => {
+    const handleMeasurementFinished = (e: any) => {
       console.log(e, "Measure Leave");
       const MsToDb = getMeasure(e.target);
 
@@ -316,19 +316,22 @@ export const Viewer = ({
       console.log("Measure leave mutae", normalizeMeasureValues);
       createMeasures.mutate(normalizeMeasureValues);
     };
+    console.log("Adding measurment lister", viewer?.current);
 
     viewer?.current?.addEventListener(
       //@ts-ignore
       Autodesk.Viewing.MeasureCommon.Events.MEASUREMENT_MODE_LEAVE,
-      handleCalibrationFinished
+      handleMeasurementFinished
     );
 
     // Cleanup function to remove the event listener when the component unmounts
+
     return () => {
+      console.log("removing measurement event", viewer?.current);
       viewer?.current?.removeEventListener(
         //@ts-ignore
         Autodesk.Viewing.MeasureCommon.Events.MEASUREMENT_MODE_LEAVE,
-        handleCalibrationFinished
+        handleMeasurementFinished
       );
     };
   }, [viewer.current, isMarkups]);
