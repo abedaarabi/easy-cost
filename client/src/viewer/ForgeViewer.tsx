@@ -239,7 +239,7 @@ export const Viewer = ({
                   //@ts-ignore
                   documentInfoRefetch();
                   //@ts-ignore
-                  forwardViewer.current = x.target;
+                  viewer.current = x.target;
                   //@ts-ignore
 
                   //@ts-ignore
@@ -340,6 +340,7 @@ export const Viewer = ({
       throw new Error("Failed to initialize viewer");
     }
   }
+
   React.useEffect(() => {
     initializeViewer2();
     setIsMarkups(false);
