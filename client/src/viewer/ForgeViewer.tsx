@@ -182,7 +182,6 @@ export const Viewer = ({
       },
 
       onError: (error: AxiosError) => {
-
         setLoginMsg({
           code: error.response?.status,
 
@@ -226,6 +225,8 @@ export const Viewer = ({
             config
           );
           if (viewer.current) {
+            console.log("viewer", viewer.current);
+
             viewer.current.start(path.urlPath);
             viewer.current.setTheme("light-theme");
 
@@ -253,6 +254,8 @@ export const Viewer = ({
               }
             );
             resolve(viewer.current);
+          } else {
+            console.log("No Viewer");
           }
         }
       );
