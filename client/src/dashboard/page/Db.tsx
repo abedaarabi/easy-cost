@@ -38,6 +38,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
+  backgroundColor: "#343a40",
 });
 const closedMixin = (theme: Theme): CSSObject => ({
   transition: theme.transitions.create("width", {
@@ -45,6 +46,8 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
+
+  backgroundColor: "#343a40",
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
@@ -85,6 +88,7 @@ const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   width: drawerWidth,
+  backgroundColor: "#006466",
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
@@ -183,7 +187,7 @@ export default function MiniDrawer() {
         </Toolbar>
       </AppBar>
       {false ? (
-        <Box sx={{ m: "auto", mt: 12, width: "85%" }}>
+        <Box sx={{ m: "auto", mt: 12, width: "90%" }}>
           <ProjectMaterialUser />
         </Box>
       ) : (
@@ -201,17 +205,18 @@ export default function MiniDrawer() {
             <Divider />
             <List>
               {drawerLinks.map(({ text, link, icon, id }) => (
-                <ListItem
+                <Abed
                   key={id}
                   disablePadding
                   sx={{
                     display: "block",
+                    color: "white",
                   }}
                   selected={location.pathname === link && true}
                 >
                   <Link
                     to={link}
-                    style={{ textDecoration: "none", color: "gray" }}
+                    style={{ textDecoration: "none", color: "white" }}
                   >
                     <ListItemButton
                       sx={{
@@ -238,7 +243,7 @@ export default function MiniDrawer() {
                       />
                     </ListItemButton>
                   </Link>
-                </ListItem>
+                </Abed>
               ))}
             </List>
 
@@ -256,21 +261,45 @@ export default function MiniDrawer() {
 const drawerLinks = [
   {
     id: 1,
-    text: "Project",
-    icon: <WorkOutlineIcon color="info" />,
+    text: (
+      <Typography variant="overline" color={"white"}>
+        Project
+      </Typography>
+    ),
+    icon: (
+      <Box sx={{ color: "white" }}>
+        <WorkOutlineIcon />
+      </Box>
+    ),
     link: "/",
   },
 
   {
     id: 2,
-    text: "Material",
-    icon: <DashboardOutlinedIcon color="info" />,
+    text: (
+      <Typography variant="overline" color={"white"}>
+        Material
+      </Typography>
+    ),
+    icon: (
+      <Box sx={{ color: "white" }}>
+        <DashboardOutlinedIcon />
+      </Box>
+    ),
     link: "/material",
   },
   {
     id: 3,
-    text: "User",
-    icon: <PermIdentityIcon color="info" />,
+    text: (
+      <Typography variant="overline" color={"white"}>
+        User
+      </Typography>
+    ),
+    icon: (
+      <Box sx={{ color: "white" }}>
+        <PermIdentityIcon />
+      </Box>
+    ),
     link: "/user",
   },
   // {
@@ -313,5 +342,20 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
       transform: "scale(2.4)",
       opacity: 0,
     },
+  },
+}));
+
+export const Abed = styled(ListItem, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme }) => ({
+  // ".Mui-selected": "red",
+  " &.Mui-selected": {
+    backgroundColor: "#6c757d",
+    color: "white",
+  },
+
+  "&:hover": {
+    backgroundColor: "#6c757d",
+    color: "white",
   },
 }));

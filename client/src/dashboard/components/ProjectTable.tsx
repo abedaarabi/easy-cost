@@ -271,8 +271,8 @@ const ProjectTable = () => {
       <Typography
         variant="overline"
         color={"#25291C"}
-        mb={1}
-        sx={{ fontSize: "18px" }}
+        // mb={1}
+        sx={{ fontSize: "14px" }}
       >
         Projects:
       </Typography>
@@ -318,38 +318,49 @@ const ProjectTable = () => {
           },
         }}
         renderTopToolbarCustomActions={() => (
-          <Fab
-            color="success"
+          <Button
+            sx={{ width: "15%", height: 30 }}
+            variant="contained"
+            startIcon={<AddIcon />}
+            color="primary"
             onClick={() => setCreateModalOpen(true)}
             aria-label="add"
             size="small"
           >
-            <AddIcon />
-          </Fab>
+            Delete
+          </Button>
         )}
+        // muiTablePaperProps={{
+        //   sx: {
+        //     borderRadius: "5px",
+
+        //     border: "1px  #e0e0e0 ",
+        //   },
+        // }}
         muiTablePaperProps={{
+          elevation: 0,
           sx: {
             borderRadius: "5px",
+            // border: "2px solid #006466",
+            overflow: "hidden",
+          },
+        }}
+        // muiTopToolbarProps={{
+        //   sx: {
+        //     borderRadius: "5px",
+        //     bgcolor: "#BFD7FF",
+        //     height: 80,
+        //     border: "5px  #e0e0e0 ",
+        //   },
+        // }}
+        // muiBottomToolbarProps={{
+        //   sx: {
+        //     borderRadius: "5px",
+        //     bgcolor: "#99c1b9",
 
-            border: "1px  #e0e0e0 ",
-          },
-        }}
-        muiTopToolbarProps={{
-          sx: {
-            borderRadius: "5px",
-            bgcolor: "#81b29a",
-            height: 80,
-            border: "5px  #e0e0e0 ",
-          },
-        }}
-        muiBottomToolbarProps={{
-          sx: {
-            borderRadius: "5px",
-            bgcolor: "#99c1b9",
-
-            border: "5px  #e0e0e0 ",
-          },
-        }}
+        //     border: "5px  #e0e0e0 ",
+        //   },
+        // }}
         muiTableContainerProps={{
           sx: { height: "65vh", maxHeight: "65vh" },
         }}
